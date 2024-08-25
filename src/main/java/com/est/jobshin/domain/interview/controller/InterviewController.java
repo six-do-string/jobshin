@@ -1,4 +1,4 @@
-package com.est.jobshin.interview.controller;
+package com.est.jobshin.domain.interview.controller;
 
 import org.springframework.stereotype.Controller;
 
