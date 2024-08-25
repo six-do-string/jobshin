@@ -1,4 +1,4 @@
-package com.est.jobshin.user.controller;
+package com.est.jobshin.domain.user.controller;
 
 import org.springframework.stereotype.Controller;
 

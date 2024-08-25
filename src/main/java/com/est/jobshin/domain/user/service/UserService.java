@@ -1,4 +1,4 @@
-package com.est.jobshin.user.service;
+package com.est.jobshin.domain.user.service;
 
 import org.springframework.stereotype.Service;
 
