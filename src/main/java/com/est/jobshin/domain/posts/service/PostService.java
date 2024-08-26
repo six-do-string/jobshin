@@ -1,6 +1,7 @@
 package com.est.jobshin.domain.posts.service;
 
 import com.est.jobshin.domain.posts.domain.Post;
+import com.est.jobshin.domain.posts.dto.PostDetailDto;
 import com.est.jobshin.domain.posts.dto.PostDto;
 import com.est.jobshin.domain.posts.dto.PostSummaryDto;
 import com.est.jobshin.domain.posts.repository.PostRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -35,5 +37,13 @@ public class PostService {
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").descending());
         Page<Post> posts = postRepository.findAll(pageRequest);
         return posts.map(PostSummaryDto::fromPost);
+    }
+
+    public Optional<PostDetailDto> getPostById(Long id) {
+        Optional<PostDetailDto> postDetailDto = postRepository.findById(id).map(PostDetailDto::fromPost);
+        if(postDetailDto.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return postDetailDto;
     }
 }
