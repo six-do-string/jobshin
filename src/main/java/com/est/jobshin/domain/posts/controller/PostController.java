@@ -1,6 +1,7 @@
 package com.est.jobshin.domain.posts.controller;
 
 import com.est.jobshin.domain.posts.dto.PostDto;
+import com.est.jobshin.domain.posts.dto.PostSummaryDto;
 import com.est.jobshin.domain.posts.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,10 @@ public class PostController {
     public ResponseEntity<PostDto> createPost(@RequestBody @Valid PostDto postDto) {
         postService.savePost(postDto);
         return ResponseEntity.ok(postDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<PostSummaryDto>> getAllPosts(Pageable pageable) {
+        return ResponseEntity.ok(postService.getAllPosts(pageable));
     }
 }
