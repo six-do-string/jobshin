@@ -50,10 +50,10 @@ jobs:
         SSH_USER: ${{ secrets.SSH_EC2_USER }}
         SSH_HOST: ${{ secrets.SSH_EC2_HOST }}
       run: |
-        echo "$SSH_KEY" > ec2-key.pem
-        chmod 400 ec2-key.pem
+        echo "$SSH_KEY" > jobshin-key.pem
+        chmod 400 jobshin-key.pem
         
-        ssh -i "ec2-key.pem" -o StrictHostKeyChecking=no ${{secrets.SSH_EC2_USER}}@${{secrets.SSH_EC2_HOST}} << EOF
+        ssh -i "jobshin-key.pem" -o StrictHostKeyChecking=no ${{secrets.SSH_EC2_USER}}@${{secrets.SSH_EC2_HOST}} << EOF
         echo "hello world"
         EOF
 
