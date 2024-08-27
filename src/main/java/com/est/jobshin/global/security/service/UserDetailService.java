@@ -1,8 +1,13 @@
 package com.est.jobshin.global.security.service;
 
 import com.est.jobshin.domain.user.domain.User;
+import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
+import com.est.jobshin.global.security.model.CustomUserDetails;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,10 +23,8 @@ public class UserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByemail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword())
-                .roles("USER")
-                .build();
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
+
+        return new CustomUserDetails(UserResponse.toDto(user), authorities);
     }
 }
