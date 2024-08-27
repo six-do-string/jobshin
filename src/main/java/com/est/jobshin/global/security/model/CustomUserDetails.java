@@ -1,31 +1,35 @@
 package com.est.jobshin.global.security.model;
 
-import com.est.jobshin.domain.user.domain.User;
+import com.est.jobshin.domain.user.dto.UserResponse;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Getter
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final User user;
+    private final UserResponse userResponse;
+    private final List<GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 역할이 필요 없으므로 빈 리스트를 반환
-        return Collections.emptyList();
+        return new ArrayList<>();
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return userResponse.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return userResponse.getEmail();
     }
 
     @Override

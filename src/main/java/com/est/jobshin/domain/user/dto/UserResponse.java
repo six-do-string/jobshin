@@ -41,6 +41,8 @@ public class UserResponse {
                 .language(user.getLanguage())
                 .level(user.getLevel())
                 .position(user.getPosition())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 }
