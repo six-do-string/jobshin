@@ -44,3 +44,16 @@ jobs:
       run: docker push ${{ secrets.DOCKER_HUB_ID }}/${{ secrets.DOCKER_HUB_REPO }}:latest
 
 
+    - name: Test EC2 SSH Connection
+      env:
+        SSH_KEY: ${{ secrets.SSH_EC2_KEY }}
+        SSH_USER: ${{ secrets.SSH_EC2_USER }}
+        SSH_HOST: ${{ secrets.SSH_EC2_HOST }}
+      run: |
+        echo "$SSH_KEY" > ec2-key.pem
+        chmod 400 ec2-key.pem
+        
+        ssh -i "ec2-key.pem" -o StrictHostKeyChecking=no ${{secrets.SSH_EC2_USER}}@${{secrets.SSH_EC2_HOST}} << EOF
+        echo "hello world"
+        EOF
+
