@@ -38,7 +38,7 @@ jobs:
       run: echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_ID --password-stdin
 
     - name: docker build
-      run: docker build -t ${{ secrets.DOCKER_HUB_ID }}/${{ secrets.DOCKER_HUB_REPO }}:latest
+      run: docker build -t ${{ secrets.DOCKER_HUB_ID }}/${{ secrets.DOCKER_HUB_REPO }}:latest .
 
     - name: docker push
       run: docker push ${{ secrets.DOCKER_HUB_ID }}/${{ secrets.DOCKER_HUB_REPO }}:latest
