@@ -1,28 +1,57 @@
 package com.est.jobshin.domain.user.domain;
 
-import jakarta.persistence.*;
+import com.est.jobshin.domain.user.util.BaseEntity;
+import com.est.jobshin.domain.user.util.Language;
+import com.est.jobshin.domain.user.util.Level;
+import com.est.jobshin.domain.user.util.Position;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-public class User {
+@Builder
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "user")
+public class User extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@Column(name = "email", unique = true)
+	private String email;
 
+
+	@Column(name = "password")
+	private String password;
+
+	@Column(name = "username")
+	private String username;
+
+	@Column(name = "language")
 	@Enumerated(EnumType.STRING)
-	private User.Language language;
+	private Language language;
+
+	@Column(name = "level")
 	@Enumerated(EnumType.STRING)
-	private User.Level level;
+	@Default
+	private Level level = Level.LV2;
 
-	public enum Language {
-		JAVA, PYTHON
-	}
-
-	public enum Level {
-		LV1, LV2, LV3
-	}
+	@Column(name = "position")
+	@Enumerated(EnumType.STRING)
+	private Position position;
 }
 
 
