@@ -60,16 +60,16 @@ public class AlanService {
 
 		String questionMessage = "";
 
-		if (user.getCategory() == CS) {
-			questionMessage =
-					PromptMessage.QUESTION_PRACTICE_CS_PROMPT + setUpMessage;
-		} else if(user.getCategory() == LANGUAGE){
-			questionMessage =
-					PromptMessage.QUESTION_PRACTICE_LANGUAGE_PROMPT + setUpMessage;
-		} else if(user.getCategory() == ALGORITHM) {
-			questionMessage =
-					PromptMessage.QUESTION_PRACTICE_ALGORITHM_PROMPT + setUpMessage;
-		}
+//		if (user.getCategory() == CS) {
+//			questionMessage =
+//					PromptMessage.QUESTION_PRACTICE_CS_PROMPT + setUpMessage;
+//		} else if(user.getCategory() == LANGUAGE){
+//			questionMessage =
+//					PromptMessage.QUESTION_PRACTICE_LANGUAGE_PROMPT + setUpMessage;
+//		} else if(user.getCategory() == ALGORITHM) {
+//			questionMessage =
+//					PromptMessage.QUESTION_PRACTICE_ALGORITHM_PROMPT + setUpMessage;
+//		}
 
 		String content = String.format(questionMessage, level);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
