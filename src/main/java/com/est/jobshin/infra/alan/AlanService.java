@@ -1,13 +1,14 @@
 package com.est.jobshin.infra.alan;
 
 import com.est.jobshin.domain.user.domain.User;
+import com.est.jobshin.domain.user.util.Language;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import static com.est.jobshin.domain.user.domain.User.Language.JAVA;
+
 
 @Slf4j
 @Service
@@ -41,7 +42,7 @@ public class AlanService {
 	private String callApiRealMode(String apiUrl, String clientId, String level, User user) {
 
 		String questionMessage =
-				user.getLanguage() == JAVA ?
+				user.getLanguage() == Language.JAVA ?
 						PromptMessage.QUESTION_JAVA_PROMPT + "레벨은 LV1, LV2, LV3 중" + user.getLevel()
 						: PromptMessage.QUESTION_PYTHON_PROMPT + "레벨은 LV1, LV2, LV3 중" + user.getLevel();
 
