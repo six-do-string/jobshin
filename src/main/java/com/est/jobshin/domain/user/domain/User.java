@@ -18,6 +18,7 @@ import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Builder
 @Getter
@@ -52,3 +53,5 @@ public class User extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private Position position;
 }
+
+
