@@ -1,9 +1,8 @@
 package com.est.jobshin.global.security.model;
 
-import com.est.jobshin.domain.user.dto.UserResponse;
+import com.est.jobshin.domain.user.dto.response.UserResponse;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userResponse.getEmail();
+        return userResponse.getUsername();
     }
 
     @Override

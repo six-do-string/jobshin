@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,10 +25,12 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 			errorMessage = "사용자를 찾을 수 없습니다.";
 		}
 
+		String encodedErrorMessage = URLEncoder.encode(errorMessage, "UTF-8");
 		String requestURI = request.getRequestURI();
+
 		// 로그인 페이지로 리다이렉트하며, 에러 메시지를 전달합니다.
 		if (requestURI.contains("/view/login")) {
-			getRedirectStrategy().sendRedirect(request, response, "/user/login?error=" + errorMessage);
+			getRedirectStrategy().sendRedirect(request, response, "/view/login?error=" + encodedErrorMessage);
 		}
 	}
 }

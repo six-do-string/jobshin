@@ -1,7 +1,7 @@
 package com.est.jobshin.global.security.service;
 
 import com.est.jobshin.domain.user.domain.User;
-import com.est.jobshin.domain.user.dto.UserResponse;
+import com.est.jobshin.domain.user.dto.response.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
 import com.est.jobshin.global.security.model.CustomUserDetails;
 import java.util.List;
@@ -20,8 +20,8 @@ public class UserDetailService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByemail(email)
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
 
