@@ -2,7 +2,9 @@ package com.est.jobshin.domain.interview.domain;
 
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 
+import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.NotNull;
@@ -23,16 +25,20 @@ public class Interview {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull
+//	@NotNull
 	private String title;
 
-	@NotNull
+//	@NotNull
+	private Mode mode;
+
+//	@NotNull
 	private LocalDateTime createAt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
+//	@JsonManagedReference
 	@OneToMany(mappedBy = "interview", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InterviewDetail> interviewDetails = new ArrayList<>();
 
