@@ -11,23 +11,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-/** DTO for {@link Interview} */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class InterviewDto implements Serializable {
-    private Long id;
-
+public class InterviewDto {
     private String title;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createAt;
 
     private UserDto user;
@@ -35,9 +29,8 @@ public class InterviewDto implements Serializable {
     private List<InterviewQuestion> interviewDetails;
 
     public static InterviewDto fromInterview(Interview interview) {
-        InterviewDto interviewDto = new InterviewDto();
+        InterviewDto interviewDto;
         interviewDto = InterviewDto.builder()
-                .id(interview.getId())
                 .title(interview.getTitle())
                 .createAt(interview.getCreateAt())
                 .build();
@@ -47,7 +40,6 @@ public class InterviewDto implements Serializable {
 
     public Interview toInterview() {
         return Interview.builder()
-                .id(id)
                 .title(title)
                 .createAt(createAt)
                 .build();

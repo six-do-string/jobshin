@@ -7,6 +7,7 @@ import com.est.jobshin.domain.interviewDetail.dto.InterviewDetailDto;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.infra.alan.AlanService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,17 +21,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class InterviewDetailService {
     private final InterviewDetailRepository interviewDetailRepository;
     private final AlanService alenService;
     private final InterviewRepository interviewRepository;
-
-    @Autowired
-    public InterviewDetailService(InterviewDetailRepository interviewDetailRepository, AlanService alenService, InterviewRepository interviewRepository) {
-        this.interviewDetailRepository = interviewDetailRepository;
-        this.alenService = alenService;
-        this.interviewRepository = interviewRepository;
-    }
 
     public InterviewQuestion createInterviewDetail(InterviewQuestion interviewQuestion, Long interviewId) {
         Interview interview = interviewRepository
@@ -42,10 +37,18 @@ public class InterviewDetailService {
             questionData = questionData.substring(0, 255);
         }
 
-        InterviewDetail interviewDetail = interviewQuestion.toInterviewDetail();
-        interviewDetail.setCreatedAt(LocalDateTime.now());
-        interviewDetail.setInterview(interview);
-        interviewDetail.setQuestion(questionData);
+//        InterviewDetail interviewDetail = interviewQuestion.toInterviewDetail();
+//        interviewDetail.setCreatedAt(LocalDateTime.now());
+//        interviewDetail.setInterview(interview);
+//        interviewDetail.setQuestion(questionData);
+
+        InterviewDetail interviewDetail = InterviewDetail.createInterviewDetail(
+                interviewQuestion.getQuestion(),
+                interviewQuestion.getCategory(),
+                interviewQuestion.getMode(),
+                interviewQuestion.getAnswer(),
+                LocalDateTime.now()
+        );
 
         InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
 

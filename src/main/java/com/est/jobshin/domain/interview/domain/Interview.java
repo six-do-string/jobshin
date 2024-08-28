@@ -3,9 +3,9 @@ package com.est.jobshin.domain.interview.domain;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 
 import com.est.jobshin.domain.user.domain.User;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,22 +13,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "interview")
+@Table(name = "interviews")
 @Entity
 @Builder
 public class Interview {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false)
 	private Long id;
 
-	@Column
+	@NotNull
 	private String title;
 
-	@Column
+	@NotNull
 	private LocalDateTime createAt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -38,6 +36,15 @@ public class Interview {
 	@OneToMany(mappedBy = "interview", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InterviewDetail> interviewDetails = new ArrayList<>();
 
+	private Interview(String title, LocalDateTime createAt) {
+		this.title = title;
+		this.createAt = createAt;
+//		this.user = user;
+	}
+
+	public static Interview createInterview(String title, LocalDateTime createAt) {
+		return new Interview(title, createAt);
+	}
 
 	public void addInterviewDetails(InterviewDetail interview){
 		interviewDetails.add(interview);
