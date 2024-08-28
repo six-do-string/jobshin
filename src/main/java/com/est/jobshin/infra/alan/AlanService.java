@@ -19,14 +19,32 @@ public class AlanService {
 
 	private final RestTemplate restTemplate;
 
+	private Interview interview;
+
+	private InterviewDetail interviewDetail;
+
+	private User user;
+
 	@Value("${alan.api.default-url}")
 	private String defaultUrl;
 
 	@Value("${alan.api.client-id}")
 	private String clientId;
 
-	public String callAlan() {
-		return callApi(defaultUrl, clientId);
+	public String callRealMode() {
+		return callApiRealMode(defaultUrl, clientId, interview);
+	}
+
+	public String callPracticeMode() {
+		return callApiPracticeMode(defaultUrl, clientId, user, interviewDetail);
+	}
+
+	public String callFeedback(){
+		return callApiFeedback(defaultUrl, clientId, user, interviewDetail);
+	}
+
+	public String callAnswer() {
+		return callApiAnswer(defaultUrl, clientId, user, interviewDetail);
 	}
 
 
@@ -85,12 +103,24 @@ public class AlanService {
 		return response;
 	}
 
-	// 모법 답안, 피드백
+	// 피드백
+	private String callApiFeedback(String apiUrl, String ClientId, User user, InterviewDetail interviewDetail) {
+
+		String content = String.format(PromptMessage.FEEDBACK_PROMPT);
+		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
+		log.info("Calling API: {}", requestUrl);
+
+		String response = restTemplate.getForObject(requestUrl, String.class);
+		log.info("API response received");
+		log.info("Response: {}", response);
+
+		return response;
+	}
+
+	// 모범답안
 	private String callApiAnswer(String apiUrl, String ClientId, User user, InterviewDetail interviewDetail) {
 
-		String message = PromptMessage.ANSWER_PROMPT + PromptMessage.FEEDBACK_PROMPT;
-
-		String content = String.format(message);
+		String content = String.format(PromptMessage.ANSWER_PROMPT);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
 		log.info("Calling API: {}", requestUrl);
 

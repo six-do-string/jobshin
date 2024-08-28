@@ -31,7 +31,7 @@ public class InterviewDetailService {
         Interview interview = interviewRepository
                 .findById(interviewId)
                 .orElseThrow(() -> new IllegalArgumentException("Interview not found"));
-        String questionData = alenService.callAlan();
+        String questionData = alenService.callRealMode();
 
         if (questionData.length() > 255) {
             questionData = questionData.substring(0, 255);

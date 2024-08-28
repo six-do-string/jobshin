@@ -35,6 +35,14 @@ public class InterviewAnswer implements Serializable {
     private LocalDateTime createdAt;
 //    private InterviewDto interview;
 
+    public static InterviewAnswer fromInterviewDetail(InterviewDetail interviewDetail) {
+        return InterviewAnswer.builder()
+                .id(interviewDetail.getId())
+                .score(interviewDetail.getScore())
+                .exampleAnswer(interviewDetail.getExampleAnswer())
+                .build();
+    }
+
     public InterviewDetail toInterviewDetail() {
         return InterviewDetail.builder()
                 .id(id)

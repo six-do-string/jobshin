@@ -12,5 +12,5 @@ public class LevelFeedbackDto {
     private Long id;
     private Long userId;
     private String content;
-    private int rating;
+    private Long rating;
 }

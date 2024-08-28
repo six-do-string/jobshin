@@ -18,7 +18,7 @@ public class InterviewController {
 
     @GetMapping("/test")
     public String callAlan() {
-        String result = alanService.callAlan();
+        String result = alanService.callRealMode();
 
         return result;
     }
