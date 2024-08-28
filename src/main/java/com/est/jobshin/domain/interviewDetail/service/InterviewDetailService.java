@@ -6,6 +6,7 @@ import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewDetailDto;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
+import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.infra.alan.AlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,41 +21,59 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+//@Transactional
 @RequiredArgsConstructor
 public class InterviewDetailService {
     private final InterviewDetailRepository interviewDetailRepository;
     private final AlanService alenService;
     private final InterviewRepository interviewRepository;
 
-    public InterviewQuestion createInterviewDetail(InterviewQuestion interviewQuestion, Long interviewId) {
-        Interview interview = interviewRepository
-                .findById(interviewId)
-                .orElseThrow(() -> new IllegalArgumentException("Interview not found"));
+    @Transactional
+    public void createInterviewDetail(Interview interview) {
+        //카테고리 선별 구현
+        //임시로 구현
+        Category[] category = {Category.CS, Category.CS, Category.CS, Category.CS, Category.CS};
+
+        //callAlan 에 추가해야 할 파라미터
+        //1. 카테고리
         String questionData = alenService.callAlan();
 
-        if (questionData.length() > 255) {
-            questionData = questionData.substring(0, 255);
+//        if (questionData.length() > 255) {
+//            questionData = questionData.substring(0, 255);
+//        }
+
+        //데이터 처리
+        ArrayList<String> questionList = new ArrayList<>();
+
+        String regex = "\\[(.*?)\\]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(questionData);
+
+        while (matcher.find()) {
+            questionList.add(matcher.group(1));
         }
 
-//        InterviewDetail interviewDetail = interviewQuestion.toInterviewDetail();
-//        interviewDetail.setCreatedAt(LocalDateTime.now());
-//        interviewDetail.setInterview(interview);
-//        interviewDetail.setQuestion(questionData);
+        //임시데이터
+//        questionList.add("질문");
+//        questionList.add("질문");
+//        questionList.add("질문");
+//        questionList.add("질문");
+//        questionList.add("질문");
 
-        InterviewDetail interviewDetail = InterviewDetail.createInterviewDetail(
-                interviewQuestion.getQuestion(),
-                interviewQuestion.getCategory(),
-                interviewQuestion.getMode(),
-                interviewQuestion.getAnswer(),
-                LocalDateTime.now()
-        );
+        //위 과정으로 나온 데이터는 질문 리스트 5개
+        //category 랑 맵핑해서 db에 저장
+        //interview 랑 연결
 
-        InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
-
-        interview.addInterviewDetails(savedInterviewDetail);
-
-        return InterviewQuestion.fromInterviewDetail(savedInterviewDetail);
+        for(int i = 0; i < 5; i++){
+            InterviewDetail interviewDetail = InterviewDetail.createInterviewDetail(
+                    questionList.get(i),
+                    category[i],
+                    interview.getMode(),
+                    LocalDateTime.now()
+            );
+            InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
+            interview.addInterviewDetails(savedInterviewDetail);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -67,10 +86,9 @@ public class InterviewDetailService {
     }
 
     @Transactional(readOnly = true)
-    public InterviewQuestion getInterviewDetailById(Long interviewDetailId) {
+    public InterviewDetail getInterviewDetailById(Long interviewDetailId) {
         return interviewDetailRepository
                 .findById(interviewDetailId)
-                .map(InterviewQuestion::fromInterviewDetail)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid interview details id: " + interviewDetailId));
     }
 

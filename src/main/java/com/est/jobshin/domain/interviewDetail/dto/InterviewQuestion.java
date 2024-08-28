@@ -13,11 +13,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-///** DTO for {@link com.est.jobshin.domain.interviewDetail.domain.InterviewDetail} */
 @Data
 @Builder
 public class InterviewQuestion implements Serializable {
-
     private Long id;
 
     private Long interviewId;
