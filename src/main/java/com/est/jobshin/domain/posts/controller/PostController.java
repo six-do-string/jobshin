@@ -17,22 +17,22 @@ import java.util.Optional;
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class PostController {
-
-    private final PostService postService;
-
-    @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody @Valid PostDto postDto) {
-        postService.savePost(postDto);
-        return ResponseEntity.ok(postDto);
-    }
-
-    @GetMapping
-    public ResponseEntity<Page<PostSummaryDto>> getAllPosts(Pageable pageable) {
-        return ResponseEntity.ok(postService.getAllPosts(pageable));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<PostDetailDto>> getPostById(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.getPostById(id));
-    }
+//
+//    private final PostService postService;
+//
+//    @PostMapping
+//    public ResponseEntity<PostDto> createPost(@RequestBody @Valid PostDto postDto) {
+//        postService.savePost(postDto);
+//        return ResponseEntity.ok(postDto);
+//    }
+//
+//    @GetMapping
+//    public ResponseEntity<Page<PostSummaryDto>> getAllPosts(Pageable pageable) {
+//        return ResponseEntity.ok(postService.getAllPosts(pageable));
+//    }
+//
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Optional<PostDetailDto>> getPostById(@PathVariable Long id) {
+//        return ResponseEntity.ok(postService.getPostById(id));
+//    }
 }

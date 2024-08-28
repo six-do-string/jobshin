@@ -1,5 +1,6 @@
 package com.est.jobshin.domain.interview.controller;
 
+import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewDto;
 import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.infra.alan.AlanService;
@@ -23,7 +24,7 @@ public class InterviewController {
     }
 
     @PostMapping
-    public ResponseEntity<InterviewDto> createInterview(@RequestBody InterviewDto interviewDto) {
+    public ResponseEntity<Interview> createInterview(@RequestBody InterviewDto interviewDto) {
         return ResponseEntity.ok(interviewService.createInterview(interviewDto));
     }
 
