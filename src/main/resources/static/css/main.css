@@ -1,0 +1,120 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+header .logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+}
+header nav .navbar-navs {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+header nav .navbar-navs .nav-items {
+  margin-left: 20px;
+}
+header nav .navbar-navs .nav-items .nav-links {
+  text-decoration: none;
+  color: #333;
+}
+header nav .navbar-navs .nav-items .nav-links:hover {
+  color: #007bff;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f8ff;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.hero {
+  text-align: center;
+  padding: 50px 0;
+}
+.hero h1 {
+  font-size: 36px;
+  color: #333;
+}
+.hero p {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 30px;
+}
+.hero .btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+.hero .btn:hover {
+  background-color: #0062cc;
+}
+
+.feature {
+  margin: 50px 0;
+}
+.feature h2 {
+  font-size: 24px;
+  color: #333;
+}
+.feature .feature-content {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.feature .feature-content .feature-item {
+  flex: 1;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  margin: 0 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.feature .feature-content .feature-item img {
+  width: 100%;
+  border-radius: 5px;
+}
+.feature .feature-content .feature-item h3 {
+  font-size: 20px;
+  color: #333;
+}
+.feature .feature-content .feature-item p {
+  font-size: 16px;
+  color: #666;
+}
+
+.cta {
+  text-align: center;
+  padding: 50px 0;
+}
+.cta h2 {
+  font-size: 24px;
+  color: #333;
+}
+.cta .btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+.cta .btn:hover {
+  background-color: #0062cc;
+}
+
+/*# sourceMappingURL=main.css.map */
