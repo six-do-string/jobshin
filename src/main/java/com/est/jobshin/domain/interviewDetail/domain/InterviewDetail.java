@@ -51,11 +51,12 @@ public class InterviewDetail {
 
     private LocalDateTime createdAt;
 
+//    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_id")
     private Interview interview;
 
-    private InterviewDetail(String question, Category category, Mode mode, String exampleAnswer, LocalDateTime createdAt) {
+    private InterviewDetail(String question, Category category, Mode mode, LocalDateTime createdAt) {
         this.question = question;
         this.category = category;
         this.mode = mode;
@@ -63,7 +64,7 @@ public class InterviewDetail {
         this.createdAt = createdAt;
     }
 
-    public static InterviewDetail createInterviewDetail(String question, Category category, Mode mode, String exampleAnswer, LocalDateTime createdAt) {
-        return new InterviewDetail(question, category, mode, exampleAnswer, createdAt);
+    public static InterviewDetail createInterviewDetail(String question, Category category, Mode mode, LocalDateTime createdAt) {
+        return new InterviewDetail(question, category, mode, createdAt);
     }
 }

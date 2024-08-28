@@ -4,6 +4,7 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewDto;
 import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.infra.alan.AlanService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +23,25 @@ public class InterviewController {
 
         return result;
     }
+//    세션 테스트용 임시 주석처리
+//    @PostMapping
+//    public ResponseEntity<InterviewDto> createInterview(@RequestBody InterviewDto interviewDto, HttpSession session) {
+//        Interview interview = interviewService.createInterview(interviewDto, session);
+//        return ResponseEntity.ok(InterviewDto.fromInterview(interview));
+//    }
 
-    @PostMapping
-    public ResponseEntity<Interview> createInterview(@RequestBody InterviewDto interviewDto) {
-        return ResponseEntity.ok(interviewService.createInterview(interviewDto));
+    //세션 테스트용
+    @GetMapping
+    public ResponseEntity<InterviewDto> createInterview(HttpSession session) {
+        InterviewDto interviewDto = new InterviewDto();
+        Interview interview = interviewService.createInterview(interviewDto, session);
+        return ResponseEntity.ok(InterviewDto.fromInterview(interview));
+    }
+
+    @GetMapping("/next")
+    public ResponseEntity<String> next(HttpSession session) {
+        String question = interviewService.getNextQuestion2(session);
+        return ResponseEntity.ok(question);
     }
 
 //    @GetMapping
@@ -44,4 +60,6 @@ public class InterviewController {
         interviewService.deleteInterviewsById(interviewId);
         return ResponseEntity.noContent().build();
     }
+
+
 }
