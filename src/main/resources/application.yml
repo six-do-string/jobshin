@@ -18,10 +18,10 @@ spring:
         enabled: true
 
   datasource:
-    url: ${RDS_DB_URL}
+    url: jdbc:mysql://jobshin-rds.cjamy8sw6127.ap-northeast-2.rds.amazonaws.com:3306/jobshin_db
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${RDS_DB_USER}
-    password: ${RDS_DB_PW}
+    username: admin
+    password: 1q2w3e4r
 
   jpa:
     hibernate:
