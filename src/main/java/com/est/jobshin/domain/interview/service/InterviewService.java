@@ -30,7 +30,6 @@ import java.util.NoSuchElementException;
 public class InterviewService {
     private final InterviewRepository interviewRepository;
     private final InterviewDetailService interviewDetailService;
-    private final MessageQueueService messageQueueService;
 //    private Iterator<InterviewDetail> interviewDetailIterator;
 
     @Transactional
@@ -75,16 +74,6 @@ public class InterviewService {
         session.setAttribute("currentIndex", currentIndex + 1);
 
         return question.getQuestion();
-    }
-
-    public String getNextQuestion(Long interviewId) {
-        return messageQueueService.dequeueQuestion(interviewId);
-    }
-
-    public void submitAnswer(Long interviewDetailsId, String answer) {
-        InterviewDetail interviewDetail = interviewDetailService.getInterviewDetailById(interviewDetailsId);
-        interviewDetail.setAnswer(answer);
-        //저장
     }
 
     public void deleteInterviewsById(Long id) {
