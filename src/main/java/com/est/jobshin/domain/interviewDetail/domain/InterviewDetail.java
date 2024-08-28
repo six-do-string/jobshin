@@ -2,6 +2,8 @@ package com.est.jobshin.domain.interviewDetail.domain;
 
 import com.est.jobshin.domain.interview.domain.Interview;
 
+import com.est.jobshin.domain.interviewDetail.util.Category;
+import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,19 +26,17 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Builder
-@Table(name = "interview_detail")
+@Table(name = "interview_details")
 @AllArgsConstructor
 @NoArgsConstructor
 public class InterviewDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     private Long id;
 
-    @Column(length = 1000)
+    @Size(max = 1000)
     private String question;
 
-    @Column
     private String answer;
 
     @Enumerated(EnumType.STRING)
@@ -44,24 +45,25 @@ public class InterviewDetail {
     @Enumerated(EnumType.STRING)
     private Mode mode;
 
-    public enum Category {
-        CS, LANGUAGE, ALGORITHM
-    }
-
-    public enum Mode {
-        PRACTICE, REAL
-    }
-
-    @Column
     private Long score;
 
-    @Column
     private String exampleAnswer;
 
-    @Column
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_id")
     private Interview interview;
+
+    private InterviewDetail(String question, Category category, Mode mode, String exampleAnswer, LocalDateTime createdAt) {
+        this.question = question;
+        this.category = category;
+        this.mode = mode;
+        this.exampleAnswer = exampleAnswer;
+        this.createdAt = createdAt;
+    }
+
+    public static InterviewDetail createInterviewDetail(String question, Category category, Mode mode, String exampleAnswer, LocalDateTime createdAt) {
+        return new InterviewDetail(question, category, mode, exampleAnswer, createdAt);
+    }
 }

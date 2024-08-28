@@ -18,10 +18,10 @@ spring:
         enabled: true
 
   datasource:
-    url: ${LOCAL_DB_URL}
+    url: jdbc:mysql://localhost:3306/jobshin
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${LOCAL_DB_USER}
-    password: ${LOCAL_DB_PW}
+    username: root
+    password: '0000'
 
   jpa:
     hibernate:
@@ -31,8 +31,3 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
-
-alan:
-  api:
-    default-url: ${ALAN_API_URL}
-    client-id: ${ALAN_CLIENT_ID}
