@@ -3,6 +3,7 @@ package com.est.jobshin.domain.interview.dto;
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewDetailDto;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.user.dto.UserDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -31,18 +32,17 @@ public class InterviewDto implements Serializable {
 
     private UserDto user;
 
-    private List<InterviewDetailDto> interviewDetails = new ArrayList<>();
+    private List<InterviewQuestion> interviewDetails;
 
     public static InterviewDto fromInterview(Interview interview) {
-
-        return InterviewDto.builder()
+        InterviewDto interviewDto = new InterviewDto();
+        interviewDto = InterviewDto.builder()
                 .id(interview.getId())
                 .title(interview.getTitle())
                 .createAt(interview.getCreateAt())
-//                .interviewDetails(interview.getInterviewDetails()
-//                        .stream().map(InterviewDetailDto::fromInterviewDetail)
-//                        .collect(Collectors.toList()))
                 .build();
+        interviewDto.setInterviewDetails(new ArrayList<>());
+        return interviewDto;
     }
 
     public Interview toInterview() {

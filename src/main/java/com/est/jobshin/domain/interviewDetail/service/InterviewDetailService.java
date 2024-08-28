@@ -12,7 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,19 +55,19 @@ public class InterviewDetailService {
     }
 
     @Transactional(readOnly = true)
-    public List<InterviewDetailDto> getInterviewDetailByInterviewId(Long interviewId){
+    public List<InterviewQuestion> getInterviewDetailByInterviewId(Long interviewId){
         return interviewDetailRepository
                 .findByInterviewId(interviewId)
                 .stream()
-                .map(InterviewDetailDto::fromInterviewDetail)
+                .map(InterviewQuestion::fromInterviewDetail)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public InterviewDetailDto getInterviewDetailById(Long interviewDetailId) {
+    public InterviewQuestion getInterviewDetailById(Long interviewDetailId) {
         return interviewDetailRepository
                 .findById(interviewDetailId)
-                .map(InterviewDetailDto::fromInterviewDetail)
+                .map(InterviewQuestion::fromInterviewDetail)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid interview details id: " + interviewDetailId));
     }
 

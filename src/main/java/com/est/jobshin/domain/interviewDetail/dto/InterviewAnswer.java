@@ -14,12 +14,19 @@ import java.time.LocalDateTime;
 @Builder
 public class InterviewAnswer implements Serializable {
     private Long id;
+
     private Long interviewId;
+
     private String question;
+
     private String answer;
+
     private InterviewDetail.Category category;
+
     private InterviewDetail.Mode mode;
+
     private Long score;
+
     private String exampleAnswer;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")

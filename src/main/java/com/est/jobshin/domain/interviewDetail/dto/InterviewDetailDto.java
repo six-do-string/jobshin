@@ -9,9 +9,9 @@ import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Data
-@Builder
-public class InterviewDetailDto implements Serializable {
+//@Data
+//@Builder
+public class InterviewDetailDto {
     private Long id;
     private Long interviewId;
     private String question;
@@ -25,18 +25,18 @@ public class InterviewDetailDto implements Serializable {
     private LocalDateTime createdAt;
 //    private InterviewDto interview;
 
-    public static InterviewDetailDto fromInterviewDetail(InterviewDetail interviewDetail) {
-        InterviewDto interviewDto = InterviewDto.fromInterview(interviewDetail.getInterview());
-        return InterviewDetailDto.builder()
-                .id(interviewDetail.getId())
-                .interviewId(interviewDetail.getInterview().getId())
-                .question(interviewDetail.getQuestion())
-                .answer(interviewDetail.getAnswer())
-                .category(interviewDetail.getCategory())
-                .mode(interviewDetail.getMode())
-                .score(interviewDetail.getScore())
-                .exampleAnswer(interviewDetail.getExampleAnswer())
-                .createdAt(interviewDetail.getCreatedAt())
-                .build();
-    }
+//    public static InterviewDetailDto fromInterviewDetail(InterviewDetail interviewDetail) {
+//        InterviewDto interviewDto = InterviewDto.fromInterview(interviewDetail.getInterview());
+//        return InterviewDetailDto.builder()
+//                .id(interviewDetail.getId())
+//                .interviewId(interviewDetail.getInterview().getId())
+//                .question(interviewDetail.getQuestion())
+//                .answer(interviewDetail.getAnswer())
+//                .category(interviewDetail.getCategory())
+//                .mode(interviewDetail.getMode())
+//                .score(interviewDetail.getScore())
+//                .exampleAnswer(interviewDetail.getExampleAnswer())
+//                .createdAt(interviewDetail.getCreatedAt())
+//                .build();
+//    }
 }
