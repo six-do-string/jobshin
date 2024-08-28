@@ -24,20 +24,21 @@ public class UserResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long id;
-    private String email;
-    private String password;
     private String username;
+    private String password;
+    private String nickname;
+
 
     private Language language;
-    private Level level = Level.LV2;
+    private Level level;
     private Position position;
 
     public static UserResponse toDto(User user) {
         return UserResponse.builder()
                 .id(user.getId())
-                .email(user.getEmail())
-                .password(user.getPassword())
                 .username(user.getUsername())
+                .password(user.getPassword())
+                .nickname(user.getNickname())
                 .language(user.getLanguage())
                 .level(user.getLevel())
                 .position(user.getPosition())
