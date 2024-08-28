@@ -1,5 +1,6 @@
 package com.est.jobshin.infra.alan;
 
+import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.util.Language;
@@ -25,12 +26,23 @@ public class AlanService {
 	private String clientId;
 
 	public String callAlan() {
-		return callApi(defaultUrl, clientId, "test");
+		return callApi(defaultUrl, clientId);
 	}
 
 
-	private String callApi(String apiUrl, String clientId, String level) {
-		String content = String.format(PromptMessage.QUESTION_PROMPT, level);
+//	private String callApi(String apiUrl, String clientId, String level) {
+//		String content = String.format(PromptMessage.QUESTION_PROMPT, level);
+//		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
+//		log.info("Calling API: {}", requestUrl);
+//		String response = restTemplate.getForObject(requestUrl, String.class);
+//		log.info("API response received");
+//		log.info("Response: {}", response);
+//		return response;
+//	}
+
+	private String callApi(String apiUrl, String clientId) {
+		String message = PromptMessage.QUESTION_PROMPT + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + "LV1" + "사용 언어: JAVA";
+		String content = String.format(message);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
 		log.info("Calling API: {}", requestUrl);
 		String response = restTemplate.getForObject(requestUrl, String.class);
@@ -40,12 +52,13 @@ public class AlanService {
 	}
 
 	// 실전 모드 문제
-	private String callApiRealMode(String apiUrl, String clientId, String level, User user) {
-		String setUpMessage = user.getId() + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + user.getLevel() + "사용 언어: " + user.getLanguage();
+	private String callApiRealMode(String apiUrl, String clientId, Interview interview) {
+		String setUpMessage
+				= "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + interview.getUser().getLevel() + "사용 언어: " + interview.getUser().getLanguage();
 
 		String questionMessage = PromptMessage.QUESTION_PROMPT + setUpMessage;
 
-		String content = String.format(questionMessage, level);
+		String content = String.format(questionMessage);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
 		log.info("Calling API: {}", requestUrl);
 		String response = restTemplate.getForObject(requestUrl, String.class);
@@ -55,23 +68,29 @@ public class AlanService {
 	}
 
 	// 연습 모드 문제
-	private String callApiPracticeMode(String apiUrl, String ClientId, String level, User user){
-		String setUpMessage = user.getId() + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + user.getLevel() + "사용언어: " + user.getLanguage();
+	private String callApiPracticeMode(String apiUrl, String ClientId, User user, InterviewDetail interviewDetail){
+		String setUpMessage = user.getId() + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + user.getLevel() + "사용언어: " + user.getLanguage() + "선택한 카테고리: " + interviewDetail.getCategory();
 
-		String questionMessage = "";
+		String questionMessage = "3가지 카테고리(CS(컴퓨터 과학 기초), 프로그래밍 언어 및 도구, 알고리즘) 중 선택한 카테고리 내에서만"
+				+ PromptMessage.QUESTION_PROMPT + setUpMessage;
 
-//		if (InterviewDetail.Category.CS) {
-//			questionMessage =
-//					PromptMessage.QUESTION_PRACTICE_CS_PROMPT + setUpMessage;
-//		} else if(InterviewDetail.Category.LANGUAGE){
-//			questionMessage =
-//					PromptMessage.QUESTION_PRACTICE_LANGUAGE_PROMPT + setUpMessage;
-//		} else if(InterviewDetail.Category.ALGORITHM) {
-//			questionMessage =
-//					PromptMessage.QUESTION_PRACTICE_ALGORITHM_PROMPT + setUpMessage;
-//		}
+		String content = String.format(questionMessage);
+		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
+		log.info("Calling API: {}", requestUrl);
 
-		String content = String.format(questionMessage, level);
+		String response = restTemplate.getForObject(requestUrl, String.class);
+		log.info("API response received");
+		log.info("Response: {}", response);
+
+		return response;
+	}
+
+	// 모법 답안, 피드백
+	private String callApiAnswer(String apiUrl, String ClientId, User user, InterviewDetail interviewDetail) {
+
+		String message = PromptMessage.ANSWER_PROMPT + PromptMessage.FEEDBACK_PROMPT;
+
+		String content = String.format(message);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
 		log.info("Calling API: {}", requestUrl);
 
