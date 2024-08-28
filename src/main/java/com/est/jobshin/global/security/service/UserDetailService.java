@@ -1,7 +1,7 @@
 package com.est.jobshin.global.security.service;
 
 import com.est.jobshin.domain.user.domain.User;
-import com.est.jobshin.domain.user.dto.response.UserResponse;
+import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
 import com.est.jobshin.global.security.model.CustomUserDetails;
 import java.util.List;

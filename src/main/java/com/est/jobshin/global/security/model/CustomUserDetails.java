@@ -1,6 +1,6 @@
 package com.est.jobshin.global.security.model;
 
-import com.est.jobshin.domain.user.dto.response.UserResponse;
+import com.est.jobshin.domain.user.dto.UserResponse;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

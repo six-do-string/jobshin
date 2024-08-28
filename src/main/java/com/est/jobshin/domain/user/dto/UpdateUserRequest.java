@@ -1,6 +1,5 @@
-package com.est.jobshin.domain.user.dto.request;
+package com.est.jobshin.domain.user.dto;
 
-import com.est.jobshin.domain.user.dto.response.UserResponse;
 import com.est.jobshin.domain.user.util.Language;
 import com.est.jobshin.domain.user.util.Position;
 import jakarta.validation.constraints.NotBlank;

@@ -1,8 +1,8 @@
 package com.est.jobshin.domain.user.controller;
 
-import com.est.jobshin.domain.user.dto.request.CreateUserRequest;
-import com.est.jobshin.domain.user.dto.request.UpdateUserRequest;
-import com.est.jobshin.domain.user.dto.response.UserResponse;
+import com.est.jobshin.domain.user.dto.CreateUserRequest;
+import com.est.jobshin.domain.user.dto.UpdateUserRequest;
+import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.service.UserService;
 import com.est.jobshin.global.security.model.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;

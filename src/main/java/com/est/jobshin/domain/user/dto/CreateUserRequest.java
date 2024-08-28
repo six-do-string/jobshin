@@ -1,4 +1,4 @@
-package com.est.jobshin.domain.user.dto.request;
+package com.est.jobshin.domain.user.dto;
 
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.util.Language;

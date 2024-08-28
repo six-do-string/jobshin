@@ -1,9 +1,9 @@
 package com.est.jobshin.domain.user.service;
 
 import com.est.jobshin.domain.user.domain.User;
-import com.est.jobshin.domain.user.dto.request.CreateUserRequest;
-import com.est.jobshin.domain.user.dto.request.UpdateUserRequest;
-import com.est.jobshin.domain.user.dto.response.UserResponse;
+import com.est.jobshin.domain.user.dto.CreateUserRequest;
+import com.est.jobshin.domain.user.dto.UpdateUserRequest;
+import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
 
 import java.util.Optional;
