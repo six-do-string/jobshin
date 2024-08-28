@@ -44,3 +44,26 @@ jobs:
       run: docker push ${{ secrets.DOCKER_HUB_ID }}/${{ secrets.DOCKER_HUB_REPO }}:latest
 
 
+    - name: Test EC2 SSH Connection
+      env:
+        SSH_KEY: ${{ secrets.SSH_EC2_KEY }}
+        SSH_USER: ${{ secrets.SSH_EC2_USER }}
+        SSH_HOST: ${{ secrets.SSH_EC2_HOST }}
+      run: |
+        echo "$SSH_KEY" > jobshin-key.pem
+        chmod 400 jobshin-key.pem
+        
+        ssh -i "jobshin-key.pem" -o StrictHostKeyChecking=no ${{secrets.SSH_EC2_USER}}@${{secrets.SSH_EC2_HOST}} << EOF
+        echo "hello world"
+        EOF
+
+    - name: Deploy to EC2
+      run: |  
+        ssh -i "jobshin-key.pem" -o StrictHostKeyChecking=no ${{secrets.SSH_EC2_USER}}@${{secrets.SSH_EC2_HOST}} << EOF
+          docker login -u ${{ secrets.DOCKER_HUB_ID }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+          docker pull ${{ secrets.DOCKER_HUB_ID }}/${{ secrets.DOCKER_HUB_REPO }}:latest
+          docker stop app
+          docker rm app
+          docker run -d --name app -p 8080:8080 ${{ secrets.DOCKER_HUB_ID }}/${{ secrets.DOCKER_HUB_REPO }}:latest
+        EOF
+
