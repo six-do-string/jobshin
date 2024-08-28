@@ -32,7 +32,7 @@ public class InterviewDetail {
     @Column(nullable = false)
     private Long id;
 
-    @Column
+    @Column(length = 1000)
     private String question;
 
     @Column

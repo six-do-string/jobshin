@@ -11,33 +11,25 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/** DTO for {@link com.est.jobshin.domain.interviewDetail.domain.InterviewDetail} */
+///** DTO for {@link com.est.jobshin.domain.interviewDetail.domain.InterviewDetail} */
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class InterviewQuestion {
+public class InterviewQuestion implements Serializable {
+
     private Long id;
+
     private Long interviewId;
+
     private String question;
+
     private String answer;
+
     private InterviewDetail.Category category;
+
     private InterviewDetail.Mode mode;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
-    private InterviewDto interview;
-
-    public InterviewDetail toInterviewDetail() {
-        return InterviewDetail.builder()
-                .id(id)
-                .question(question)
-                .answer(answer)
-                .category(category)
-                .mode(mode)
-                .createdAt(createdAt)
-                .build();
-    }
 
     public static InterviewQuestion fromInterviewDetail(InterviewDetail interviewDetail) {
         return InterviewQuestion.builder()
@@ -49,5 +41,15 @@ public class InterviewQuestion {
                 .mode(interviewDetail.getMode())
                 .createdAt(interviewDetail.getCreatedAt())
                 .build();
+    }
+
+    public InterviewDetail toInterviewDetail() {
+        InterviewDetail interviewDetail = new InterviewDetail();
+        interviewDetail.setId(id);
+        interviewDetail.setCategory(category);
+        interviewDetail.setMode(mode);
+        interviewDetail.setCreatedAt(createdAt);
+        interviewDetail.setQuestion(question);
+        return interviewDetail;
     }
 }
