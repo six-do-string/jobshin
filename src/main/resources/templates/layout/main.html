@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JOB SHIN - 모의 기술 면접 서비스</title>
   <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
-<div class="container">
-  <div th:replace="~{layout/header.html :: header}"></div>
+<div th:replace="~{layout/header.html :: header}"></div>
+<main>
 
-  <section class="hero">
+  <section class="hero information">
     <h1 th:text="'모의 기술 면접 서비스, ' + ${siteName}">모의 기술 면접 서비스, JOB SHIN</h1>
     <p th:text="${heroMessage}">AI가 질문을 하고 피드백까지 제공하는 모의면접을 체험하라!</p>
     <a href="#" class="btn" th:href="@{/get-started}">Get started</a>
@@ -21,15 +23,16 @@
     <p th:text="${featureDescription1}">JOB SHIN은 '챗봇'이라는 AI 챗봇을 기반으로 한 모의 기술 면접 서비스입니다...</p>
   </section>
 
-  <section class="feature">
+  <section class="feature mode">
     <h2>효율적인 대비를 위한 실전 모드, 연습 모드 지원</h2>
     <div class="feature-content">
       <div class="feature-item">
         <img th:src="@{/images/practice-mode.jpg}" alt="실전 모드">
         <h3>실전 모드</h3>
-        <p th:text="${practiceModeDescription}">면접 전 긴장감을 높이고 싶다면? 실전 문제 풀이로 실제와 유사한 면접 환경을 체험해보세요...</p>
+        <p th:text="${practiceModeDescription}">면접 전 긴장감을 높이고 싶다면? 실전 문제 풀이로 실제와 유사한 면접 환경을
+          체험해보세요...</p>
       </div>
-      <div class="feature-item">
+      <div class="feature-item ">
         <img th:src="@{/images/real-mode.jpg}" alt="연습 모드">
         <h3>연습 모드</h3>
         <p th:text="${realModeDescription}">면접 전 충분한 연습이 필요하다면? 연습 모드로 여유롭게 준비하세요...</p>
@@ -37,16 +40,20 @@
     </div>
   </section>
 
-  <section class="feature">
-    <h2>AI가 직접 제시하는 답변 피드백</h2>
-    <p th:text="${feedbackDescription}">JOB SHIN은 면접이 종료된 후, 여러분들로부터 받은 답변 피드백을 면접 유형별, 문항별로 제공합니다...</p>
+  <section class="feature feedback">
+    <div>
+      <h2>AI가 직접 제시하는 답변 피드백</h2>
+      <p th:text="${feedbackDescription}">JOB SHIN은 면접이 종료된 후, 여러분들로부터 받은 답변 피드백을 면접 유형별, 문항별로
+        제공합니다...</p>
+    </div>
     <img th:src="@{/images/feedback-screen.jpg}" alt="AI 피드백 화면">
   </section>
 
   <section class="cta">
-    <h2 th:utext="'JOB SHIN과 함께<br>면접도 JOB고, 취업도 JOB고 싶다면?'">JOB SHIN과 함께<br>면접도 JOB고, 취업도 JOB고 싶다면?</h2>
+    <h2 th:utext="'JOB SHIN과 함께<br>면접도 JOB고, 취업도 JOB고 싶다면?'">JOB SHIN과 함께<br>면접도 JOB고, 취업도 JOB고 싶다면?
+    </h2>
     <a href="#" class="btn" th:href="@{/interview}">지금 바로 면접 보기</a>
   </section>
-</div>
+</main>
 </body>
 </html>
