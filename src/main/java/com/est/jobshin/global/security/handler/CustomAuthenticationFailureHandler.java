@@ -29,8 +29,8 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 		String requestURI = request.getRequestURI();
 
 		// 로그인 페이지로 리다이렉트하며, 에러 메시지를 전달합니다.
-		if (requestURI.contains("/view/login")) {
-			getRedirectStrategy().sendRedirect(request, response, "/view/login?error=" + encodedErrorMessage);
+		if (requestURI.contains("/views/users/login")) {
+			getRedirectStrategy().sendRedirect(request, response, "/views/users/login?error=" + encodedErrorMessage);
 		}
 	}
 }
