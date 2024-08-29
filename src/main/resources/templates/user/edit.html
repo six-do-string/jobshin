@@ -10,7 +10,7 @@
 <body>
 <div class="container">
   <h1>회원정보 수정</h1>
-  <form th:action="@{/user/edit}" method="post" th:object="${updateUserRequest}">
+  <form th:action="@{/api/users/edit}" method="post" th:object="${updateUserRequest}">
     <input type="hidden" name="_method" value="put"/> <!-- PUT 요청을 위한 hidden 필드 -->
 
     <!-- 사용자명 필드 -->
