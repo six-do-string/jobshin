@@ -28,6 +28,6 @@ public class LevelFeedback {
     private String content;
 
     @Column(name = "rating")
-    private int rating;
+    private Long rating;
 
 }

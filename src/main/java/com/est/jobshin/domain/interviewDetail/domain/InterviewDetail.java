@@ -5,6 +5,7 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -51,7 +52,7 @@ public class InterviewDetail {
 
     private LocalDateTime createdAt;
 
-//    @JsonBackReference
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_id")
     private Interview interview;
