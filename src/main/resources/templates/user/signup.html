@@ -4,11 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>회원가입</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/user.css">
   <style>
-    .container {
-      max-width: 560px;
-    }
     .field-error {
       border-color: #dc3545;
       color: #dc3545;
@@ -16,35 +14,42 @@
   </style>
 </head>
 <body>
+<div th:replace="~{layout/header.html :: header}"></div>
 <div class="container">
-  <div class="py-5 text-center">
-    <h2>회원가입</h2>
-  </div>
-
-  <!-- 에러 메시지 표시 -->
-  <div id="error-message" class="alert alert-danger" role="alert" style="display: none;">
-    <p id="error-text"></p>
-  </div>
 
   <!-- 회원가입 폼 -->
   <form th:action="@{/view/signup}" method="post" id="signup-form">
+    <div class="py-5 text-center">
+      <h2>회원가입</h2>
+    </div>
+
+    <!-- 에러 메시지 표시 -->
+    <div id="error-message" class="alert alert-danger" role="alert" style="display: none;">
+      <p id="error-text"></p>
+    </div>
+
     <div class="form-group">
       <label for="username">이메일</label>
-      <input type="email" id="username" name="username" class="form-control" placeholder="이메일을 입력해주세요" required>
+      <input type="email" id="username" name="username" class="form-control"
+             placeholder="이메일을 입력해주세요" required>
       <div class="field-error" th:errors="*{createUserRequest.username}">
       </div>
     </div>
 
     <div class="form-group">
       <label for="password">비밀번호</label>
-      <input type="password" id="password" name="password" class="form-control" placeholder="비밀번호를 입력해주세요" required>
+      <input type="password" id="password" name="password" class="form-control"
+             placeholder="비밀번호를 입력해주세요" required>
       <div class="field-error" th:errors="*{createUserRequest.password}">
+      </div>
     </div>
 
     <div class="form-group">
       <label for="username">이름</label>
-      <input type="text" id="nickname" name="nickname" class="form-control" placeholder="이름을 입력해주세요" required>
+      <input type="text" id="nickname" name="nickname" class="form-control" placeholder="이름을 입력해주세요"
+             required>
       <div class="field-error" th:errors="*{createUserRequest.nickname}">
+      </div>
     </div>
 
     <div class="form-group">
@@ -69,10 +74,6 @@
 
     <button type="submit" class="btn btn-primary btn-lg btn-block">회원가입</button>
   </form>
-
-  <div class="text-center mt-3">
-    <a th:href="@{/view/login}">로그인 페이지로 돌아가기</a>
-  </div>
 </div>
 </body>
 </html>
