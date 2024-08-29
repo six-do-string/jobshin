@@ -5,7 +5,6 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -52,7 +51,6 @@ public class InterviewDetail {
 
     private LocalDateTime createdAt;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_id")
     private Interview interview;
@@ -61,11 +59,19 @@ public class InterviewDetail {
         this.question = question;
         this.category = category;
         this.mode = mode;
-        this.exampleAnswer = exampleAnswer;
         this.createdAt = createdAt;
     }
 
     public static InterviewDetail createInterviewDetail(String question, Category category, Mode mode, LocalDateTime createdAt) {
         return new InterviewDetail(question, category, mode, createdAt);
+    }
+
+    public void registerAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public void registerFeedback(String exampleAnswer, Long score) {
+        this.exampleAnswer = exampleAnswer;
+        this.score = score;
     }
 }
