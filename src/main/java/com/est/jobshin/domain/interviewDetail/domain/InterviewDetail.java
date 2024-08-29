@@ -65,4 +65,12 @@ public class InterviewDetail {
     public static InterviewDetail createInterviewDetail(String question, Category category, Mode mode, LocalDateTime createdAt) {
         return new InterviewDetail(question, category, mode, createdAt);
     }
+
+    private InterviewDetail(String answer) {
+        this.answer = answer;
+    }
+
+    public void registerAnswer(String answer) {
+        this.answer = answer;
+    }
 }
