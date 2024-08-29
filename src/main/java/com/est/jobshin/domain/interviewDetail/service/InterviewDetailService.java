@@ -5,6 +5,7 @@ import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewDetailDto;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.infra.alan.AlanService;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -59,6 +61,20 @@ public class InterviewDetailService {
             InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
             interview.addInterviewDetails(savedInterviewDetail);
         }
+    }
+
+    @Transactional
+    public void getAnswerByUser(InterviewQuestion2 interviewQuestion2) {
+        InterviewDetail interviewDetail = interviewDetailRepository.findById(interviewQuestion2.getId())
+                .orElseThrow(RuntimeException::new);
+
+        interviewDetail.registerAnswer(interviewQuestion2.getAnswer());
+
+        //엘런 서비스로 interviewQuestion2.getAnswer() 을 보내고
+
+        //앨런에게 해당 답에 대한 평가와 예시답안을 받아와서
+
+        //db에 저장
     }
 
     @Transactional(readOnly = true)

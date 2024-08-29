@@ -5,6 +5,7 @@ import com.est.jobshin.domain.interview.dto.InterviewDto;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.UserResponse;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -54,18 +56,29 @@ public class InterviewService {
         return createdInterview;
     }
 
-    public String getNextQuestion2(HttpSession session) {
+    @Transactional
+    public InterviewQuestion2 processAnswerAndGetNextQuestion(HttpSession session) {
+        InterviewQuestion2 nextQuestion = getNextQuestion2(session);
+
+        CompletableFuture.runAsync(() -> {
+            //interviewDetailService 에서 getAnswerByUser 메서드 비동기 실행
+        });
+
+        return nextQuestion;
+    }
+
+    public InterviewQuestion2 getNextQuestion2(HttpSession session) {
         List<InterviewDetail> questions = (List<InterviewDetail>) session.getAttribute("questions");
         Integer currentIndex = (Integer) session.getAttribute("currentIndex");
 
         if (questions == null || currentIndex == null || currentIndex >= questions.size()) {
-            return "No more questions";
+            return null;
         }
 
         InterviewDetail question = questions.get(currentIndex);
         session.setAttribute("currentIndex", currentIndex + 1);
 
-        return question.getQuestion();
+        return InterviewQuestion2.from(question);
     }
 
     public void deleteInterviewsById(Long id) {
