@@ -30,7 +30,6 @@ import java.util.NoSuchElementException;
 public class InterviewService {
     private final InterviewRepository interviewRepository;
     private final InterviewDetailService interviewDetailService;
-//    private Iterator<InterviewDetail> interviewDetailIterator;
 
     @Transactional
     public InterviewDto getInterviewById(Long id) {
@@ -49,13 +48,6 @@ public class InterviewService {
 
         interviewDetailService.createInterviewDetail(interview);
 
-//        interviewDetailIterator = interview.getInterviewDetails().iterator();
-
-        //메시지큐에 넣기
-//        for(InterviewDetail interviewDetail : interview.getInterviewDetails()) {
-//            messageQueueService.enqueueQuestion(interviewDetail.getId(), interviewDetail.getQuestion());
-//        }
-//        System.out.println();
         session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
         session.setAttribute("currentIndex", 0);
 
@@ -79,16 +71,6 @@ public class InterviewService {
     public void deleteInterviewsById(Long id) {
         interviewRepository.deleteById(id);
     }
-
-//    private String getAlanData() {
-//        String questionData = alanService.callAlan();
-//
-//        if (questionData.length() > 255) {
-//            questionData = questionData.substring(0, 255);
-//        }
-//
-//        return questionData;
-//    }
 
 //    private User getCurrentUser() {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

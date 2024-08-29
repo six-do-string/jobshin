@@ -38,10 +38,6 @@ public class InterviewDetailService {
         //1. 카테고리
         String questionData = alenService.callAlan();
 
-//        if (questionData.length() > 255) {
-//            questionData = questionData.substring(0, 255);
-//        }
-
         //데이터 처리
         ArrayList<String> questionList = new ArrayList<>();
 
@@ -52,17 +48,6 @@ public class InterviewDetailService {
         while (matcher.find()) {
             questionList.add(matcher.group(1));
         }
-
-        //임시데이터
-//        questionList.add("질문");
-//        questionList.add("질문");
-//        questionList.add("질문");
-//        questionList.add("질문");
-//        questionList.add("질문");
-
-        //위 과정으로 나온 데이터는 질문 리스트 5개
-        //category 랑 맵핑해서 db에 저장
-        //interview 랑 연결
 
         for(int i = 0; i < 5; i++){
             InterviewDetail interviewDetail = InterviewDetail.createInterviewDetail(

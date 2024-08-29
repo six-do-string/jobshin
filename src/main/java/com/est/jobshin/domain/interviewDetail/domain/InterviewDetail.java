@@ -51,7 +51,6 @@ public class InterviewDetail {
 
     private LocalDateTime createdAt;
 
-//    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_id")
     private Interview interview;
@@ -60,7 +59,6 @@ public class InterviewDetail {
         this.question = question;
         this.category = category;
         this.mode = mode;
-        this.exampleAnswer = exampleAnswer;
         this.createdAt = createdAt;
     }
 

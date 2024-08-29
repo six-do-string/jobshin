@@ -23,20 +23,20 @@ public class InterviewController {
 
         return result;
     }
-//    세션 테스트용 임시 주석처리
-//    @PostMapping
-//    public ResponseEntity<InterviewDto> createInterview(@RequestBody InterviewDto interviewDto, HttpSession session) {
-//        Interview interview = interviewService.createInterview(interviewDto, session);
-//        return ResponseEntity.ok(InterviewDto.fromInterview(interview));
-//    }
 
-    //세션 테스트용
-    @GetMapping
-    public ResponseEntity<InterviewDto> createInterview(HttpSession session) {
-        InterviewDto interviewDto = new InterviewDto();
+    @PostMapping
+    public ResponseEntity<InterviewDto> createInterview(@RequestBody InterviewDto interviewDto, HttpSession session) {
         Interview interview = interviewService.createInterview(interviewDto, session);
         return ResponseEntity.ok(InterviewDto.fromInterview(interview));
     }
+
+    //세션 테스트용
+//    @GetMapping
+//    public ResponseEntity<InterviewDto> createInterview(HttpSession session) {
+//        InterviewDto interviewDto = new InterviewDto();
+//        Interview interview = interviewService.createInterview(interviewDto, session);
+//        return ResponseEntity.ok(InterviewDto.fromInterview(interview));
+//    }
 
     @GetMapping("/next")
     public ResponseEntity<String> next(HttpSession session) {
@@ -44,15 +44,9 @@ public class InterviewController {
         return ResponseEntity.ok(question);
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<InterviewsDto>> getAllInterviews() {
-//        return ResponseEntity.ok(INTERVIEWS_SERVICE.getAllInterviews());
-//    }
-
     @GetMapping("/{interviewId}")
     public ResponseEntity<InterviewDto> getInterviewById(@PathVariable("interviewId") Long interviewId) {
         return ResponseEntity.ok(interviewService.getInterviewById(interviewId));
-//                .orElseThrow(() -> new IllegalArgumentException("해당 id는 없는 id 입니다.")));
     }
 
     @DeleteMapping("/{interviewId}")
