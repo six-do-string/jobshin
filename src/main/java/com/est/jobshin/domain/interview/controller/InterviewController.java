@@ -40,9 +40,15 @@ public class InterviewController {
 //    }
 
     @GetMapping("/next")
-    public ResponseEntity<String> next(HttpSession session) {
+    public ResponseEntity<InterviewQuestion2> next(HttpSession session) {
         InterviewQuestion2 question = interviewService.getNextQuestion2(session);
-        return ResponseEntity.ok(question.getQuestion());
+        return ResponseEntity.ok(question);
+    }
+
+    @PostMapping("/next")
+    public ResponseEntity<InterviewQuestion2> next2(@RequestBody InterviewQuestion2 interviewQuestion2, HttpSession session) {
+        InterviewQuestion2 question = interviewService.processAnswerAndGetNextQuestion(session, interviewQuestion2);
+        return ResponseEntity.ok(question);
     }
 
     @GetMapping("/{interviewId}")

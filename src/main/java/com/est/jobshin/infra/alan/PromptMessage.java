@@ -13,7 +13,7 @@ public class PromptMessage {
 
 //	public static final String ANSWER_PROMPT = "너가 냈던 기술면접 질문 5개에 대한 모범 답안만 알려줘";
 
-	public static final String ANSWER_PROMPT = " 라는 질문에 대한 답변이야. 이 답변에 대한 너의 점수를 0~100점으로 평가하고, 예시 답변을 보여줘. 형식은 [점수][예시답변] 이외의 다른 텍스트는 삭제";
+	public static final String ANSWER_PROMPT = " 라는 질문에 대한 답변이야. 이 답변에 대한 너의 점수를 0~100점으로 평가하고, 예시 답변을 보여줘. 형식은 [점수][예시답변] 이외의 다른 텍스트는 필요없어";
 
 	public static final String FEEDBACK_PROMPT = "사용자로부터 받은 답변을 보고 면접관의 입장에서 점수를 100점 만점에 숫자로만 반환해주고 짧은 피드백 출력해줘. 점수는 맨 위에, 피드백은 밑 줄부터 나오도록하고 다른 문장은 출력하지마.";
 	public static final String SCORE_PROMPT = "사용자로부터 받은 답변을 보고 면접관의 입장에서 100점 만점으로 점수를 매겨줘. 숫자로만 반환해";

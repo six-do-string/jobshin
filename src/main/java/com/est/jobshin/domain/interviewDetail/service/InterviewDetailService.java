@@ -68,10 +68,21 @@ public class InterviewDetailService {
         interviewDetail.registerAnswer(interviewQuestion2.getAnswer());
 
         //엘런 서비스로 interviewQuestion2.getAnswer() 을 보내고
-
         //앨런에게 해당 답에 대한 평가와 예시답안을 받아와서
+        String feedback = alenService.callAnswer(interviewQuestion2.getAnswer());
+
+        ArrayList<String> feedbackList = new ArrayList<>();
+
+        String regex = "\\[(.*?)\\]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(feedback);
+
+        while (matcher.find()) {
+            feedbackList.add(matcher.group(1));
+        }
 
         //db에 저장
+        interviewDetail.registerFeedback(feedbackList.get(1), Long.parseLong(feedbackList.get(0)));
     }
 
     @Transactional(readOnly = true)

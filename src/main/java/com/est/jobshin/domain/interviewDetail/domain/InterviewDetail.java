@@ -69,4 +69,9 @@ public class InterviewDetail {
     public void registerAnswer(String answer) {
         this.answer = answer;
     }
+
+    public void registerFeedback(String exampleAnswer, Long score) {
+        this.exampleAnswer = exampleAnswer;
+        this.score = score;
+    }
 }

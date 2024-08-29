@@ -43,8 +43,8 @@ public class AlanService {
 //		return callApiFeedback(defaultUrl, clientId, user, interviewDetail);
 //	}
 
-	public String callAnswer() {
-		return callApiAnswer(defaultUrl, clientId);
+	public String callAnswer(String input) {
+		return callApiAnswer(defaultUrl, clientId, input);
 	}
 
 	public String callAlan() {
@@ -122,9 +122,9 @@ public class AlanService {
 //	}
 
 	// 모범답안
-	private String callApiAnswer(String apiUrl, String ClientId) {
-
-		String content = String.format(PromptMessage.ANSWER_PROMPT);
+	private String callApiAnswer(String apiUrl, String ClientId, String input) {
+		String message = input + PromptMessage.ANSWER_PROMPT;
+		String content = String.format(message);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
 		log.info("Calling API: {}", requestUrl);
 

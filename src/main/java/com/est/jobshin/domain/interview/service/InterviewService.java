@@ -62,6 +62,7 @@ public class InterviewService {
 
         CompletableFuture.runAsync(() -> {
             //interviewDetailService 에서 getAnswerByUser 메서드 비동기 실행
+            interviewDetailService.getAnswerByUser(interviewQuestion2);
         });
 
         return nextQuestion;
