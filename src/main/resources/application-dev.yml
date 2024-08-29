@@ -18,7 +18,7 @@ spring:
         enabled: true
 
   datasource:
-    url: jdbc:mysql://jobshin-rds.cjamy8sw6127.ap-northeast-2.rds.amazonaws.com:3306/jobshin_db
+    url: jdbc:mysql://jobshin-rds-db.cjamy8sw6127.ap-northeast-2.rds.amazonaws.com:3306/jobshin_db
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: admin
     password: 1q2w3e4r
