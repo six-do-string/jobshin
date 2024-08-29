@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모의 면접</title>
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/interviewQuestion.css">
+</head>
+<body>
+<div th:replace="~{layout/header.html :: header}"></div>
+<main class="mainBody">
+    <div class="mainCont">
+        <h1>모의 면접 - 연습 모드</h1>
+        <hr>
+        <section class="questionCont">
+            <a class="goToBack" th:href="">< 뒤로</a>
+            <div class="question">
+                <h2>Q1</h2>
+                <p class="content">ArrayList와 LinkedList의 차이점에 대해 말해주세요.</p>
+            </div>
+            <form class="answerBox">
+                <label for="answer" style="display: none"></label>
+                <textarea id="answer" name="answer" onkeyup="resize(this)" onkeydown="resize(this)" placeholder="답변을 입력하세요"></textarea>
+                <button id="submitBtn"><img class="sendLogoImg" src="/static/img/Send.png" alt="전송 버튼"></button>
+            </form>
+        </section>
+    </div>
+</main>
+</body>
+<!--<script>-->
+<!--    function resize(answer) {-->
+<!--        if (answer.style.height === "0px" || answer.scrollHeight === 0) {-->
+<!--            answer.style.height = "127px";-->
+<!--        } else {-->
+<!--            answer.style.height = 'auto';-->
+<!--            answer.style.height = answer.style.scrollHeight + 'px';-->
+<!--        }-->
+<!--    }-->
+<!--    $("#answer").val("텍스트 간소화..").trigger("keyup");-->
+<!--</script>-->
+</html>
