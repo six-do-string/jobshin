@@ -3,19 +3,18 @@ package com.est.jobshin.domain.interview.service;
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
-import com.est.jobshin.domain.interviewDetail.dto.InterviewAnswer;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.levelfeedback.domain.LevelFeedback;
 import com.est.jobshin.domain.levelfeedback.service.LevelFeedbackService;
-import com.est.jobshin.domain.user.domain.User;
-import com.est.jobshin.domain.user.util.Level;
 import com.est.jobshin.infra.alan.AlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -26,57 +25,60 @@ public class InterviewResultService {
     private final InterviewRepository interviewRepository;
     private final InterviewDetailService interviewDetailService;
     private final LevelFeedbackService levelFeedbackService;
+    private final InterviewService interviewService;
 
-    public InterviewAnswer createInterviewAnswer(
-            InterviewAnswer interviewAnswer, Long interviewId, Long interviewDetailId) {
-
-        Interview interview =
-                interviewRepository
-                        .findById(interviewId)
-                        .orElseThrow(() -> new IllegalArgumentException("Interview not found"));
-
-        List<InterviewDetail> questions = interview.getInterviewDetails();
-
-        String feedbackData = alenService.callFeedback();
-        Long score = Long.parseLong(feedbackData.split("\n")[0]);
-
-        String exampleAnswer = alenService.callAnswer();
-
-//        interviewAnswer.setExampleAnswer(exampleAnswer);
-//        interviewAnswer.setScore(score);
-
+    // 사용자 답변 저장
+    public void saveAnswer(Long interviewDetailId, String userAnswer) {
         InterviewDetail interviewDetail =
-                interviewDetailService
-                        .getInterviewDetailById(interviewDetailId)
-                        .toInterviewDetail();
-        interviewDetail.setExampleAnswer(exampleAnswer);
-        interviewDetail.setScore(score);
-
-        InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
-
-        return InterviewAnswer.fromInterviewDetail(savedInterviewDetail);
+                interviewDetailRepository
+                        .findById(interviewDetailId)
+                        .orElseThrow(() -> new IllegalArgumentException("Not Found InterviewDetail"));
+        if (interviewDetail.getQuestion() != null) {
+            interviewDetail.setAnswer(userAnswer);
+        }
+        interviewDetailRepository.save(interviewDetail);
     }
 
-    private Long getFeedbackScore (Long feedbackId) {
+    // 평가 점수
+    private Long getRating (Long feedbackId) {
         LevelFeedback feedback = levelFeedbackService.getFeedbackById(feedbackId)
                 .orElseThrow(() -> new IllegalArgumentException("Not Found FeedbackId"));
         return feedback.getRating();
     }
 
-    public void updateUserLevel(User user, Long feedbackId, InterviewDetail interviewDetail){
-        Long score = interviewDetail.getScore();
-        Long result = (getFeedbackScore(feedbackId) + score) / 2;
+    @Transactional
+    public void createExampleAnswer(Interview interview, Long interviewDetailId, String userAnswer) {
+        InterviewDetail interviewDetail =
+                interviewDetailRepository
+                        .findById(interviewDetailId)
+                        .orElseThrow(() -> new IllegalArgumentException("Not Found InterviewDetail"));
 
-        Enum<Level> level = user.getLevel();
+        saveAnswer(interviewDetailId, userAnswer);
 
-        if (result < 40) {
-            level = Level.LV1;
+        //1. 예시 답변 데이터
+        String exampleAnswer = alenService.callAnswer();
 
-        } else if(result < 60) {
-            level = Level.LV2;
+        if (interviewDetail.getAnswer() != null) {
+            interviewDetail.setExampleAnswer(exampleAnswer);
+        }
 
-        } else {
-            level = Level.LV3;
+        //데이터 처리
+        ArrayList<String> answerExampleList = new ArrayList<>();
+
+        String regex = "\\[(.*?)\\]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(exampleAnswer);
+
+        while (matcher.find()) {
+            answerExampleList.add(matcher.group(1));
+        }
+
+        for(int i = 0; i < 5; i++){
+            interviewDetail.setExampleAnswer(answerExampleList.get(i));
+            InterviewDetail savedInterviewDetail = interviewDetailRepository.save(interviewDetail);
+            interview.addInterviewDetails(savedInterviewDetail);
         }
     }
+
+
 }

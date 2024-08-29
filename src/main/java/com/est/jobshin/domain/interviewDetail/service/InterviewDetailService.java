@@ -37,10 +37,8 @@ public class InterviewDetailService {
         //callAlan 에 추가해야 할 파라미터
         //1. 카테고리
         String questionData = alenService.callAlan();
-
-//        if (questionData.length() > 255) {
-//            questionData = questionData.substring(0, 255);
-//        }
+//        String questionData = alenService.callRealMode();
+//        String questionData = alenService.callPracticeMode();
 
         //데이터 처리
         ArrayList<String> questionList = new ArrayList<>();

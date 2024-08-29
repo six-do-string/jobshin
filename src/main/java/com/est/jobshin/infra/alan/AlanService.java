@@ -47,6 +47,10 @@ public class AlanService {
 		return callApiAnswer(defaultUrl, clientId, user, interviewDetail);
 	}
 
+	public String callAlan() {
+		return callApi(defaultUrl, clientId);
+	}
+
 
 //	private String callApi(String apiUrl, String clientId, String level) {
 //		String content = String.format(PromptMessage.QUESTION_PROMPT, level);
@@ -130,5 +134,4 @@ public class AlanService {
 
 		return response;
 	}
-
 }
