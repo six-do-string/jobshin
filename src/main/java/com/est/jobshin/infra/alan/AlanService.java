@@ -1,9 +1,9 @@
 package com.est.jobshin.infra.alan;
 
 import com.est.jobshin.domain.interview.domain.Interview;
+import com.est.jobshin.domain.interview.service.InterviewResultService;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.user.domain.User;
-import com.est.jobshin.domain.user.util.Language;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 public class AlanService {
 
 	private final RestTemplate restTemplate;
+	private final InterviewResultService interviewResultService;
 
 	private Interview interview;
 
@@ -39,12 +40,12 @@ public class AlanService {
 		return callApiPracticeMode(defaultUrl, clientId, user, interviewDetail);
 	}
 
-	public String callFeedback(){
-		return callApiFeedback(defaultUrl, clientId, user, interviewDetail);
-	}
+//	public String callFeedback(){
+//		return callApiFeedback(defaultUrl, clientId, user, interviewDetail);
+//	}
 
 	public String callAnswer() {
-		return callApiAnswer(defaultUrl, clientId, user, interviewDetail);
+		return callApiAnswer(defaultUrl, clientId);
 	}
 
 	public String callAlan() {
@@ -108,21 +109,21 @@ public class AlanService {
 	}
 
 	// 피드백
-	private String callApiFeedback(String apiUrl, String ClientId, User user, InterviewDetail interviewDetail) {
-
-		String content = String.format(PromptMessage.FEEDBACK_PROMPT);
-		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
-		log.info("Calling API: {}", requestUrl);
-
-		String response = restTemplate.getForObject(requestUrl, String.class);
-		log.info("API response received");
-		log.info("Response: {}", response);
-
-		return response;
-	}
+//	private String callApiFeedback(String apiUrl, String ClientId, User user, InterviewDetail interviewDetail) {
+//
+//		String content = String.format(PromptMessage.FEEDBACK_PROMPT);
+//		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
+//		log.info("Calling API: {}", requestUrl);
+//
+//		String response = restTemplate.getForObject(requestUrl, String.class);
+//		log.info("API response received");
+//		log.info("Response: {}", response);
+//
+//		return response;
+//	}
 
 	// 모범답안
-	private String callApiAnswer(String apiUrl, String ClientId, User user, InterviewDetail interviewDetail) {
+	private String callApiAnswer(String apiUrl, String ClientId) {
 
 		String content = String.format(PromptMessage.ANSWER_PROMPT);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
