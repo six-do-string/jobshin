@@ -10,8 +10,7 @@
 </head>
 <body>
 <div th:replace="~{layout/header.html :: header}"></div>
-<main>
-
+<main class="main">
   <section class="hero information">
     <h1 th:text="'모의 기술 면접 서비스, ' + ${siteName}">모의 기술 면접 서비스, JOB SHIN</h1>
     <p th:text="${heroMessage}">AI가 질문을 하고 피드백까지 제공하는 모의면접을 체험하라!</p>

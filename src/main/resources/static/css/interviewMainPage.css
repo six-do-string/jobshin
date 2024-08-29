@@ -1,0 +1,72 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+body{
+    width: 100%;
+    height: 100vh;
+}
+.mainBody{
+    padding: 28px;
+}
+h1{
+    padding: 38px 0 10px 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #5E8DC0;
+}
+.mainCont{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 0 35px 97px 35px;
+    border-radius: 6px;
+    border: 2px solid #B5B5B5;
+}
+hr{
+    margin-bottom: 99px;
+}
+.mainSection{
+    display: flex;
+    width: 493px;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    border: 2px solid #B5B5B5;
+}
+.logo{
+    padding: 51px 0 61px 0;
+}
+
+.goToInterview{
+    font-size: 45px;
+    text-align: center;
+}
+
+.content{
+    font-size: 20px;
+    font-weight: bold;
+    padding-bottom: 47px;
+}
+
+.buttonCont{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    padding-bottom: 51px;
+}
+
+button{
+    padding: 16px 25px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    background-color: #0F4584;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
