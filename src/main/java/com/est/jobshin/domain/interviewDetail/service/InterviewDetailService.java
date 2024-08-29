@@ -74,20 +74,52 @@ public class InterviewDetailService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public List<InterviewQuestion> getInterviewDetailByInterviewId(Long interviewId){
-        return interviewDetailRepository
-                .findByInterviewId(interviewId)
-                .stream()
-                .map(InterviewQuestion::fromInterviewDetail)
-                .collect(Collectors.toList());
+    // 사용자 답변 저장
+    public void saveAnswer(Long interviewDetailId, String userAnswer) {
+        InterviewDetail interviewDetail =
+                interviewDetailRepository
+                        .findById(interviewDetailId)
+                        .orElseThrow(() -> new IllegalArgumentException("Not Found InterviewDetail"));
+        if (interviewDetail.getQuestion() != null) {
+            interviewDetail.setAnswer(userAnswer);
+        }
+        interviewDetailRepository.save(interviewDetail);
     }
 
-    @Transactional(readOnly = true)
-    public InterviewDetail getInterviewDetailById(Long interviewDetailId) {
-        return interviewDetailRepository
-                .findById(interviewDetailId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid interview details id: " + interviewDetailId));
+    // 예시 답안 생성
+    @Transactional
+    public InterviewDetail createExampleAnswer(Long interviewDetailId, String userAnswer) {
+        InterviewDetail interviewDetail =
+                interviewDetailRepository
+                        .findById(interviewDetailId)
+                        .orElseThrow(() -> new IllegalArgumentException("Not Found InterviewDetail"));
+
+//        saveAnswer(interviewDetailId, userAnswer);
+
+        if (interviewDetail.getAnswer() != null) {
+            String message = interviewDetail.getAnswer()+"에 대해";
+            String exampleAnswer = message + alenService.callAnswer();
+//            String exampleAnswer = alenService.callAnswer();
+            interviewDetail.setExampleAnswer(exampleAnswer);
+        }
+
+        return interviewDetailRepository.save(interviewDetail);
     }
+
+//    @Transactional(readOnly = true)
+//    public List<InterviewQuestion> getInterviewDetailByInterviewId(Long interviewId){
+//        return interviewDetailRepository
+//                .findByInterviewId(interviewId)
+//                .stream()
+//                .map(InterviewQuestion::fromInterviewDetail)
+//                .collect(Collectors.toList());
+//    }
+
+//    @Transactional(readOnly = true)
+//    public InterviewDetail getInterviewDetailById(Long interviewDetailId) {
+//        return interviewDetailRepository
+//                .findById(interviewDetailId)
+//                .orElseThrow(() -> new IllegalArgumentException("Invalid interview details id: " + interviewDetailId));
+//    }
 
 }
