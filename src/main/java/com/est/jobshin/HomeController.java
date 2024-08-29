@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     // 메인 폼
-    @GetMapping("/view/main")
+    @GetMapping("/views/main")
     public String mainPage(Model model) {
         model.addAttribute("siteName", "JOB SHIN");
         model.addAttribute("heroMessage", "AI가 질문을 하고 피드백까지 제공하는 모의면접을 체험하라!");
@@ -22,6 +22,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String index() {
-        return "redirect:/view/main";
+        return "redirect:/views/main";
     }
 }

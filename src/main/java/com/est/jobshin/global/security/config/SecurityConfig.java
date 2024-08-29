@@ -20,24 +20,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/", "/view/**", "/view/login", "/view/signup", "/view/edit",
-                        "/user/**", "/api/**")
+                .securityMatcher("/", "/views/**", "/views/users/login", "/views/users/signup",
+                        "/views/edit", "/user/**", "/api/**")
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/css/**", "/images/**", "/js/**", "/favicon.*",
                                 "/*/icon-*").permitAll()
-                        .requestMatchers("/", "/view/login", "/view/signup", "/view/main")
+                        .requestMatchers("/", "/views/users/login", "/views/users/signup",
+                                "/api/users/signup", "/views/main")
                         .permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/view/login")
-                        .loginProcessingUrl("/view/login")  // 사용자 로그인 처리 URL
+                        .loginPage("/views/users/login")
+                        .loginProcessingUrl("/views/users/login")  // 사용자 로그인 처리 URL
                         .defaultSuccessUrl("/", true)
                         .failureHandler(authenticationFailureHandler())
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/user/logout")
+                        .logoutUrl("/api/users/logout")
                         .logoutSuccessUrl("/")
                         .permitAll()
                 )
