@@ -38,7 +38,7 @@ public class Interview {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@JsonManagedReference
+//	@JsonManagedReference
 	@OneToMany(mappedBy = "interview", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InterviewDetail> interviewDetails = new ArrayList<>();
 
