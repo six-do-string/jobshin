@@ -4,7 +4,6 @@ import com.est.jobshin.global.security.handler.CustomAuthenticationFailureHandle
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,23 +20,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/", "/view/**", "/view/login", "/view/signup")
+                .securityMatcher("/", "/view/**", "/view/login", "/view/signup", "/view/edit",
+                        "/user/**", "/api/**")
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/css/**", "/images/**", "/js/**", "/favicon.*",
                                 "/*/icon-*").permitAll()
-                        .requestMatchers("/", "/view/login", "/view/signup").permitAll()
+                        .requestMatchers("/", "/view/login", "/view/signup", "/view/main")
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/view/login")
                         .loginProcessingUrl("/view/login")  // 사용자 로그인 처리 URL
-                        .defaultSuccessUrl("/view/main", true)
+                        .defaultSuccessUrl("/", true)
                         .failureHandler(authenticationFailureHandler())
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/view/logout")
-                        .logoutSuccessUrl("/view/list")
+                        .logoutUrl("/user/logout")
+                        .logoutSuccessUrl("/")
                         .permitAll()
                 )
                 .authenticationProvider(authenticationProvider);
