@@ -20,7 +20,7 @@
 <div class="container">
 
   <!-- 로그인 폼 -->
-  <form th:action="@{/view/login}" method="post" class="login-form">
+  <form th:action="@{/views/users/login}" method="post" class="login-form">
     <div class="py-5 text-center">
       <h2>로그인</h2>
     </div>
@@ -45,7 +45,7 @@
       </div>
       <div class="col">
         <button class="w-100 btn btn-secondary btn-lg"
-                th:onclick="|location.href='@{/view/signup}'|" type="button">회원가입
+                th:onclick="|location.href='@{/views/signup}'|" type="button">회원가입
         </button>
       </div>
     </div>

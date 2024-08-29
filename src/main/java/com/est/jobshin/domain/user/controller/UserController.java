@@ -35,27 +35,27 @@ public class UserController {
     private final UserService userService;
 
     // 로그인 폼
-    @GetMapping("/view/login")
+    @GetMapping("/views/users/login")
     public String userLoginForm() {
         return "user/login";
     }
 
     // 회원가입 폼
-    @GetMapping("/view/signup")
+    @GetMapping("/views/users/signup")
     public String userSignUpForm(Model model) {
         model.addAttribute("createUserRequest", new CreateUserRequest());
 
         return "user/signup";
     }
 
-    @GetMapping("/view/edit")
+    @GetMapping("/views/users/edit")
     public String userEditFrom(Model model) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
 
         if (authentication == null
                 || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            return "redirect:/view/login";
+            return "redirect:/views/users/login";
         }
         CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
@@ -66,7 +66,7 @@ public class UserController {
         return "user/edit";
     }
 
-    @PostMapping("/view/signup")
+    @PostMapping("/api/users/signup")
     public String userSignUp(@Valid CreateUserRequest createUserRequest,
             BindingResult bindingResult) {
         // 아이디 중복 검사
@@ -87,14 +87,15 @@ public class UserController {
     }
 
 
-    @PutMapping("/user/edit")
+    @PutMapping("/api/users/edit")
     public String userEdit(@Valid UpdateUserRequest updateUserRequest,
             BindingResult bindingResult) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 인증 정보가 없거나 인증되지 않은 사용자인 경우 로그인 페이지로 리디렉션
-        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            return "redirect:/view/login";
+        if (authentication == null
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            return "redirect:/views/users/login";
         }
 
         // 사용자 정보 가져오기
@@ -113,7 +114,7 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/user/logout")
+    @GetMapping("/api/users/logout")
     public String userLogout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContextHolderStrategy()
                 .getContext().getAuthentication();
