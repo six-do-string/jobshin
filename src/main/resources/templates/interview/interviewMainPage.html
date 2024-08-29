@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>모의 면접</title>
-    <link rel="stylesheet" href="/static/css/header.css">
-    <link rel="stylesheet" href="/static/css/interviewMainPage.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/interviewMainPage.css">
 </head>
 <body>
 <div th:replace="~{layout/header.html :: header}"></div>
@@ -19,8 +19,8 @@
             <h2 class="goToInterview">모의 면접<br>응시하기</h2>
             <p class="content">총 5개의 질문이 출제됩니다.</p>
             <div class="buttonCont">
-                <a href="interviewPracticeEnter.html" th:href="@{/interview/interviewPracticeEnter}" class="practiceMode">연습모드</a>
-                <a href="interviewPracticeEnter.html" th:href="@{/interview/interviewRealEnter}" class="realMode">실전모드</a>
+                <a th:href="@{/api/mock-interviews/views/mode(mode='PRACTICE')}" class="practiceMode">연습모드</a>
+                <a th:href="@{/api/mock-interviews/views/mode(mode='REAL')}" class="realMode">실전모드</a>
             </div>
         </section>
     </div>
