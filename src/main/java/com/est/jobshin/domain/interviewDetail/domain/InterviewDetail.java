@@ -66,10 +66,6 @@ public class InterviewDetail {
         return new InterviewDetail(question, category, mode, createdAt);
     }
 
-    private InterviewDetail(String answer) {
-        this.answer = answer;
-    }
-
     public void registerAnswer(String answer) {
         this.answer = answer;
     }

@@ -3,6 +3,7 @@ package com.est.jobshin.domain.interview.controller;
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewDto;
 import com.est.jobshin.domain.interview.service.InterviewService;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
 import com.est.jobshin.infra.alan.AlanService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,8 @@ public class InterviewController {
 
     @GetMapping("/next")
     public ResponseEntity<String> next(HttpSession session) {
-        String question = interviewService.getNextQuestion2(session);
-        return ResponseEntity.ok(question);
+        InterviewQuestion2 question = interviewService.getNextQuestion2(session);
+        return ResponseEntity.ok(question.getQuestion());
     }
 
     @GetMapping("/{interviewId}")
