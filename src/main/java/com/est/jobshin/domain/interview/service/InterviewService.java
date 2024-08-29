@@ -57,7 +57,7 @@ public class InterviewService {
     }
 
     @Transactional
-    public InterviewQuestion2 processAnswerAndGetNextQuestion(HttpSession session) {
+    public InterviewQuestion2 processAnswerAndGetNextQuestion(HttpSession session, InterviewQuestion2 interviewQuestion2) {
         InterviewQuestion2 nextQuestion = getNextQuestion2(session);
 
         CompletableFuture.runAsync(() -> {

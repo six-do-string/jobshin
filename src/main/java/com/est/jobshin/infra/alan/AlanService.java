@@ -1,7 +1,6 @@
 package com.est.jobshin.infra.alan;
 
 import com.est.jobshin.domain.interview.domain.Interview;
-import com.est.jobshin.domain.interview.service.InterviewResultService;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 public class AlanService {
 
 	private final RestTemplate restTemplate;
-	private final InterviewResultService interviewResultService;
+//	private final InterviewResultService interviewResultService;
 
 	private Interview interview;
 
