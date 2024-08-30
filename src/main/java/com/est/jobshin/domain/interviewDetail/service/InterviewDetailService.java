@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -28,14 +30,27 @@ public class InterviewDetailService {
     private final InterviewRepository interviewRepository;
 
     @Transactional
-    public void createInterviewDetail(Interview interview) {
+    public void realModeStarter(Interview interview) {
+        Category[] categories = selectCategories(5);
+        createInterviewDetail(interview, categories);
+    }
+
+    @Transactional
+    public void practiceModeStarter(Interview interview, Category category) {
+        Category[] categories = new Category[5];
+        Arrays.fill(categories, category);
+        createInterviewDetail(interview, categories);
+    }
+
+    @Transactional
+    public void createInterviewDetail(Interview interview, Category[] category) {
         //카테고리 선별 구현
         //임시로 구현
-        Category[] category = {Category.CS, Category.CS, Category.CS, Category.CS, Category.CS};
+//        Category[] category = {Category.CS, Category.CS, Category.CS, Category.CS, Category.CS};
 
         //callAlan 에 추가해야 할 파라미터
         //1. 카테고리
-        String questionData = alenService.callAlan();
+        String questionData = alenService.callAlan(category);
 
         //데이터 처리
         ArrayList<String> questionList = new ArrayList<>();
@@ -45,7 +60,7 @@ public class InterviewDetailService {
         Matcher matcher = pattern.matcher(questionData);
 
         while (matcher.find()) {
-            questionList.add(matcher.group(1));
+            questionList.add(matcher.group(1).substring(matcher.group(1).indexOf(':')+1).trim());
         }
 
         for(int i = 0; i < 5; i++){
@@ -101,4 +116,14 @@ public class InterviewDetailService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid interview details id: " + interviewDetailId));
     }
 
+    private Category[] selectCategories(int numberOfSelect) {
+        Random random = new Random();
+        Category[] categories = Category.values();
+        Category[] selectedCategories = new Category[numberOfSelect];
+        for(int i = 0; i < numberOfSelect; i ++){
+            int randomIndex = random.nextInt(categories.length);
+            selectedCategories[i] = categories[randomIndex];
+        }
+        return selectedCategories;
+    }
 }
