@@ -10,6 +10,7 @@ import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
+import com.est.jobshin.global.security.model.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -102,15 +103,15 @@ public class InterviewService {
         interviewRepository.deleteById(id);
     }
 
-    //
+    //현재 세션의 사용자 정보 가져오기
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == null) {
             throw new RuntimeException();
         }
 
-        UserResponse principal = (UserResponse) authentication.getPrincipal();
-        return userRepository.findByUsername(principal.getUsername())
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 }

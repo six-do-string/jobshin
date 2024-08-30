@@ -17,35 +17,12 @@ import static com.est.jobshin.domain.interviewDetail.util.Mode.PRACTICE;
 import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 
 
-//@RestController
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class InterviewController {
 
     private final InterviewService interviewService;
     private final AlanService alanService;
-
-    @GetMapping("/views/interviewMainPage")
-    public String getInterview(HttpSession session) {
-        return "interview/interviewMainPage";
-    }
-
-    @GetMapping("/views/mode")
-    public String getInterviewReal(@RequestParam Mode mode, HttpSession session) {
-        if (mode == REAL) {
-            return "interview/interviewRealEnter";
-        } else if (mode == PRACTICE) {
-            return "interview/interviewPracticeEnter";
-        } else {
-            return "error";
-        }
-    }
-
-    @GetMapping("/views/question")
-    public String startInterview() {
-
-        return "interview/interviewQuestion";
-    }
 
     @PostMapping("/api/mock-interviews/practice")
     public ResponseEntity<InterviewDto> createPracticeInterview(@RequestParam Category category, HttpSession session) {
