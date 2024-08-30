@@ -2,6 +2,7 @@ package com.est.jobshin.infra.alan;
 
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
+import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 
 
 @Slf4j
@@ -47,8 +49,8 @@ public class AlanService {
 		return callApiAnswer(defaultUrl, clientId, input);
 	}
 
-	public String callAlan() {
-		return callApi(defaultUrl, clientId);
+	public String callAlan(Category[] categories) {
+		return callApi(defaultUrl, clientId, categories);
 	}
 
 
@@ -62,8 +64,8 @@ public class AlanService {
 //		return response;
 //	}
 
-	private String callApi(String apiUrl, String clientId) {
-		String message = PromptMessage.QUESTION_PROMPT + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + "LV1" + "사용 언어: JAVA";
+	private String callApi(String apiUrl, String clientId, Category[] categories) {
+		String message = PromptMessage.QUESTION_PROMPT + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + "LV1" + "사용 언어: JAVA" + "출제 카테고리는 1~5번까지 각각 " + Arrays.toString(categories);
 		String content = String.format(message);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
 		log.info("Calling API: {}", requestUrl);

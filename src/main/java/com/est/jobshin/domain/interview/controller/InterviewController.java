@@ -19,12 +19,12 @@ public class InterviewController {
     private final InterviewService interviewService;
     private final AlanService alanService;
 
-    @GetMapping("/test")
-    public String callAlan() {
-        String result = alanService.callAlan();
-
-        return result;
-    }
+//    @GetMapping("/test")
+//    public String callAlan() {
+//        String result = alanService.callAlan();
+//
+//        return result;
+//    }
 
     @PostMapping("/practice")
     public ResponseEntity<InterviewDto> createPracticeInterview(@RequestParam Category category, HttpSession session) {

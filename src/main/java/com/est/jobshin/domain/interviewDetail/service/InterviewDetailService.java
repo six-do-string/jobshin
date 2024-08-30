@@ -50,7 +50,7 @@ public class InterviewDetailService {
 
         //callAlan 에 추가해야 할 파라미터
         //1. 카테고리
-        String questionData = alenService.callAlan();
+        String questionData = alenService.callAlan(category);
 
         //데이터 처리
         ArrayList<String> questionList = new ArrayList<>();
@@ -60,7 +60,7 @@ public class InterviewDetailService {
         Matcher matcher = pattern.matcher(questionData);
 
         while (matcher.find()) {
-            questionList.add(matcher.group(1));
+            questionList.add(matcher.group(1).substring(matcher.group(1).indexOf(':')+1).trim());
         }
 
         for(int i = 0; i < 5; i++){
