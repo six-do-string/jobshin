@@ -17,7 +17,6 @@ import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 
 
 //@RestController
-@RequestMapping("/api/mock-interviews")
 @Controller
 @RequiredArgsConstructor
 public class InterviewController {
@@ -43,18 +42,17 @@ public class InterviewController {
 
     @GetMapping("/views/question")
     public String startInterview() {
-//        interviewService.getInterviewById(id);
         return "interview/interviewQuestion";
     }
 
-    @GetMapping("/test")
+    @GetMapping("/api/mock-interviews/test")
     public String callAlan() {
         String result = alanService.callAlan();
 
         return result;
     }
 
-    @PostMapping
+    @PostMapping("/api/mock-interviews")
     public ResponseEntity<InterviewDto> createInterview(@RequestBody InterviewDto interviewDto, HttpSession session) {
         Interview interview = interviewService.createInterview(interviewDto, session);
         return ResponseEntity.ok(InterviewDto.fromInterview(interview));
@@ -68,24 +66,24 @@ public class InterviewController {
 //        return ResponseEntity.ok(InterviewDto.fromInterview(interview));
 //    }
 
-    @GetMapping("/next")
+    @GetMapping("/api/mock-interviews/next")
     public ResponseEntity<InterviewQuestion2> next(HttpSession session) {
         InterviewQuestion2 question = interviewService.getNextQuestion2(session);
         return ResponseEntity.ok(question);
     }
 
-    @PostMapping("/next")
+    @PostMapping("/api/mock-interviews/next")
     public ResponseEntity<InterviewQuestion2> next2(@RequestBody InterviewQuestion2 interviewQuestion2, HttpSession session) {
         InterviewQuestion2 question = interviewService.processAnswerAndGetNextQuestion(session, interviewQuestion2);
         return ResponseEntity.ok(question);
     }
 
-    @GetMapping("/{interviewId}")
+    @GetMapping("/api/mock-interviews/{interviewId}")
     public ResponseEntity<InterviewDto> getInterviewById(@PathVariable("interviewId") Long interviewId) {
         return ResponseEntity.ok(interviewService.getInterviewById(interviewId));
     }
 
-    @DeleteMapping("/{interviewId}")
+    @DeleteMapping("/api/mock-interviews/{interviewId}")
     public ResponseEntity<Void> deleteInterview(@PathVariable("interviewId") Long interviewId) {
         interviewService.deleteInterviewsById(interviewId);
         return ResponseEntity.noContent().build();

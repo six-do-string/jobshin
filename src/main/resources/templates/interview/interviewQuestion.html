@@ -35,13 +35,12 @@
     </div>
 </main>
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
     let currentProblem = 1;
 
     // $(document).ready(function () {
     window.onload = () => {
-        createQuestions();
+        getQuestions();
 
         // 다음 질문으로 넘어가기
         $('.answerBox').submit(function (event) {
@@ -69,38 +68,42 @@
             }
         });
 
-        // $('#nextBtn').click(function (){
-        //     getQuestions();
-        // })
+        $('#nextBtn').click(function () {
+            getQuestions();
+        })
+    }
 // });
-    };
+    // };
 
     // 질문 생성
-    function createQuestions(){
-
-        // 임시 데이터 삽입
-        // const params = {
-        //     title: "test",
-        //     mode: "REAL"
-        // }
-
-        $.ajax({
-            url: `/api/mock-interviews`,
-            type: 'POST',
-            contentType: 'application/json; charset =utf-8',
-            dataType: 'json',
-            // data: JSON.stringify(params),
-            success: function (response) {
-                getQuestions();
-            },
-            error: function (request, status, error){
-                console.log(error);
-            }
-        });
-    }
+    // function createQuestions(){
+    //
+    //     // 임시 데이터 삽입
+    //     const params = {
+    //         title: "test",
+    //         mode: "REAL"
+    //     }
+    //     console.log('createQuestions() 함수 실행')
+    //
+    //     $.ajax({
+    //         url: `/api/mock-interviews`,
+    //         type: 'POST',
+    //         contentType: 'application/json; charset =utf-8',
+    //         dataType: 'json',
+    //         data: JSON.stringify(params),
+    //         success: function (response) {
+    //             getQuestions();
+    //         },
+    //         error: function (request, status, error){
+    //             console.log(error);
+    //         }
+    //     });
+    // }
 
     // 면접 질문 불러오기
     function getQuestions() {
+
+        console.log('getQuestions 함수 실행')
         const questionCont = document.getElementsByClassName('.content');
 
         $.ajax({
