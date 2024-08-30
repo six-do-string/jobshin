@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: jobshin
+    name: jobshin_test
 
   thymeleaf:
     cache: false
@@ -18,10 +18,10 @@ spring:
         enabled: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/jobshin
+    url: jdbc:mysql://localhost:3306/jobshin_test
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: '0000'
+    password: 1234
 
   jpa:
     hibernate:
@@ -31,3 +31,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
+
+alan:
+  api:
+    default-url: https://kdt-api-function.azurewebsites.net/api/v1/question
+    client-id: e8a8a93a-a5ff-4f26-9075-b7960ec81fe1
