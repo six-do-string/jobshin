@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>모의 면접 실전모드 입장 페이지</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/interviewRealEnter.css">
+</head>
+<body>
+<div th:replace="~{layout/header.html :: header}"></div>
+<main class="mainBody">
+    <div class="mainCont">
+        <h1>모의 면접 - 실전 모드</h1>
+        <hr>
+        <div class="sectionCont">
+            <section>
+                <h2>실전모드</h2>
+                <div class="realMode">
+                    <p class="text1">지원자 님은<br>실전모드를 선택하셨습니다.</p>
+                    <p class="text2">계속 진행하려면 아래의 '시작하기'<br>버튼을 클릭해주세요.</p>
+                    <div class="buttonCont">
+                        <a th:href="@{/views/interviewMainPage}">돌아가기</a>
+                        <button id="start" onclick="createQuestions()">시작하기</button>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h2>참고사항</h2>
+                <ul class="realMode">
+                    <li>실전모드는 분야별로 골고루 질문이 생성되며, 질문 개수는 총 5개 입니다.</li>
+                    <li>질문은 하나씩 제공되며, 문제에 대한 답을 텍스트로 작성해주시면 됩니다.</li>
+                    <li>모의 면접 종료 후 점수와 함께 작성한 답변에 대한 AI의 피드백도 제공됩니다.</li>
+                    <li>또한 난이도 평가와 면접 점수를 토대로 문제 난이도가 자동 조정됩니다.</li>
+                    <li>응시한 면접 질문 내역은 마이페이지 메뉴에서 확인할 수 있습니다.</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</main>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    // 질문 생성
+    function createQuestions(){
+        console.log('createQuestions() 함수 실행')
+
+        // $.ajax({
+        //     type: 'POST',
+        //     beforeSend : function(xhr) {
+        //         xhr.setRequestHeader(csrfToken, csrfHeader);
+        //     },
+        //     url: "/api/mock-interviews/real",
+        //     contentType: 'application/json',
+        //     dataType: 'json',
+        //     // data: JSON.stringify(params),
+        //     success: function (response) {
+        //         alert('실행')
+        //         returnQuestionPage();
+        //     },
+        //     error: function (request, status, error){
+        //         console.log(error);
+        //     }
+        // });
+
+        fetch('/api/mock-interviews/real', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("질문 구성 완료");
+                window.location.href = '/views/question';
+            } else {
+                alert("질문 구성 실패");
+            }
+        })
+        .catch(error => {
+            alert("질문 구성 중 오류가 발생했습니다.");
+            console.error('Error:', error);
+        });
+    }
+
+    // postTypeId에 따라 반환되는 게시판 링크가 다르게 설정
+    function returnQuestionPage() {
+        window.location.href = '/views/question';
+    }
+</script>
+</body>
+</html>

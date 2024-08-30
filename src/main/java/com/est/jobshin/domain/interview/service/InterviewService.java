@@ -4,17 +4,14 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewDto;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
-import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
+import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
-import com.est.jobshin.domain.user.service.UserService;
-import com.est.jobshin.infra.alan.AlanService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
@@ -32,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 public class InterviewService {
     private final InterviewRepository interviewRepository;
     private final InterviewDetailService interviewDetailService;
+    private final UserRepository userRepository;
 
     @Transactional
     public InterviewDto getInterviewById(Long id) {
@@ -42,13 +39,32 @@ public class InterviewService {
     }
 
     @Transactional
-    public Interview createInterview(InterviewDto interviewDto, HttpSession session) {
+    public Interview createPracticeInterview(Category category, HttpSession session) {
         Interview interview = Interview.createInterview(
-                interviewDto.getTitle(), LocalDateTime.now());
+                null, LocalDateTime.now(), getCurrentUser()
+        );
 
         Interview createdInterview = interviewRepository.save(interview);
 
-        interviewDetailService.createInterviewDetail(interview);
+//        interviewDetailService.createInterviewDetail(interview);
+        interviewDetailService.practiceModeStarter(interview, category);
+
+        session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
+        session.setAttribute("currentIndex", 0);
+
+        return createdInterview;
+    }
+
+    @Transactional
+    public Interview createRealInterview(HttpSession session) {
+        Interview interview = Interview.createInterview(
+                null, LocalDateTime.now(), getCurrentUser()
+        );
+
+        Interview createdInterview = interviewRepository.save(interview);
+
+//        interviewDetailService.createInterviewDetail(interview);
+        interviewDetailService.realModeStarter(interview);
 
         session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
         session.setAttribute("currentIndex", 0);
@@ -86,14 +102,14 @@ public class InterviewService {
         interviewRepository.deleteById(id);
     }
 
-//    private User getCurrentUser() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if(authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == null) {
-//            throw new RuntimeException();
-//        }
-//
-//        UserResponse principal = (UserResponse) authentication.getPrincipal();
-//        return userRepository.findByemail(principal.getEmail())
-//                .orElseThrow(() -> new NoSuchElementException("User not found"));
-//    }
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == null) {
+            throw new RuntimeException();
+        }
+
+        UserResponse principal = (UserResponse) authentication.getPrincipal();
+        return userRepository.findByUsername(principal.getUsername())
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+    }
 }

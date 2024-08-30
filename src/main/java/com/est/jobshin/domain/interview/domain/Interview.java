@@ -41,14 +41,14 @@ public class Interview {
 	@OneToMany(mappedBy = "interview", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InterviewDetail> interviewDetails = new ArrayList<>();
 
-	private Interview(String title, LocalDateTime createAt) {
+	private Interview(String title, LocalDateTime createAt, User user) {
 		this.title = title;
 		this.createAt = createAt;
-//		this.user = user;
+		this.user = user;
 	}
 
-	public static Interview createInterview(String title, LocalDateTime createAt) {
-		return new Interview(title, createAt);
+	public static Interview createInterview(String title, LocalDateTime createAt, User user) {
+		return new Interview(title, createAt, user);
 	}
 
 	public void addInterviewDetails(InterviewDetail interview){

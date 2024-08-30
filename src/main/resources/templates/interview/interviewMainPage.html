@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>모의 면접</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/interviewMainPage.css">
+</head>
+<body>
+<div th:replace="~{layout/header.html :: header}"></div>
+<main class="mainBody">
+    <div class="mainCont">
+        <h1>모의 면접</h1>
+        <hr>
+        <section class="mainSection">
+            <img class="logo" src="/img/logo.png" alt="로고">
+            <h2 class="goToInterview">모의 면접<br>응시하기</h2>
+            <p class="content">총 5개의 질문이 출제됩니다.</p>
+            <div class="buttonCont">
+                <a th:href="@{/views/mode(mode='PRACTICE')}" class="practiceMode">연습모드</a>
+                <a th:href="@{/views/mode(mode='REAL')}" class="realMode">실전모드</a>
+            </div>
+        </section>
+    </div>
+</main>
+</body>
+</html>

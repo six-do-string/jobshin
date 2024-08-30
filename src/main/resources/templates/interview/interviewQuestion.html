@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>모의 면접</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/interviewQuestion.css">
+</head>
+<body>
+<div th:replace="~{layout/header.html :: header}"></div>
+<main class="mainBody">
+    <div class="mainCont">
+        <h1>모의 면접 - 연습 모드</h1>
+        <hr>
+        <section class="questionCont">
+            <div class="questionBox">
+                <a class="goToBack">처음으로 돌아가기</a>
+                <div class="question">
+                    <h2>Q1</h2>
+                    <p class="content">ArrayList와 LinkedList의 차이점에 대해 말해주세요.</p>
+                </div>
+            </div>
+            <div class="completeSubmit" style="display: none">
+                <span class="textSubmit">제출되었습니다.</span>
+                <button id="nextBtn" onclick="getQuestions()">다음 문제</button>
+            </div>
+            <form class="answerBox">
+                <label for="answer" style="display: none"></label>
+                <textarea id="answer" name="answer" placeholder="답변을 입력하세요"></textarea>
+                <button id="submitBtn" type="submit"><img class="sendLogoImg" src="/img/Send.png" alt="전송 버튼"></button>
+            </form>
+        </section>
+    </div>
+</main>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    let currentProblem = 1;
+    let token = $("meta[name='_csrf']").attr("content");
+    let header = $("meta[name='_csrf_header']").attr("content");
+
+    // $(document).ready(function () {
+    window.onload = () => {
+        getQuestions();
+
+        // 다음 질문으로 넘어가기
+        $('.answerBox').submit(function (event) {
+            event.preventDefault();
+
+            let answer = $('#answer').val();
+
+            $.ajax({
+                type: 'POST',
+                beforeSend : function(xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                data: {answer: answer},
+                url: "/api/mock-interviews/next",
+                success: function (response) {
+                    $('.answerBox').hide();
+                    $('#answer').show();
+                },
+                error: function (error) {
+                    console.error("답변 제출 중 오류가 발생하였습니다: ", error);
+                }
+            });
+
+            if (currentProblem < 5) {
+                currentProblem++;
+            } else {
+                $('#nextBtn').prop('disabled', true).text('답변 완료');
+            }
+        });
+
+        $('#nextBtn').click(function () {
+            getQuestions();
+        })
+    };
+
+    // 면접 질문 불러오기
+    function getQuestions() {
+
+        console.log('getQuestions 함수 실행')
+        const questionCont = document.getElementsByClassName('.content');
+
+        $.ajax({
+            type: 'GET',
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+            },
+            url: "/api/mock-interviews/next",
+            dataType: 'text',
+            success: function (response) {
+                $('questionCont').html(`<p class="content">${response}</p>`);
+            },
+            error: function(error) {
+                console.error('문제 가져오는 중 오류 발생: ', error);
+            }
+        });
+    }
+</script>
+</html>
