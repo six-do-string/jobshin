@@ -4,27 +4,17 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewDto;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
-import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
-import com.est.jobshin.domain.user.domain.User;
-import com.est.jobshin.domain.user.dto.UserResponse;
-import com.est.jobshin.domain.user.repository.UserRepository;
-import com.est.jobshin.domain.user.service.UserService;
-import com.est.jobshin.infra.alan.AlanService;
+import com.est.jobshin.domain.interviewDetail.util.Category;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -42,13 +32,32 @@ public class InterviewService {
     }
 
     @Transactional
-    public Interview createInterview(InterviewDto interviewDto, HttpSession session) {
+    public Interview createPracticeInterview(Category category, HttpSession session) {
         Interview interview = Interview.createInterview(
-                interviewDto.getTitle(), LocalDateTime.now());
+                null, LocalDateTime.now()
+        );
 
         Interview createdInterview = interviewRepository.save(interview);
 
-        interviewDetailService.createInterviewDetail(interview);
+//        interviewDetailService.createInterviewDetail(interview);
+        interviewDetailService.practiceModeStarter(interview, category);
+
+        session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
+        session.setAttribute("currentIndex", 0);
+
+        return createdInterview;
+    }
+
+    @Transactional
+    public Interview createRealInterview(HttpSession session) {
+        Interview interview = Interview.createInterview(
+                null, LocalDateTime.now()
+        );
+
+        Interview createdInterview = interviewRepository.save(interview);
+
+//        interviewDetailService.createInterviewDetail(interview);
+        interviewDetailService.realModeStarter(interview);
 
         session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
         session.setAttribute("currentIndex", 0);
