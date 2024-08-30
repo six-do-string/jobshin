@@ -4,6 +4,7 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewDto;
 import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
+import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.infra.alan.AlanService;
 import jakarta.servlet.http.HttpSession;
@@ -45,16 +46,15 @@ public class InterviewController {
         return "interview/interviewQuestion";
     }
 
-    @GetMapping("/api/mock-interviews/test")
-    public String callAlan() {
-        String result = alanService.callAlan();
-
-        return result;
+    @PostMapping("/api/mock-interviews/practice")
+    public ResponseEntity<InterviewDto> createPracticeInterview(@RequestParam Category category, HttpSession session) {
+        Interview interview = interviewService.createPracticeInterview(category, session);
+        return ResponseEntity.ok(InterviewDto.fromInterview(interview));
     }
 
-    @PostMapping("/api/mock-interviews")
-    public ResponseEntity<InterviewDto> createInterview(@RequestBody InterviewDto interviewDto, HttpSession session) {
-        Interview interview = interviewService.createInterview(interviewDto, session);
+    @PostMapping("/api/mock-interviews/real")
+    public ResponseEntity<InterviewDto> createRealInterview(HttpSession session) {
+        Interview interview = interviewService.createRealInterview(session);
         return ResponseEntity.ok(InterviewDto.fromInterview(interview));
     }
 
