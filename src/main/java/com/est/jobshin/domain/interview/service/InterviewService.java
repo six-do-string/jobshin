@@ -102,6 +102,7 @@ public class InterviewService {
         interviewRepository.deleteById(id);
     }
 
+    //
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == null) {
