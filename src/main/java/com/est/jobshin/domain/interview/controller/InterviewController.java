@@ -26,12 +26,12 @@ public class InterviewController {
     private final AlanService alanService;
 
     @GetMapping("/views/interviewMainPage")
-    public String getInterview() {
+    public String getInterview(HttpSession session) {
         return "interview/interviewMainPage";
     }
 
     @GetMapping("/views/mode")
-    public String getInterviewReal(@RequestParam Mode mode) {
+    public String getInterviewReal(@RequestParam Mode mode, HttpSession session) {
         if (mode == REAL) {
             return "interview/interviewRealEnter";
         } else if (mode == PRACTICE) {
@@ -43,6 +43,7 @@ public class InterviewController {
 
     @GetMapping("/views/question")
     public String startInterview() {
+
         return "interview/interviewQuestion";
     }
 

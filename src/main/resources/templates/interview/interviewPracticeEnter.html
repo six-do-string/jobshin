@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>모의 면접 연습모드 입장 페이지</title>
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/interviewPracticeEnter.css">
@@ -22,7 +24,7 @@
                     <p class="text2">계속 진행하려면 아래의 '시작하기'<br>버튼을 클릭해주세요.</p>
                     <div class="buttonCont">
                         <a th:href="@{/interview/interviewMainPage}">돌아가기</a>
-                        <button onclick="createQuestions()">시작하기</button>
+                        <button onclick="createQuestions2()">시작하기</button>
                     </div>
                 </div>
             </section>
@@ -38,9 +40,12 @@
         </div>
     </div>
 </main>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
     // 질문 생성
-    function createQuestions(){
+    function createQuestions2(){
+        let TOKEN = $("meta[name='_csrf']").attr("content");
+        let HEADER = $("meta[name='_csrf_header']").attr("content");
 
         // 임시 데이터 삽입
         const params = {
@@ -50,8 +55,11 @@
         console.log('createQuestions() 함수 실행')
 
         $.ajax({
-            url: `/api/mock-interviews`,
             type: 'POST',
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(HEADER, TOKEN);
+            },
+            url: "/api/mock-interviews/practice",
             contentType: 'application/json; charset =utf-8',
             dataType: 'json',
             data: JSON.stringify(params),

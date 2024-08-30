@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>모의 면접</title>
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/interviewQuestion.css">
@@ -35,8 +37,11 @@
     </div>
 </main>
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
     let currentProblem = 1;
+    let token = $("meta[name='_csrf']").attr("content");
+    let header = $("meta[name='_csrf_header']").attr("content");
 
     // $(document).ready(function () {
     window.onload = () => {
@@ -49,9 +54,12 @@
             let answer = $('#answer').val();
 
             $.ajax({
-                url: `/api/mock-interviews/next`,
                 type: 'POST',
+                beforeSend : function(xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
                 data: {answer: answer},
+                url: "/api/mock-interviews/next",
                 success: function (response) {
                     $('.answerBox').hide();
                     $('#answer').show();
@@ -71,34 +79,7 @@
         $('#nextBtn').click(function () {
             getQuestions();
         })
-    }
-// });
-    // };
-
-    // 질문 생성
-    // function createQuestions(){
-    //
-    //     // 임시 데이터 삽입
-    //     const params = {
-    //         title: "test",
-    //         mode: "REAL"
-    //     }
-    //     console.log('createQuestions() 함수 실행')
-    //
-    //     $.ajax({
-    //         url: `/api/mock-interviews`,
-    //         type: 'POST',
-    //         contentType: 'application/json; charset =utf-8',
-    //         dataType: 'json',
-    //         data: JSON.stringify(params),
-    //         success: function (response) {
-    //             getQuestions();
-    //         },
-    //         error: function (request, status, error){
-    //             console.log(error);
-    //         }
-    //     });
-    // }
+    };
 
     // 면접 질문 불러오기
     function getQuestions() {
@@ -107,11 +88,13 @@
         const questionCont = document.getElementsByClassName('.content');
 
         $.ajax({
-            url: `/api/mock-interviews/next`,
             type: 'GET',
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+            },
+            url: "/api/mock-interviews/next",
             dataType: 'text',
             success: function (response) {
-                // let questionHtml = '';
                 $('questionCont').html(`<p class="content">${response}</p>`);
             },
             error: function(error) {
