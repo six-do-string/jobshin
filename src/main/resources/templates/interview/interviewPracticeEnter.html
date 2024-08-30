@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>모의 면접 연습모드 입장 페이지</title>
     <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/interviewPracticeEnter.css">
+    <link rel="stylesheet" href="/static/css/interviewPracticeEnter.css">
 </head>
 <body>
 <div th:replace="~{layout/header.html :: header}"></div>
@@ -22,10 +22,24 @@
                 <div class="realMode">
                     <p class="text1">지원자 님은<br>연습모드를 선택하셨습니다.</p>
                     <p class="text2">계속 진행하려면 아래의 '시작하기'<br>버튼을 클릭해주세요.</p>
-                    <div class="buttonCont">
-                        <a th:href="@{/interview/interviewMainPage}">돌아가기</a>
-                        <button onclick="createQuestions2()">시작하기</button>
-                    </div>
+                    <form class="categoryBox" method="post" th:action="@{/api/mock-interviews/practice(category=${selectedCategory})}">
+                            <div class="radio">
+                                <label for="cs">CS</label>
+                                <input id="cs" name="category" value='CS' class="option" type="radio" />
+                            </div>
+                            <div class="radio">
+                                <label for="language">Language</label>
+                                <input id="language" name="category" value='LANGUAGE' class="option" type="radio" />
+                            </div>
+                            <div class="radio">
+                                <label for="algorithm">Algorithm</label>
+                                <input id="algorithm" name="category" value='ALGORITHM' class="option" type="radio" />
+                            </div>
+                        <div class="buttonCont">
+                            <a class="click" th:href="@{/interview/interviewMainPage}">돌아가기</a>
+                            <button class="click" type="submit">시작하기</button>
+                        </div>
+                    </form>
                 </div>
             </section>
             <section>
@@ -41,11 +55,13 @@
     </div>
 </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
+<script th:inline="javascript">
     // 질문 생성
     function createQuestions2(){
         let TOKEN = $("meta[name='_csrf']").attr("content");
         let HEADER = $("meta[name='_csrf_header']").attr("content");
+
+        const category = [[${selectedCategory}]];
 
         // 임시 데이터 삽입
         const params = {
@@ -59,7 +75,7 @@
             beforeSend : function(xhr) {
                 xhr.setRequestHeader(HEADER, TOKEN);
             },
-            url: "/api/mock-interviews/practice",
+            url: "/api/mock-interviews/practice?category={category}",
             contentType: 'application/json; charset =utf-8',
             dataType: 'json',
             data: JSON.stringify(params),

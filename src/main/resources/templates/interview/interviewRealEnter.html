@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,8 +24,8 @@
                     <p class="text1">지원자 님은<br>실전모드를 선택하셨습니다.</p>
                     <p class="text2">계속 진행하려면 아래의 '시작하기'<br>버튼을 클릭해주세요.</p>
                     <div class="buttonCont">
-                        <a th:href="@{/views/interviewMainPage}">돌아가기</a>
-                        <button id="start" onclick="createQuestions()">시작하기</button>
+                        <a class="click" th:href="@{/views/interviewMainPage}">돌아가기</a>
+                        <a class="click" onclick="createQuestions()">시작하기</a>
                     </div>
                 </div>
             </section>

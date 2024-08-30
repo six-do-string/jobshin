@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,13 +22,17 @@
                 <a class="goToBack">처음으로 돌아가기</a>
                 <div class="question">
                     <h2>Q1</h2>
-                    <p class="content">ArrayList와 LinkedList의 차이점에 대해 말해주세요.</p>
+                    <p class="content" th:text="${question.question}">ArrayList와 LinkedList의 차이점에 대해 말해주세요.</p>
                 </div>
             </div>
             <div class="completeSubmit" style="display: none">
                 <span class="textSubmit">제출되었습니다.</span>
                 <button id="nextBtn" onclick="getQuestions()">다음 문제</button>
             </div>
+<!--            <div class="completeInterview" style="display: none">-->
+<!--                <span class="text">제출되었습니다.</span>-->
+<!--                <button id="nextBtn" onclick="getQuestions()">다음 문제</button>-->
+<!--            </div>-->
             <form class="answerBox">
                 <label for="answer" style="display: none"></label>
                 <textarea id="answer" name="answer" placeholder="답변을 입력하세요"></textarea>
@@ -73,6 +78,9 @@
                 currentProblem++;
             } else {
                 $('#nextBtn').prop('disabled', true).text('답변 완료');
+                if(confirm('질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?')){
+                    window.location.href="/AIFeedback"
+                }
             }
         });
 

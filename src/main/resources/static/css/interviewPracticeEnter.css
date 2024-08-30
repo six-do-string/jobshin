@@ -76,6 +76,20 @@ h2{
     font-weight: normal;
     padding-top: 21px;
 }
+
+.category{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding-top: 44px;
+    gap: 21px;
+}
+
+.radio{
+    font-weight: bold;
+}
+
 .buttonCont{
     display: flex;
     flex-direction: row;
@@ -84,7 +98,8 @@ h2{
     gap: 71px;
     padding: 78px 0 112px 0;
 }
-a{
+
+.click{
     padding: 15px 28px;
     color: white;
     background-color: #0F4584;
@@ -95,6 +110,7 @@ a{
     font-size: 20px;
     font-weight: bold;
 }
+
 ul{
     display: flex;
     flex-direction: column;
