@@ -1,5 +1,6 @@
 package com.est.jobshin.domain.user.controller;
 
+import com.est.jobshin.domain.interview.dto.PracticeInterviewHistorySummaryResponse;
 import com.est.jobshin.domain.user.dto.CreateUserRequest;
 import com.est.jobshin.domain.user.dto.UpdateUserRequest;
 import com.est.jobshin.domain.user.dto.UserResponse;
@@ -8,10 +9,19 @@ import com.est.jobshin.global.security.model.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,8 +35,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class UserController {
@@ -48,6 +60,7 @@ public class UserController {
         return "user/signup";
     }
 
+    // 회원가입 수정 폼
     @GetMapping("/views/users/edit")
     public String userEditFrom(Model model) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -66,6 +79,45 @@ public class UserController {
         return "user/edit";
     }
 
+    // 유저별 인터뷰(연습모드) 이력 리스트
+    @GetMapping("/views/users/interviews/practice")
+    public String listInterviews(@RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            Model model) {
+
+        // 페이징 처리 기본값 설정
+        int currentPage = page.orElse(1); // 기본값 1
+        int pageSize = size.orElse(10); // 기본값 10
+
+        // 페이지 사이즈가 1보다 작으면 기본값으로 설정
+        if (pageSize < 1) {
+            pageSize = 10; // 기본 페이지 사이즈
+        }
+
+        // 현재 인증된 사용자 ID 가져오기
+        Long userId = userDetails.getUserId();
+
+        // 페이지네이션된 인터뷰 목록 가져오기
+        Page<PracticeInterviewHistorySummaryResponse> interviewSummaryList = userService.getPaginatedPracticeInterviews(
+                PageRequest.of(currentPage - 1, pageSize), userId);
+
+        model.addAttribute("interviewSummaryList", interviewSummaryList);
+
+        int totalPages = interviewSummaryList.getTotalPages();
+
+        // 페이지 번호 리스트 생성
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        return "user/practice_interview_list";
+    }
+
+    // 회원가입 요청
     @PostMapping("/api/users/signup")
     public String userSignUp(@Valid CreateUserRequest createUserRequest,
             BindingResult bindingResult) {
@@ -86,20 +138,19 @@ public class UserController {
         return "redirect:/";
     }
 
-
+    // 회원정보 수정 요청
     @PutMapping("/api/users/edit")
     public String userEdit(@Valid UpdateUserRequest updateUserRequest,
-            BindingResult bindingResult) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            BindingResult bindingResult,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 인증 정보가 없거나 인증되지 않은 사용자인 경우 로그인 페이지로 리디렉션
-        if (authentication == null
-                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+        if (userDetails == null) {
             return "redirect:/views/users/login";
         }
 
         // 사용자 정보 가져오기
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
 
         // 유효성 검사 오류가 있는 경우 편집 페이지로 리디렉션
@@ -114,6 +165,7 @@ public class UserController {
         return "redirect:/";
     }
 
+    // 로그아웃
     @GetMapping("/api/users/logout")
     public String userLogout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContextHolderStrategy()
@@ -126,6 +178,7 @@ public class UserController {
         return "redirect:/";
     }
 
+    // 회원 탈퇴 요청(RESTful API)
     @DeleteMapping("/api/users/{username}")
     @ResponseBody
     public ResponseEntity<Void> userDelete(@PathVariable String username,
