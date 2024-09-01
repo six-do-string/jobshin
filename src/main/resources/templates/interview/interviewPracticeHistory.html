@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>마이페이지</title>
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="/css/header.css">
+	<link rel="stylesheet" href="/css/sidebar.css">
+</head>
+<body>
+<div th:replace="~{layout/header.html :: header}"></div>
+<main class="main">
+	<div class="container">
+		<!-- Sidebar Section -->
+		<aside class="sidebar">
+			<div class="sidebar-section">
+				<h3>마이 페이지</h3>
+				<ul class="sidebar-menu">
+					<li><a href="/views/users/edit">회원 정보 수정</a></li>
+					<li><a href="/views/interviews/history">면접 이력</a></li>
+					<li><a href="/views/users/withdrawal">회원 탈퇴</a></li>
+				</ul>
+			</div>
+			<div class="sidebar-section">
+				<h3>면접 기록</h3>
+				<ul class="sidebar-menu">
+					<li><a href="/views/interviews/practice">연습 모드 이력</a></li>
+					<li><a href="/views/interviews/real">실전 모드 이력</a></li>
+					<li><a href="/views/interviews/scheduled">Today's Scheduled</a></li>
+				</ul>
+			</div>
+		</aside>
+		
+		<!-- Main Content Section -->
+		<section class="content">
+			<h1>연습 모드 이력 페이지입니다.</h1>
+			<table class="table">
+				<thead class="table-light">
+				<tr>
+					<th>번호</th>
+					<th>응시 일자</th>
+					<th>레벨</th>
+					<th>점수</th>
+					<th>카테고리</th>
+				</tr>
+				</thead>
+				<tbody align="center">
+				<tr>
+					<td class="text-start">test</td>
+					<td class="text-start">test</td>
+					<td class="text-start">test</td>
+					<td class="text-start">test</td>
+					<td class="text-start">test</td>
+				</tr>
+				</tbody>
+			</table>
+		</section>
+	</div>
+</main>
+</body>
+</html>
