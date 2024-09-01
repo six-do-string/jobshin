@@ -51,6 +51,7 @@ public class InterviewDetailService {
         //callAlan 에 추가해야 할 파라미터
         //1. 카테고리
         String questionData = alenService.callAlan(category);
+//                + interview.getUser().getLanguage() + interview.getUser().getLevel();
 
         //데이터 처리
         ArrayList<String> questionList = new ArrayList<>();
