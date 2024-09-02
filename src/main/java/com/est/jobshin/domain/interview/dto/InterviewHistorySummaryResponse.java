@@ -19,17 +19,20 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PracticeInterviewHistorySummaryResponse {
+public class InterviewHistorySummaryResponse {
 
     private Long id;        // Interview의 id
+    private String title;
+    private String nickname;
     private LocalDateTime createdAt; // Interview의 createAt
     private Long score;              // InterviewDetail의 score
     private String category;         // InterviewDetail의 category
 
-    public static PracticeInterviewHistorySummaryResponse toDto(Interview interview, InterviewDetail interviewDetail,
-            Long totalScore) {
-        return PracticeInterviewHistorySummaryResponse.builder()
+    public static InterviewHistorySummaryResponse toDto(Interview interview, InterviewDetail interviewDetail, Long totalScore) {
+        return InterviewHistorySummaryResponse.builder()
                 .id(interview.getId())
+                .title(interview.getTitle())
+                .nickname(interview.getUser().getNickname())
                 .createdAt(interview.getCreateAt())
                 .score(totalScore)
                 .category(interviewDetail.getCategory().toString())
