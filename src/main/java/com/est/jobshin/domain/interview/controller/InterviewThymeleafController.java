@@ -51,13 +51,4 @@ public class InterviewThymeleafController {
         return "AlFeedback";
     }
 
-    @GetMapping("/views/interviews/practice")
-    public String interviewPracticeHistoryForm() {
-        return "interview/interviewPracticeHistory";
-    }
-
-    @GetMapping("/views/interviews/real")
-    public String interviewPracticeRealForm() {
-        return "interview/interviewRealHistory";
-    }
 }
