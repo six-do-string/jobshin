@@ -4,6 +4,7 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.PracticeInterviewHistorySummaryResponse;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewDetailsResponse;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
@@ -30,6 +31,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final InterviewRepository interviewRepository;
+    private final InterviewDetailRepository interviewDetailRepository;
 
     // 회원 가입 메서드
     @Transactional
@@ -75,24 +77,36 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    // 마이페이지
-    // 모의면접(연습모드) 리스트 페이지네이션
+    // 마이 페이지
+    // 모의 면접 리스트 페이징 처리
     @Transactional(readOnly = true)
     public Page<PracticeInterviewHistorySummaryResponse> getPaginatedPracticeInterviews(
             Pageable pageable, Long userId, Mode mode) {
 
-        // 데이터베이스에서 페이지네이션된 인터뷰 목록을 가져옴
-        Page<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(
-                userId, pageable, mode);
+        // 인터뷰 목록을 페이지네이션으로 가져옴
+        Page<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(userId, mode, pageable);
 
         // 인터뷰 목록을 DTO로 변환
         List<PracticeInterviewHistorySummaryResponse> practiceInterviewList = interviewsPage.stream()
-                .map(PracticeInterviewHistorySummaryResponse::toDto)
+                .map(interview -> {
+                    // 인터뷰의 모든 디테일에서 점수를 합산
+                    Long totalScore = interview.getInterviewDetails().stream()
+                            .mapToLong(InterviewDetail::getScore)
+                            .sum();
+
+                    // 인터뷰의 첫 번째 디테일로 카테고리 설정
+                    InterviewDetail firstDetail = interview.getInterviewDetails().stream()
+                            .findFirst().orElse(null);
+
+                    return PracticeInterviewHistorySummaryResponse.toDto(interview, firstDetail,
+                            totalScore / 5);
+                })
                 .collect(Collectors.toList());
 
         // DTO 리스트를 페이지네이션된 결과로 반환
         return new PageImpl<>(practiceInterviewList, pageable, interviewsPage.getTotalElements());
     }
+
 
     // 모의면접(실전모드) 상세보기
     @Transactional(readOnly = true)
@@ -115,5 +129,15 @@ public class UserService {
         myPageInterviewWithDetailsDto.setAverageScore(averageScore);
 
         return myPageInterviewWithDetailsDto;
+
+    // 모의 면접 상세 보기
+    @Transactional(readOnly = true)
+    public InterviewDetailsResponse getInterviewDetailsById(Long interviewId){
+        Interview interview = interviewRepository.findById(interviewId)
+                .orElseThrow(() -> new EntityNotFoundException("인터뷰를 찾을 수 없습니다."));
+        List<InterviewDetail> details = interviewDetailRepository.findByInterviewId(interviewId);
+
+        return InterviewDetailsResponse.toDto(interview, details);
+
     }
 }

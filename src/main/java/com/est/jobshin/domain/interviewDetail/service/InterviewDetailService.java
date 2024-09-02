@@ -4,9 +4,9 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
-import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.util.Category;
+import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.infra.alan.AlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,11 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 //@Transactional
@@ -27,32 +25,24 @@ import java.util.stream.Collectors;
 public class InterviewDetailService {
     private final InterviewDetailRepository interviewDetailRepository;
     private final AlanService alenService;
-    private final InterviewRepository interviewRepository;
 
     @Transactional
-    public void realModeStarter(Interview interview) {
+    public void realModeStarter(Interview interview, User user) {
         Category[] categories = selectCategories(5);
-        createInterviewDetail(interview, categories);
+        createInterviewDetail(interview, categories, user);
     }
 
     @Transactional
-    public void practiceModeStarter(Interview interview, Category category) {
+    public void practiceModeStarter(Interview interview, Category category, User user) {
         Category[] categories = new Category[5];
         Arrays.fill(categories, category);
-        createInterviewDetail(interview, categories);
+        createInterviewDetail(interview, categories, user);
     }
 
     @Transactional
-    public void createInterviewDetail(Interview interview, Category[] category) {
-        //카테고리 선별 구현
-        //임시로 구현
-//        Category[] category = {Category.CS, Category.CS, Category.CS, Category.CS, Category.CS};
+    public void createInterviewDetail(Interview interview, Category[] category, User user) {
+        String questionData = alenService.callAlan(category, user.getLanguage(), user.getPosition(), user.getLevel());
 
-        //callAlan 에 추가해야 할 파라미터
-        //1. 카테고리
-        String questionData = alenService.callAlan(category);
-
-        //데이터 처리
         ArrayList<String> questionList = new ArrayList<>();
 
         String regex = "\\[(.*?)\\]";
@@ -76,15 +66,12 @@ public class InterviewDetailService {
     }
 
     @Transactional
-    public void getAnswerByUser(InterviewQuestion2 interviewQuestion2) {
-        InterviewDetail interviewDetail = interviewDetailRepository.findById(interviewQuestion2.getId())
+    public void getAnswerByUser(InterviewQuestion interviewQuestion) {
+        InterviewDetail interviewDetail = interviewDetailRepository.findById(interviewQuestion.getId())
                 .orElseThrow(RuntimeException::new);
+        interviewDetail.registerAnswer(interviewQuestion.getAnswer());
 
-        interviewDetail.registerAnswer(interviewQuestion2.getAnswer());
-
-        //엘런 서비스로 interviewQuestion2.getAnswer() 을 보내고
-        //앨런에게 해당 답에 대한 평가와 예시답안을 받아와서
-        String feedback = alenService.callAnswer(interviewQuestion2.getAnswer());
+        String feedback = alenService.callAnswer(interviewQuestion.getQuestion(), interviewQuestion.getAnswer());
 
         ArrayList<String> feedbackList = new ArrayList<>();
 
@@ -96,25 +83,24 @@ public class InterviewDetailService {
             feedbackList.add(matcher.group(1));
         }
 
-        //db에 저장
         interviewDetail.registerFeedback(feedbackList.get(1), Long.parseLong(feedbackList.get(0)));
     }
 
-    @Transactional(readOnly = true)
-    public List<InterviewQuestion> getInterviewDetailByInterviewId(Long interviewId){
-        return interviewDetailRepository
-                .findByInterviewId(interviewId)
-                .stream()
-                .map(InterviewQuestion::fromInterviewDetail)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public InterviewDetail getInterviewDetailById(Long interviewDetailId) {
-        return interviewDetailRepository
-                .findById(interviewDetailId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid interview details id: " + interviewDetailId));
-    }
+//    @Transactional(readOnly = true)
+//    public List<InterviewQuestion> getInterviewDetailByInterviewId(Long interviewId){
+//        return interviewDetailRepository
+//                .findByInterviewId(interviewId)
+//                .stream()
+//                .map(InterviewQuestion::fromInterviewDetail)
+//                .collect(Collectors.toList());
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public InterviewDetail getInterviewDetailById(Long interviewDetailId) {
+//        return interviewDetailRepository
+//                .findById(interviewDetailId)
+//                .orElseThrow(() -> new IllegalArgumentException("Invalid interview details id: " + interviewDetailId));
+//    }
 
     private Category[] selectCategories(int numberOfSelect) {
         Random random = new Random();

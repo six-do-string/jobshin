@@ -1,6 +1,7 @@
 package com.est.jobshin.domain.user.controller;
 
 import com.est.jobshin.domain.interview.dto.PracticeInterviewHistorySummaryResponse;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewDetailsResponse;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.dto.CreateUserRequest;
 import com.est.jobshin.domain.user.dto.MyPageInterviewWithDetailsDto;
@@ -86,9 +87,10 @@ public class UserController {
     }
 
     // 유저별 인터뷰(연습모드) 이력 리스트
-    @GetMapping("/views/users/interviews/practice")
+    @GetMapping("/views/interviews/practice")
     public String listInterviews(@RequestParam("page") Optional<Integer> page,
             @RequestParam("size") Optional<Integer> size,
+            @RequestParam(value = "mode", defaultValue = "PRACTICE") Mode mode,
             @AuthenticationPrincipal CustomUserDetails userDetails,
             Model model) {
 
@@ -105,8 +107,9 @@ public class UserController {
         Long userId = userDetails.getUserId();
 
         // 페이지네이션된 인터뷰 목록 가져오기
-        Page<PracticeInterviewHistorySummaryResponse> interviewSummaryList = userService.getPaginatedPracticeInterviews(
-                PageRequest.of(currentPage - 1, pageSize), userId, Mode.PRACTICE);
+        Page<PracticeInterviewHistorySummaryResponse> interviewSummaryList =
+                userService.getPaginatedPracticeInterviews(
+                        PageRequest.of(currentPage - 1, pageSize), userId, mode);
 
         model.addAttribute("interviewSummaryList", interviewSummaryList);
 
@@ -168,6 +171,18 @@ public class UserController {
         model.addAttribute("interviewDetails", interviewDetails);
 
         return "user/real_interview_detail";
+    }
+
+    // 연습모드 상세 정보 조회
+    @GetMapping("/views/interviews/practice/{id}")
+    public String viewInterviewDetails(@PathVariable("id") Long interviewId, Model model) {
+        // 인터뷰 상세 데이터를 가져오는 서비스 메서드 호출
+        InterviewDetailsResponse interviewDetails = userService.getInterviewDetailsById(interviewId);
+
+        // 모델에 인터뷰 상세 데이터 추가
+        model.addAttribute("interviewDetails", interviewDetails);
+
+        return "user/practice_interview_detail";
     }
 
     // 회원가입 요청

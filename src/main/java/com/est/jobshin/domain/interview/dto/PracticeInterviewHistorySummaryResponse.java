@@ -1,6 +1,7 @@
 package com.est.jobshin.domain.interview.dto;
 
 import com.est.jobshin.domain.interview.domain.Interview;
+import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,17 +21,18 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PracticeInterviewHistorySummaryResponse {
 
-    private Long id; // 인터뷰 id
-    private String nickname; // 인터뷰한 사용자
-    private String title; // 인터뷰 제목
-    private LocalDateTime createdAt; // 인터뷰 생성 일시
+    private Long id;        // Interview의 id
+    private LocalDateTime createdAt; // Interview의 createAt
+    private Long score;              // InterviewDetail의 score
+    private String category;         // InterviewDetail의 category
 
-    public static PracticeInterviewHistorySummaryResponse toDto(Interview interview) {
+    public static PracticeInterviewHistorySummaryResponse toDto(Interview interview, InterviewDetail interviewDetail,
+            Long totalScore) {
         return PracticeInterviewHistorySummaryResponse.builder()
                 .id(interview.getId())
-                .title(interview.getTitle())
-                .nickname(interview.getUser().getNickname())
                 .createdAt(interview.getCreateAt())
+                .score(totalScore)
+                .category(interviewDetail.getCategory().toString())
                 .build();
     }
 }

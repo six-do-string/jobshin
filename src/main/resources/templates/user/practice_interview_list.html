@@ -1,83 +1,106 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/table.css">
     <title>Practice Interview List</title>
 </head>
 <body>
 <div th:replace="~{layout/header.html :: header}"></div>
-
-<table id="interview-table">
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>Title</th>
-        <th>NickName</th>
-        <th>Date</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- 인터뷰 데이터 렌더링 -->
-    <tr th:each=" interview : ${interviewSummaryList}">
-        <td th:text="${interview.id}"></td>
-        <td th:text="${interview.title}">제목</td>
-        <td th:text="${interview.nickname}">사용자 이름</td>
-        <td th:text="${interview.createdAt}">날짜 및 시간</td>
-    </tr>
-    </tbody>
-</table>
-
-<!-- 페이지네이션 버튼 -->
-<nav aria-label="Page navigation">
-    <!--표에 사용될 변수값 초기화 -->
-    <ul class="pagination justify-content-center" th:with="start=${T(java.lang.Math).floor(interviewSummaryList.number / 10) * 10 + 1}, last=(${start + 9 < interviewSummaryList.totalPages ? start + 9 : interviewSummaryList.totalPages})">
-        <th:block th:with="
-            firstAddr=@{/views/users/interviews/practice(page=1)},
-            prevAddr=@{/views/users/interviews/practice(page=${interviewSummaryList.number})},
-            nextAddr=@{/views/users/interviews/practice(page=${interviewSummaryList.number + 2})},
-            lastAddr=@{/views/users/interviews/practice(page=${interviewSummaryList.totalPages})}">
-            <li class="page-item">
-                <a class="page-link" th:href="${firstAddr}" aria-label="First">
-                    <span aria-hidden="true"> << </span>
-                </a>
-            </li>
-            <!-- 이전 페이지로 가기 버튼 -->
-            <li class="page-item" th:class="${interviewSummaryList.first} ? 'disabled'">
-                <a class="page-link" th:href="${interviewSummaryList.first} ? '#' :${prevAddr}"
-                   aria-label="Previous">
-                    <span aria-hidden="true">&lt;</span>
-                </a>
-            </li>
-            <!--1,2,3,4,.. 등 페이지-->
-            <li class="page-item" th:each="page: ${#numbers.sequence(start, last)}"
-                th:class="${page == interviewSummaryList.number + 1} ? 'active'">
-                <a class="page-link" th:text="${page}" th:href="@{/views/users/interviews/practice(page=${page})}"></a>
-            </li>
-            <!--다음 페이지로 -->
-            <li class="page-item" th:class="${interviewSummaryList.last} ? 'disabled'">
-                <a class="page-link" th:href="${interviewSummaryList.last} ? '#' : ${nextAddr}"
-                   aria-label="Next">
-                    <span aria-hidden="true">&gt;</span>
-                </a>
-            </li>
-            <!--맨 마지막 페이지로 이동 -->
-            <li class="page-item">
-                <a class="page-link" th:href="${lastAddr}" aria-label="Last">
-                    <span aria-hidden="true"> >> </span>
-                </a>
-            </li>
-        </th:block>
-    </ul>
-</nav>
-<!--<div id="pagination">
-    <button th:disabled="${currentPage == 0}"
-            th:href="@{/views/users/interviews/list/practice(page=${currentPage - 1}, size=${size})}">
-        Previous
-    </button>
-    <button th:disabled="${currentPage >= totalPages - 1}"
-            th:href="@{/views/users/interviews/list/practice(page=${currentPage + 1}, size=${size})}">
-        Next
-    </button>
-</div>-->
+<main class="main">
+    <div class="container">
+        <!-- Sidebar Sec-->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>마이 페이지</h3>
+                <ul class="sidebar-menu">
+                    <li><a href="/views/users/edit">회원 정보 수정</a></li>
+                    <li><a href="/views/interviews/history">면접 이력</a></li>
+                    <li><a href="/views/users/withdrawal">회원 탈퇴</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>면접 기록</h3>
+                <ul class="sidebar-menu">
+                    <li><a href="/views/interviews/practice">연습 모드 이력</a></li>
+                    <li><a href="/views/interviews/real">실전 모드 이력</a></li>
+                    <li><a href="/views/interviews/scheduled">Today's Scheduled</a></li>
+                </ul>
+            </div>
+        </aside>
+        <section class="content">
+            <table class="table">
+                <thead class="table-light">
+                <tr>
+                    <th>번호</th>
+                    <th>생성 일시</th>
+                    <th>점수</th>
+                    <th>카테고리</th>
+                </tr>
+                </thead>
+                <tbody align="center">
+                <!-- 인터뷰 데이터 렌더링 -->
+                <tr th:each=" interview : ${interviewSummaryList}">
+                    <td>
+                        <a th:href="@{/views/interviews/practice/{id}(id = ${interview.id})}" th:text="${interview.id}">번호</a>
+                    </td>
+                    <td>
+                        <a th:href="@{/views/interviews/practice/{id}(id = ${interview.id})}" th:text="${interview.createdAt}">생성 일시</a></td>
+                    <td th:text="${interview.score}">점수</td>
+                    <td th:text="${interview.category}">카테고리</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+        <!-- 페이지네이션 버튼 -->
+        <nav aria-label="Page navigation">
+            <!--표에 사용될 변수값 초기화 -->
+            <ul class="pagination justify-content-center"
+                th:with="start=${T(java.lang.Math).floor(interviewSummaryList.number / 10) * 10 + 1}, last=(${start + 9 < interviewSummaryList.totalPages ? start + 9 : interviewSummaryList.totalPages})">
+                <th:block th:with="
+            firstAddr=@{/views/interviews/practice(page=1)},
+            prevAddr=@{/views/interviews/practice(page=${interviewSummaryList.number})},
+            nextAddr=@{/views/interviews/practice(page=${interviewSummaryList.number + 2})},
+            lastAddr=@{/views/interviews/practice(page=${interviewSummaryList.totalPages})}">
+                    <li class="page-item">
+                        <a class="page-link" th:href="${firstAddr}" aria-label="First">
+                            <span aria-hidden="true"> << </span>
+                        </a>
+                    </li>
+                    <!-- 이전 페이지로 가기 버튼 -->
+                    <li class="page-item" th:class="${interviewSummaryList.first} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="${interviewSummaryList.first} ? '#' :${prevAddr}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&lt;</span>
+                        </a>
+                    </li>
+                    <!--1,2,3,4,.. 등 페이지-->
+                    <li class="page-item" th:each="page: ${#numbers.sequence(start, last)}"
+                        th:class="${page == interviewSummaryList.number + 1} ? 'active'">
+                        <a class="page-link" th:text="${page}"
+                           th:href="@{/views/interviews/practice(page=${page})}"></a>
+                    </li>
+                    <!--다음 페이지로 -->
+                    <li class="page-item" th:class="${interviewSummaryList.last} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="${interviewSummaryList.last} ? '#' : ${nextAddr}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&gt;</span>
+                        </a>
+                    </li>
+                    <!--맨 마지막 페이지로 이동 -->
+                    <li class="page-item">
+                        <a class="page-link" th:href="${lastAddr}" aria-label="Last">
+                            <span aria-hidden="true"> >> </span>
+                        </a>
+                    </li>
+                </th:block>
+            </ul>
+        </nav>
+    </div>
+</main>
 </body>
 </html>
