@@ -96,7 +96,8 @@ public class AlanService {
 
 	// 연습 모드 문제
 	private String callApiPracticeMode(String apiUrl, String ClientId, User user, InterviewDetail interviewDetail){
-		String setUpMessage = user.getId() + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + user.getLevel() + "사용언어: " + user.getLanguage() + "선택한 카테고리: " + interviewDetail.getCategory();
+		String setUpMessage
+				= "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + user.getLevel() + "사용언어: " + user.getLanguage() + "선택한 카테고리: " + interviewDetail.getCategory();
 
 		String questionMessage = "3가지 카테고리(CS(컴퓨터 과학 기초), 프로그래밍 언어 및 도구, 알고리즘) 중 선택한 카테고리 내에서만"
 				+ PromptMessage.QUESTION_PROMPT + setUpMessage;

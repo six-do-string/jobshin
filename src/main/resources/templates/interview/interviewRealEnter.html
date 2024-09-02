@@ -79,7 +79,7 @@
         .then(response => {
             if (response.ok) {
                 alert("질문 구성 완료");
-                window.location.href = '/views/question';
+                returnQuestionPage();
             } else {
                 alert("질문 구성 실패");
             }
@@ -90,7 +90,6 @@
         });
     }
 
-    // postTypeId에 따라 반환되는 게시판 링크가 다르게 설정
     function returnQuestionPage() {
         window.location.href = '/views/question';
     }

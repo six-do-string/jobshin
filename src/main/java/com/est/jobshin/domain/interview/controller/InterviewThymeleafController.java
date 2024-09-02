@@ -33,6 +33,11 @@ public class InterviewThymeleafController {
         return "interview/interviewQuestion";
     }
 
+    @GetMapping("/views/interview/result")
+    public String getInterviewResult() {
+        return "AlFeedback";
+    }
+
     @GetMapping("/views/interviews/practice")
     public String interviewPracticeHistoryForm() {
         return "interview/interviewPracticeHistory";

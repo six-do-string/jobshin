@@ -80,7 +80,6 @@ public class InterviewDetailService {
     public void getAnswerByUser(InterviewQuestion2 interviewQuestion2) {
         InterviewDetail interviewDetail = interviewDetailRepository.findById(interviewQuestion2.getId())
                 .orElseThrow(RuntimeException::new);
-
         interviewDetail.registerAnswer(interviewQuestion2.getAnswer());
 
         //엘런 서비스로 interviewQuestion2.getAnswer() 을 보내고
