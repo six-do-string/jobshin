@@ -22,6 +22,7 @@
                 <a class="goToBack">처음으로 돌아가기</a>
                 <div class="question">
                     <h2 class="questionNum">Q1</h2>
+                    <span style="display: none"></span>
                     <p class="content">ArrayList와 LinkedList의 차이점에 대해 말해주세요.</p>
                 </div>
             </div>
@@ -32,27 +33,32 @@
             <div class="answerBox">
                 <label for="answer" style="display: none"></label>
                 <textarea id="answer" name="answer" placeholder="답변을 입력하세요"></textarea>
-                <button id="submitBtn" type="submit"><img class="sendLogoImg" src="/img/Send.png" alt="전송 버튼"></button>
+                <button id="submitBtn" type="submit" onclick="submitAnswer(questionId, question, answer)"><img
+                        class="sendLogoImg" src="/img/Send.png" alt="전송 버튼"></button>
             </div>
         </section>
     </div>
 </main>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
+<script th:inline="javascript">
     let currentProblem = 1;
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
+
+    let questionId = null;
+    let question = null;
 
     window.onload = () => {
         getQuestions();
     };
 
     // 답변 제출
-    $('#submitBtn').click(function (event) {
-
+    function submitAnswer(questionId, question, answer) {
         if (currentProblem < 5) {
             let answer = $('#answer').val();
+            console.log(questionId);
+
             console.log(answer);
             if (!answer.trim()) {
                 alert('답변을 입력해주세요.');
@@ -60,6 +66,9 @@
             }
 
             const params = {
+                id: questionId,
+                question: question,
+                answer: answer
             }
 
             $.ajax({
@@ -68,17 +77,20 @@
                     xhr.setRequestHeader(header, token);
                 },
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({answer: answer}),
+                data: JSON.stringify(params),
                 url: "/api/mock-interviews/next",
                 success: function (response) {
                     currentProblem++;
                     alert('답변이 제출되었습니다.')
                     console.log(response);
 
-                    let question = response.question;
+                    // 초기화
+                    questionId = response.id;
+                    console.log(questionId);
+                    question = response.question;
                     console.log(question);
-
                     $('#answer').val('');
+
                     $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
                     $('.content').html(`<p>${question}</p>`);
 
@@ -95,7 +107,7 @@
                 window.location.href = "/views/interview/result"
             }
         }
-    });
+    }
 
     // 면접 질문 불러오기
     function getQuestions() {
@@ -112,8 +124,12 @@
             dataType: 'json',
             success: function (response) {
                 console.log(response);
-                let question = response.question;
+
+                questionId = response.id;
+                console.log(questionId);
+                question = response.question;
                 console.log(question);
+
                 $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
                 $(questionCont).html(`<p>${question}</p>`);
             },

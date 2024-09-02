@@ -63,12 +63,6 @@
 
         const category = $("input[name='category']:checked").val();
 
-        // 임시 데이터 삽입
-        const params = {
-            title: "test",
-            mode: "PRACTICE",
-            category: category
-        }
         console.log('createQuestions() 함수 실행')
 
         $.ajax({
@@ -79,7 +73,6 @@
             url: "/api/mock-interviews/practice?category=" + category,
             contentType: 'application/json; charset =utf-8',
             dataType: 'json',
-            data: JSON.stringify(params),
             success: function (response) {
                 returnQuestionPage();
             },

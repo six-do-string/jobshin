@@ -1,5 +1,9 @@
 package com.est.jobshin.domain.interview.controller;
 
+import com.est.jobshin.domain.interview.service.InterviewService;
+import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
+import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import jakarta.servlet.http.HttpSession;
@@ -14,17 +18,22 @@ import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 
 @Controller
 public class InterviewThymeleafController {
+    private final InterviewDetailService interviewDetailService;
+
+    public InterviewThymeleafController(InterviewService interviewService, InterviewDetailService interviewDetailService) {
+        this.interviewDetailService = interviewDetailService;
+    }
+
     @GetMapping("/views/interviewMainPage")
     public String getInterview(HttpSession session) {
         return "interview/interviewMainPage";
     }
 
     @GetMapping("/views/mode")
-    public String getInterviewReal(@RequestParam Mode mode, Model model, Category category) {
+    public String getInterviewReal(@RequestParam Mode mode) {
         if (mode == REAL) {
             return "interview/interviewRealEnter";
         } else if (mode == PRACTICE) {
-            model.addAttribute("selectedCategory", category);
             return "interview/interviewPracticeEnter";
         } else {
             return "error";
@@ -32,7 +41,7 @@ public class InterviewThymeleafController {
     }
 
     @GetMapping("/views/question/real")
-    public String startInterviewReal() {
+    public String startInterviewReal(Model model) {
         return "interview/interviewQuestion";
     }
 
