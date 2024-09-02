@@ -3,6 +3,7 @@ package com.est.jobshin.domain.user.service;
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.PracticeInterviewHistorySummaryResponse;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
+import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.CreateUserRequest;
 import com.est.jobshin.domain.user.dto.UpdateUserRequest;
@@ -78,11 +79,11 @@ public class UserService {
     // 모의면접(연습모드) 리스트 페이지네이션
     @Transactional(readOnly = true)
     public Page<PracticeInterviewHistorySummaryResponse> getPaginatedPracticeInterviews(
-            Pageable pageable, Long userId) {
+            Pageable pageable, Long userId, Mode mode) {
 
         // 데이터베이스에서 페이지네이션된 인터뷰 목록을 가져옴
         Page<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(
-                userId, pageable);
+                userId, pageable, mode);
 
         // 인터뷰 목록을 DTO로 변환
         List<PracticeInterviewHistorySummaryResponse> practiceInterviewList = interviewsPage.stream()
@@ -92,4 +93,5 @@ public class UserService {
         // DTO 리스트를 페이지네이션된 결과로 반환
         return new PageImpl<>(practiceInterviewList, pageable, interviewsPage.getTotalElements());
     }
+
 }
