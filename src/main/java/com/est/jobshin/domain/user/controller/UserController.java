@@ -3,6 +3,7 @@ package com.est.jobshin.domain.user.controller;
 import com.est.jobshin.domain.interview.dto.PracticeInterviewHistorySummaryResponse;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.dto.CreateUserRequest;
+import com.est.jobshin.domain.user.dto.MyPageInterviewWithDetailsDto;
 import com.est.jobshin.domain.user.dto.UpdateUserRequest;
 import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.service.UserService;
@@ -18,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -161,7 +161,14 @@ public class UserController {
         return "user/real_interview_list";
     }
 
-    @GetMapping()
+    @GetMapping("/views/users/interviews/real/{id}")
+    public String realInterviewDetail(@PathVariable Long id, Model model) {
+
+        MyPageInterviewWithDetailsDto interviewDetails = userService.getInterviewDetail(id);
+        model.addAttribute("interviewDetails", interviewDetails);
+
+        return "user/real_interview_detail";
+    }
 
     // 회원가입 요청
     @PostMapping("/api/users/signup")
