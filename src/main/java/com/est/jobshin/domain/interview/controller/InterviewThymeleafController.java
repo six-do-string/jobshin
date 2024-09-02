@@ -59,13 +59,18 @@ public class InterviewThymeleafController {
         List<InterviewResultDetail> interviewDetail = interviewService.getInterviewDetails(interviewId);
         Interview interview = interviewService.getInterviewById(interviewId).toInterview();
 
-        Long totalScore = interviewDetail.stream().mapToLong(InterviewResultDetail::getScore).sum();
+        Long totalScore = interviewDetail.stream().mapToLong(InterviewResultDetail::getScore).sum()/5;
 
         model.addAttribute("totalScore", totalScore);
         model.addAttribute("interview", interview);
         model.addAttribute("interviewDetailList", interviewDetail);
 
         return "interviewFeedback";
+    }
+
+    @GetMapping("/views/interview/levelFeedback")
+    public String getLevelFeedback(){
+        return "levelFeedback";
     }
 
     @GetMapping("/views/interviews/practice")

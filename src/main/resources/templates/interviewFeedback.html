@@ -27,7 +27,7 @@
         <tbody>
         <tr th:object="${interview}">
             <td th:text="*{createAt}">yyyy.mm.dd</td>
-            <td><strong th:text="${totalScore}"></strong> / 100</td>
+            <td><strong class="score" th:text="${totalScore}"></strong> / 100</td>
             <td th:text="*{title}">Java란 무엇입니까?</td>
             <td th:text="*{user.position}">Java, BackEnd</td>
         </tr>
@@ -36,7 +36,7 @@
     <div class="questions" th:each="interview : ${interviewDetailList}">
         <div class="question-item">
             <div class="question-header">
-                <span th:text="${interview.question}" class="question1"></span>
+                <span th:text="${interview.question}" class="question"></span>
                 <button class="toggle-button">▲</button>
             </div>
             <div class="question-content">
@@ -95,14 +95,16 @@
     <!--    </div>-->
 
     <div class="buttons">
-        <button class="btn-review">이전으로</button>
-        <button class="btn-submit">면접완료</button>
+        <button class="btn-review" th:href="@{/views/interviewMainPage}">이전으로</button>
+        <button class="btn-submit" th:href="@{/views/main}">면접완료</button>
     </div>
 </div>
 <script src="/js/AlFeedback.js" defer></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
+
+    localStorage.setItem('interviewScore', $('.score').val());
 
     window.onload = () => {
         if (confirm("결과를 확인하시겠습니까?")) {
@@ -145,11 +147,9 @@
                     console.log(question);
                     document.querySelector('.questions').innerHTML = question;
                 },
-                error:
-
-                    function (error) {
-                        console.error("답변 제출 중 오류가 발생하였습니다: ", error);
-                    }
+                error: function (error) {
+                    console.error("답변 제출 중 오류가 발생하였습니다: ", error);
+                }
             }
         )
         ;
