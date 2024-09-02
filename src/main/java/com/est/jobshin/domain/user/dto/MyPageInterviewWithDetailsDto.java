@@ -17,7 +17,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MyPageInterviewWithDetailsDto {
-	private Long id; // Interview ID
+
+	private Long id;
 	private String title;
 	private Mode mode;
 	private LocalDateTime createdAt;
