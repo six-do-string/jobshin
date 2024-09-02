@@ -167,8 +167,8 @@ public class UserRepositoryTest {
     // --
 
     // -- 유저 인터뷰 이력 테스트
-    @Test
     @DisplayName("사용자가 면접 이력이 없는 경우 테스트")
+    @Test
     void NoInterviewHistoryTest() {
         // given: 면접 없이 사용자만 생성하여 저장
         User user = User.builder()
@@ -191,8 +191,8 @@ public class UserRepositoryTest {
         assertThat(interviews).isEmpty(); // isEmpty()로 수정하여 면접 이력이 없는지 확인
     }
 
-    @Test
     @DisplayName("사용자가 면접 이력이 있는지 확인하는 테스트")
+    @Test
     @Transactional
     void interviewHistory() {
         // given: 사용자와 면접 데이터 생성 및 저장
@@ -257,8 +257,8 @@ public class UserRepositoryTest {
         assertThat(interviews).isNotEmpty(); // 면접 이력이 있는지 확인
     }
 
-    @Test
     @DisplayName("사용자의 인터뷰 건수와 내용이 일치하는지 확인하는 테스트")
+    @Test
     void interviewCountAndContentTest() {
         // given: 사용자와 인터뷰 데이터 생성 및 저장
         User user = User.builder()
@@ -295,8 +295,8 @@ public class UserRepositoryTest {
         assertThat(interviews.get(0).getUser().getUsername()).isEqualTo(savedUser.getUsername()); // 인터뷰가 올바른 사용자와 연결되었는지 확인
     }
 
-    @Test
     @DisplayName("인터뷰에 상세 내용이 있는지 확인하는 테스트")
+    @Test
     void interviewDetailCheck() {
         // given: 사용자 생성 및 저장
         User user = User.builder()
