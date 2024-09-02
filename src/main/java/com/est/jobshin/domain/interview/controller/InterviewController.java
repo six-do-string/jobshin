@@ -4,6 +4,7 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewDto;
 import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.infra.alan.AlanService;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.est.jobshin.domain.interviewDetail.util.Mode.PRACTICE;
 import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
@@ -54,6 +57,12 @@ public class InterviewController {
     public ResponseEntity<InterviewQuestion2> next2(@RequestBody InterviewQuestion2 interviewQuestion2, HttpSession session) {
         InterviewQuestion2 question = interviewService.processAnswerAndGetNextQuestion(session, interviewQuestion2);
         return ResponseEntity.ok(question);
+    }
+
+    @GetMapping("/api/mock-interviews/finish")
+    public ResponseEntity<List<InterviewResultDetail>> finish(HttpSession session) {
+        List<InterviewResultDetail> interviewResultDetails = interviewService.finishInterview(session);
+        return ResponseEntity.ok(interviewResultDetails);
     }
 
     @GetMapping("/api/mock-interviews/{interviewId}")

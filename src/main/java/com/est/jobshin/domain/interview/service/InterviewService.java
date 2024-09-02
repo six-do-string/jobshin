@@ -5,6 +5,7 @@ import com.est.jobshin.domain.interview.dto.InterviewDto;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.user.domain.User;
@@ -22,7 +23,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +56,8 @@ public class InterviewService {
         session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
         session.setAttribute("currentIndex", 0);
 
+        session.setAttribute("interviewId", createdInterview.getId());
+
         return createdInterview;
     }
 
@@ -69,6 +74,8 @@ public class InterviewService {
 
         session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
         session.setAttribute("currentIndex", 0);
+
+        session.setAttribute("interviewId", createdInterview.getId());
 
         return createdInterview;
     }
@@ -97,6 +104,21 @@ public class InterviewService {
         session.setAttribute("currentIndex", currentIndex + 1);
 
         return InterviewQuestion2.from(question);
+    }
+
+    public List<InterviewResultDetail> finishInterview(HttpSession session) {
+        return getInterviewDetails((Long) session.getAttribute("interviewId"));
+    }
+
+    public List<InterviewResultDetail> getInterviewDetails(Long interviewId) {
+        Interview interview = interviewRepository.findById(interviewId)
+                .orElseThrow(() -> new NoSuchElementException("Interview not found"));
+
+        List<InterviewDetail> interviewDetails = interview.getInterviewDetails();
+
+        return interviewDetails.stream()
+                .map(InterviewResultDetail::from)
+                .collect(Collectors.toList());
     }
 
     public void deleteInterviewsById(Long id) {
