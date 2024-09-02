@@ -8,6 +8,7 @@ import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Category;
+import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
@@ -45,7 +46,7 @@ public class InterviewService {
     @Transactional
     public Interview createPracticeInterview(Category category, HttpSession session) {
         Interview interview = Interview.createInterview(
-                null, LocalDateTime.now(), getCurrentUser()
+                null, LocalDateTime.now(), getCurrentUser(), Mode.PRACTICE
         );
 
         Interview createdInterview = interviewRepository.save(interview);
@@ -64,7 +65,7 @@ public class InterviewService {
     @Transactional
     public Interview createRealInterview(HttpSession session) {
         Interview interview = Interview.createInterview(
-                null, LocalDateTime.now(), getCurrentUser()
+                null, LocalDateTime.now(), getCurrentUser(), Mode.REAL
         );
 
         Interview createdInterview = interviewRepository.save(interview);
