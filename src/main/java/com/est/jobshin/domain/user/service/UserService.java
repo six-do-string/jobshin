@@ -129,6 +129,7 @@ public class UserService {
         myPageInterviewWithDetailsDto.setAverageScore(averageScore);
 
         return myPageInterviewWithDetailsDto;
+    }
 
     // 모의 면접 상세 보기
     @Transactional(readOnly = true)
