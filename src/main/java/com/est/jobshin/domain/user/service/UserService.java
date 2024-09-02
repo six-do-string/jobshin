@@ -9,10 +9,10 @@ import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailReposito
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.CreateUserRequest;
+import com.est.jobshin.domain.user.dto.MyPageInterviewWithDetailsDto;
 import com.est.jobshin.domain.user.dto.UpdateUserRequest;
 import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,8 +84,7 @@ public class UserService {
             Pageable pageable, Long userId, Mode mode) {
 
         // 인터뷰 목록을 페이지네이션으로 가져옴
-        Page<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(
-                userId, mode, pageable);
+        Page<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(userId, mode, pageable);
 
         // 인터뷰 목록을 DTO로 변환
         List<PracticeInterviewHistorySummaryResponse> practiceInterviewList = interviewsPage.stream()
@@ -110,6 +107,29 @@ public class UserService {
         return new PageImpl<>(practiceInterviewList, pageable, interviewsPage.getTotalElements());
     }
 
+
+    // 모의면접(실전모드) 상세보기
+    @Transactional(readOnly = true)
+    public MyPageInterviewWithDetailsDto getInterviewDetail(Long id) {
+
+        Interview interview = interviewRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Interview not found with id " + id));
+
+        // 점수 평균 계산 (정수형)
+        int averageScore = (int) Math.round(
+            interview.getInterviewDetails().stream()
+                .filter(detail -> detail.getScore() != null)  // 점수가 null이 아닌 경우에만 고려
+                .mapToLong(InterviewDetail::getScore)
+                .average()
+                .orElse(0.0)
+        );
+
+        // DTO로 변환
+        MyPageInterviewWithDetailsDto myPageInterviewWithDetailsDto = MyPageInterviewWithDetailsDto.fromInterview(interview);
+        myPageInterviewWithDetailsDto.setAverageScore(averageScore);
+
+        return myPageInterviewWithDetailsDto;
+
     // 모의 면접 상세 보기
     @Transactional(readOnly = true)
     public InterviewDetailsResponse getInterviewDetailsById(Long interviewId){
@@ -118,5 +138,6 @@ public class UserService {
         List<InterviewDetail> details = interviewDetailRepository.findByInterviewId(interviewId);
 
         return InterviewDetailsResponse.toDto(interview, details);
+
     }
 }

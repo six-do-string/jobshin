@@ -1,0 +1,62 @@
+.result-table {
+  width: 100%; /* 테이블 너비를 컨테이너의 100%로 설정 */
+  border-collapse: collapse; /* 테이블 셀 간의 간격을 제거 */
+  margin-bottom: 20px; /* 테이블 아래에 20px의 여백을 추가 */
+}
+
+.result-table th, .result-table td {
+  border: 1px solid #ddd; /* 테이블 셀의 테두리를 연한 회색으로 설정 */
+  padding: 8px; /* 테이블 셀 내부의 여백을 8px로 설정 */
+  text-align: center; /* 테이블 셀의 텍스트를 중앙 정렬 */
+}
+
+.result-table th {
+  background-color: #5E8DC0; /* 테이블 헤더 셀의 배경색을 파란색 계열로 설정 */
+  color: white; /* 테이블 헤더 셀의 텍스트 색상을 흰색으로 설정 */
+}
+
+.questions {
+  margin-bottom: 20px; /* 질문 섹션 아래에 20px의 여백을 추가 */
+}
+
+.question-item {
+  border: 1px solid #ddd; /* 각 질문 항목의 테두리를 연한 회색으로 설정 */
+  border-radius: 5px; /* 각 질문 항목의 모서리를 둥글게 설정 */
+  margin-bottom: 10px; /* 각 질문 항목 사이에 10px의 간격을 추가 */
+  padding: 10px; /* 각 질문 항목 내부의 여백을 10px로 설정 */
+  background-color: #f9f9f9; /* 각 질문 항목의 배경색을 연한 회색으로 설정 */
+}
+
+.question-header {
+  display: flex; /* 질문 헤더를 플렉스 박스로 설정 */
+  justify-content: space-between; /* 질문 헤더를 양 끝에 배치 */
+  align-items: center; /* 질문 헤더를 수직 중앙으로 정렬 */
+}
+
+.question-content {
+  display: block; /* 질문 내용이 항상 보이도록 설정 */
+  margin-top: 10px; /* 질문 내용 위에 10px의 간격을 추가 */
+}
+
+.buttons {
+  display: flex; /* 버튼을 플렉스 박스로 설정 */
+  justify-content: flex-end; /* 버튼을 컨테이너의 오른쪽 끝으로 배치 */
+  gap: 10px; /* 버튼 사이에 10px의 간격을 추가 */
+}
+
+button {
+  padding: 10px 20px; /* 버튼 내부의 텍스트와 테두리 사이에 여백을 추가 */
+  font-size: 16px; /* 버튼 텍스트의 크기를 16px로 설정 */
+  border: none; /* 버튼의 테두리를 제거 */
+  border-radius: 5px; /* 버튼의 모서리를 둥글게 설정 */
+  cursor: pointer; /* 버튼 위에 마우스를 올렸을 때 포인터 커서로 변경 */
+}
+
+.btn-review {
+  background-color: #cccccc; /* "이전으로" 버튼의 배경색을 밝은 회색으로 설정 */
+}
+
+.btn-submit {
+  background-color: #5E8DC0; /* "면접완료" 버튼의 배경색을 파란색 계열로 설정 */
+  color: white; /* "면접완료" 버튼 텍스트의 색상을 흰색으로 설정 */
+}

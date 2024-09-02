@@ -4,6 +4,7 @@ import com.est.jobshin.domain.interview.dto.PracticeInterviewHistorySummaryRespo
 import com.est.jobshin.domain.interviewDetail.dto.InterviewDetailsResponse;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.dto.CreateUserRequest;
+import com.est.jobshin.domain.user.dto.MyPageInterviewWithDetailsDto;
 import com.est.jobshin.domain.user.dto.UpdateUserRequest;
 import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.service.UserService;
@@ -19,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -62,6 +62,7 @@ public class UserController {
         return "user/signup";
     }
 
+    // 마이페이지 폼
     @GetMapping("/views/users/mypage")
     public String userMyPage(Model model) {
         return "user/mypage";
@@ -123,6 +124,53 @@ public class UserController {
         }
 
         return "user/practice_interview_list";
+    }
+
+    // 유저 인터뷰(실전모드) 이력 리스트
+    @GetMapping("/views/users/interviews/real")
+    public String realInterviews(@RequestParam("page") Optional<Integer> page,
+        @RequestParam("size") Optional<Integer> size,
+        @AuthenticationPrincipal CustomUserDetails userDetails,
+        Model model) {
+
+        // 페이징 처리 기본값 설정
+        int currentPage = page.orElse(1); // 기본값 1
+        int pageSize = size.orElse(10); // 기본값 10
+
+        // 페이지 사이즈가 1보다 작으면 기본값으로 설정
+        if (pageSize < 1) {
+            pageSize = 10; // 기본 페이지 사이즈
+        }
+
+        // 현재 인증된 사용자 ID 가져오기
+        Long userId = userDetails.getUserId();
+
+        // 페이지네이션된 인터뷰 목록 가져오기
+        Page<PracticeInterviewHistorySummaryResponse> interviewSummaryList = userService.getPaginatedPracticeInterviews(
+            PageRequest.of(currentPage - 1, pageSize), userId, Mode.REAL);
+
+        model.addAttribute("interviewSummaryList", interviewSummaryList);
+
+        int totalPages = interviewSummaryList.getTotalPages();
+
+        // 페이지 번호 리스트 생성
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                .boxed()
+                .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        return "user/real_interview_list";
+    }
+
+    @GetMapping("/views/users/interviews/real/{id}")
+    public String realInterviewDetail(@PathVariable Long id, Model model) {
+
+        MyPageInterviewWithDetailsDto interviewDetails = userService.getInterviewDetail(id);
+        model.addAttribute("interviewDetails", interviewDetails);
+
+        return "user/real_interview_detail";
     }
 
     // 연습모드 상세 정보 조회

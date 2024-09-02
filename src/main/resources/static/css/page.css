@@ -1,0 +1,73 @@
+/* Pagination Container */
+.pagination {
+  display: flex;
+  padding-left: 0;
+  list-style: none;
+  border-radius: 0.25rem;
+  justify-content: center; /* Centers pagination in the container */
+}
+
+/* Pagination Item */
+.page-item {
+  margin: 0 2px; /* Small margin between items */
+}
+
+.page-item:first-child .page-link {
+  margin-left: 0;
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.page-item:last-child .page-link {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+/* Pagination Link */
+.page-link {
+  position: relative;
+  display: block;
+  padding: 0.5rem 0.75rem;
+  margin-left: -1px;
+  line-height: 1.25;
+  color: #007bff; /* Link color */
+  background-color: #fff; /* Background color */
+  border: 1px solid #dee2e6; /* Border around the link */
+  text-decoration: none; /* Removes the underline from links */
+}
+
+.page-link:hover {
+  color: #0056b3; /* Link color on hover */
+  background-color: #e9ecef; /* Background color on hover */
+  border-color: #dee2e6; /* Border color on hover */
+}
+
+.page-link:focus {
+  z-index: 3;
+  color: #0056b3;
+  background-color: #e9ecef;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Disabled State */
+.page-item.disabled .page-link {
+  color: #6c757d;
+  pointer-events: none;
+  cursor: auto;
+  background-color: #fff;
+  border-color: #dee2e6;
+}
+
+/* Active State */
+.page-item.active .page-link {
+  z-index: 3;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.page-item.active .page-link:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}

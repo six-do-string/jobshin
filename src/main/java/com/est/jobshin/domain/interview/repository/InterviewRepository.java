@@ -13,7 +13,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
+
+    @Query("SELECT i FROM Interview i WHERE (i.mode = :mode) AND i.user.id = :userId")
+    Page<Interview> findInterviewsWithPracticeModeByUser(@Param("userId") Long userId,
+            Pageable pageable, Mode mode);
+
     @Query("SELECT i FROM Interview i JOIN FETCH i.interviewDetails d WHERE i.mode = :mode  AND i.user.id = :userId")
     Page<Interview> findInterviewsWithPracticeModeByUser(@Param("userId") Long userId
             , @Param("mode") Mode mode, Pageable pageable);
+
 }
