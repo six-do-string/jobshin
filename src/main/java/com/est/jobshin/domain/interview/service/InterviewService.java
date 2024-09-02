@@ -4,13 +4,12 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewDto;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
-import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
-import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
 import com.est.jobshin.global.security.model.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;
@@ -24,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -52,7 +50,6 @@ public class InterviewService {
 
         Interview createdInterview = interviewRepository.save(interview);
 
-//        interviewDetailService.createInterviewDetail(interview);
         interviewDetailService.practiceModeStarter(interview, category, user);
 
         session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
@@ -72,7 +69,6 @@ public class InterviewService {
 
         Interview createdInterview = interviewRepository.save(interview);
 
-//        interviewDetailService.createInterviewDetail(interview);
         interviewDetailService.realModeStarter(interview, user);
 
         session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
@@ -84,18 +80,17 @@ public class InterviewService {
     }
 
     @Transactional
-    public InterviewQuestion2 processAnswerAndGetNextQuestion(HttpSession session, InterviewQuestion2 interviewQuestion2) {
-        InterviewQuestion2 nextQuestion = getNextQuestion2(session);
+    public InterviewQuestion processAnswerAndGetNextQuestion(HttpSession session, InterviewQuestion interviewQuestion) {
+        InterviewQuestion nextQuestion = getNextQuestion2(session);
 
         CompletableFuture.runAsync(() -> {
-            //interviewDetailService 에서 getAnswerByUser 메서드 비동기 실행
-            interviewDetailService.getAnswerByUser(interviewQuestion2);
+            interviewDetailService.getAnswerByUser(interviewQuestion);
         });
 
         return nextQuestion;
     }
 
-    public InterviewQuestion2 getNextQuestion2(HttpSession session) {
+    public InterviewQuestion getNextQuestion2(HttpSession session) {
         List<InterviewDetail> questions = (List<InterviewDetail>) session.getAttribute("questions");
         Integer currentIndex = (Integer) session.getAttribute("currentIndex");
 
@@ -106,7 +101,7 @@ public class InterviewService {
         InterviewDetail question = questions.get(currentIndex);
         session.setAttribute("currentIndex", currentIndex + 1);
 
-        return InterviewQuestion2.from(question);
+        return InterviewQuestion.from(question);
     }
 
     public List<InterviewResultDetail> finishInterview(HttpSession session) {
