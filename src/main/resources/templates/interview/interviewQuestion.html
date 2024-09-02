@@ -15,97 +15,125 @@
 <div th:replace="~{layout/header.html :: header}"></div>
 <main class="mainBody">
     <div class="mainCont">
-        <h1>모의 면접 - 연습 모드</h1>
+        <h1>모의 면접 - 실전 모드</h1>
         <hr>
         <section class="questionCont">
             <div class="questionBox">
                 <a class="goToBack">처음으로 돌아가기</a>
                 <div class="question">
-                    <h2>Q1</h2>
-                    <p class="content" th:text="${question.question}">ArrayList와 LinkedList의 차이점에 대해 말해주세요.</p>
+                    <h2 class="questionNum">Q1</h2>
+                    <span style="display: none"></span>
+                    <p class="content">ArrayList와 LinkedList의 차이점에 대해 말해주세요.</p>
                 </div>
             </div>
-            <div class="completeSubmit" style="display: none">
-                <span class="textSubmit">제출되었습니다.</span>
-                <button id="nextBtn" onclick="getQuestions()">다음 문제</button>
-            </div>
-<!--            <div class="completeInterview" style="display: none">-->
-<!--                <span class="text">제출되었습니다.</span>-->
-<!--                <button id="nextBtn" onclick="getQuestions()">다음 문제</button>-->
-<!--            </div>-->
-            <form class="answerBox">
+            <!--            <div class="completeSubmit" style="display: none">-->
+            <!--                <span class="textSubmit">제출되었습니다.</span>-->
+            <!--                <button id="nextBtn">다음 문제</button>-->
+            <!--            </div>-->
+            <div class="answerBox">
                 <label for="answer" style="display: none"></label>
                 <textarea id="answer" name="answer" placeholder="답변을 입력하세요"></textarea>
-                <button id="submitBtn" type="submit"><img class="sendLogoImg" src="/img/Send.png" alt="전송 버튼"></button>
-            </form>
+                <button id="submitBtn" type="submit" onclick="submitAnswer(questionId, question, answer)"><img
+                        class="sendLogoImg" src="/img/Send.png" alt="전송 버튼"></button>
+            </div>
         </section>
     </div>
 </main>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
+<script th:inline="javascript">
     let currentProblem = 1;
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
 
-    // $(document).ready(function () {
+    let questionId = null;
+    let question = null;
+
     window.onload = () => {
         getQuestions();
+    };
 
-        // 다음 질문으로 넘어가기
-        $('.answerBox').submit(function (event) {
-            event.preventDefault();
-
+    // 답변 제출
+    function submitAnswer() {
+        if (currentProblem < 5) {
             let answer = $('#answer').val();
+            console.log(questionId);
+
+            console.log(answer);
+            if (!answer.trim()) {
+                alert('답변을 입력해주세요.');
+                return;
+            }
+
+            const params = {
+                id: questionId,
+                question: question,
+                answer: answer
+            }
 
             $.ajax({
                 type: 'POST',
-                beforeSend : function(xhr) {
+                beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
-                data: {answer: answer},
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(params),
                 url: "/api/mock-interviews/next",
                 success: function (response) {
-                    $('.answerBox').hide();
-                    $('#answer').show();
+                    currentProblem++;
+                    alert('답변이 제출되었습니다.')
+                    console.log(response);
+
+                    // 초기화
+                    questionId = response.id;
+                    console.log(questionId);
+                    question = response.question;
+                    console.log(question);
+                    $('#answer').val('');
+
+                    $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
+                    $('.content').html(`<p>${question}</p>`);
+
+                    console.log(currentProblem);
                 },
                 error: function (error) {
                     console.error("답변 제출 중 오류가 발생하였습니다: ", error);
                 }
             });
 
-            if (currentProblem < 5) {
-                currentProblem++;
-            } else {
-                $('#nextBtn').prop('disabled', true).text('답변 완료');
-                if(confirm('질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?')){
-                    window.location.href="/AIFeedback"
-                }
+        } else {
+            $('#submitBtn').prop('disabled', true).text('답변 완료');
+            if (confirm("질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?")) {
+                window.location.href = "/views/interview/result"
             }
-        });
-
-        $('#nextBtn').click(function () {
-            getQuestions();
-        })
-    };
+        }
+    }
 
     // 면접 질문 불러오기
     function getQuestions() {
 
         console.log('getQuestions 함수 실행')
-        const questionCont = document.getElementsByClassName('.content');
+        const questionCont = document.getElementsByClassName('content');
 
         $.ajax({
             type: 'GET',
-            beforeSend : function(xhr) {
-                xhr.setRequestHeader(csrfHeader, csrfToken);
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
             },
             url: "/api/mock-interviews/next",
-            dataType: 'text',
+            dataType: 'json',
             success: function (response) {
-                $('questionCont').html(`<p class="content">${response}</p>`);
+                console.log(response);
+
+                questionId = response.id;
+                console.log(questionId);
+                question = response.question;
+                console.log(question);
+
+                $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
+                $(questionCont).html(`<p>${question}</p>`);
             },
-            error: function(error) {
+            error: function (error) {
                 console.error('문제 가져오는 중 오류 발생: ', error);
             }
         });

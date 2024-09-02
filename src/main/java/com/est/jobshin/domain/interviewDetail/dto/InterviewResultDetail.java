@@ -10,15 +10,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InterviewQuestion2 {
-    private Long id;
+public class InterviewResultDetail {
     private String question;
     private String answer;
+    private String exampleAnswer;
+    private Long score;
 
-    public static InterviewQuestion2 from(InterviewDetail interviewDetail) {
-        return InterviewQuestion2.builder()
-                .id(interviewDetail.getId())
+    public static InterviewResultDetail from(InterviewDetail interviewDetail) {
+        return InterviewResultDetail.builder()
                 .question(interviewDetail.getQuestion())
+                .answer(interviewDetail.getAnswer())
+                .exampleAnswer(interviewDetail.getExampleAnswer())
+                .score(interviewDetail.getScore())
                 .build();
     }
 }

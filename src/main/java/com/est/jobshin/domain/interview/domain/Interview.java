@@ -4,10 +4,8 @@ import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -41,14 +39,15 @@ public class Interview {
 	@OneToMany(mappedBy = "interview", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InterviewDetail> interviewDetails = new ArrayList<>();
 
-	private Interview(String title, LocalDateTime createAt, User user) {
+	private Interview(String title, LocalDateTime createAt, User user, Mode mode) {
 		this.title = title;
 		this.createAt = createAt;
 		this.user = user;
+		this.mode = mode;
 	}
 
-	public static Interview createInterview(String title, LocalDateTime createAt, User user) {
-		return new Interview(title, createAt, user);
+	public static Interview createInterview(String title, LocalDateTime createAt, User user, Mode mode) {
+		return new Interview(title, createAt, user, mode);
 	}
 
 	public void addInterviewDetails(InterviewDetail interview){

@@ -4,6 +4,9 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.user.domain.User;
+import com.est.jobshin.domain.user.util.Language;
+import com.est.jobshin.domain.user.util.Level;
+import com.est.jobshin.domain.user.util.Position;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,12 +48,12 @@ public class AlanService {
 //		return callApiFeedback(defaultUrl, clientId, user, interviewDetail);
 //	}
 
-	public String callAnswer(String input) {
-		return callApiAnswer(defaultUrl, clientId, input);
+	public String callAnswer(String question, String answer) {
+		return callApiAnswer(defaultUrl, clientId, question, answer);
 	}
 
-	public String callAlan(Category[] categories) {
-		return callApi(defaultUrl, clientId, categories);
+	public String callAlan(Category[] categories, Language language, Position position, Level level) {
+		return callApi(defaultUrl, clientId, categories, language, position, level);
 	}
 
 
@@ -64,8 +67,8 @@ public class AlanService {
 //		return response;
 //	}
 
-	private String callApi(String apiUrl, String clientId, Category[] categories) {
-		String message = PromptMessage.QUESTION_PROMPT + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + "LV1" + "사용 언어: JAVA" + "출제 카테고리는 1~5번까지 각각 " + Arrays.toString(categories);
+	private String callApi(String apiUrl, String clientId, Category[] categories, Language language, Position position, Level level) {
+		String message = position + PromptMessage.QUESTION_PROMPT + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중 " + level + " 사용 언어: " + language + "출제 카테고리는 1~5번까지 각각 " + Arrays.toString(categories);
 		String content = String.format(message);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
 		log.info("Calling API: {}", requestUrl);
@@ -93,7 +96,8 @@ public class AlanService {
 
 	// 연습 모드 문제
 	private String callApiPracticeMode(String apiUrl, String ClientId, User user, InterviewDetail interviewDetail){
-		String setUpMessage = user.getId() + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + user.getLevel() + "사용언어: " + user.getLanguage() + "선택한 카테고리: " + interviewDetail.getCategory();
+		String setUpMessage
+				= "전체 레벨(구성 레벨: LV1, LV2, LV3) 중" + user.getLevel() + "사용언어: " + user.getLanguage() + "선택한 카테고리: " + interviewDetail.getCategory();
 
 		String questionMessage = "3가지 카테고리(CS(컴퓨터 과학 기초), 프로그래밍 언어 및 도구, 알고리즘) 중 선택한 카테고리 내에서만"
 				+ PromptMessage.QUESTION_PROMPT + setUpMessage;
@@ -124,8 +128,8 @@ public class AlanService {
 //	}
 
 	// 모범답안
-	private String callApiAnswer(String apiUrl, String ClientId, String input) {
-		String message = input + PromptMessage.ANSWER_PROMPT;
+	private String callApiAnswer(String apiUrl, String ClientId, String question, String answer) {
+		String message = question + " 라는 질문에 대한 답변이야. " + answer + ". " + PromptMessage.ANSWER_PROMPT;
 		String content = String.format(message);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
 		log.info("Calling API: {}", requestUrl);

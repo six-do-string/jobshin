@@ -8,7 +8,7 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>모의 면접 연습모드 입장 페이지</title>
     <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/static/css/interviewPracticeEnter.css">
+    <link rel="stylesheet" href="/css/interviewPracticeEnter.css">
 </head>
 <body>
 <div th:replace="~{layout/header.html :: header}"></div>
@@ -22,7 +22,7 @@
                 <div class="realMode">
                     <p class="text1">지원자 님은<br>연습모드를 선택하셨습니다.</p>
                     <p class="text2">계속 진행하려면 아래의 '시작하기'<br>버튼을 클릭해주세요.</p>
-                    <form class="categoryBox" method="post" th:action="@{/api/mock-interviews/practice(category=${selectedCategory})}">
+                    <div class="categoryBox">
                             <div class="radio">
                                 <label for="cs">CS</label>
                                 <input id="cs" name="category" value='CS' class="option" type="radio" />
@@ -37,9 +37,9 @@
                             </div>
                         <div class="buttonCont">
                             <a class="click" th:href="@{/interview/interviewMainPage}">돌아가기</a>
-                            <button class="click" type="submit">시작하기</button>
+                            <button class="click" onclick="createQuestions2()" type="submit">시작하기</button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </section>
             <section>
@@ -55,19 +55,14 @@
     </div>
 </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script th:inline="javascript">
+<script>
     // 질문 생성
     function createQuestions2(){
         let TOKEN = $("meta[name='_csrf']").attr("content");
         let HEADER = $("meta[name='_csrf_header']").attr("content");
 
-        const category = [[${selectedCategory}]];
+        const category = $("input[name='category']:checked").val();
 
-        // 임시 데이터 삽입
-        const params = {
-            title: "test",
-            mode: "PRACTICE"
-        }
         console.log('createQuestions() 함수 실행')
 
         $.ajax({
@@ -75,10 +70,9 @@
             beforeSend : function(xhr) {
                 xhr.setRequestHeader(HEADER, TOKEN);
             },
-            url: "/api/mock-interviews/practice?category={category}",
+            url: "/api/mock-interviews/practice?category=" + category,
             contentType: 'application/json; charset =utf-8',
             dataType: 'json',
-            data: JSON.stringify(params),
             success: function (response) {
                 returnQuestionPage();
             },
@@ -90,7 +84,7 @@
 
     // postTypeId에 따라 반환되는 게시판 링크가 다르게 설정
     function returnQuestionPage() {
-        window.location.href = '/views/question';
+        window.location.href = "/views/question/practice";
     }
 </script>
 </body>
