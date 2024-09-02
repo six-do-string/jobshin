@@ -173,11 +173,11 @@ public class UserController {
     }
 
     // 연습모드 상세 정보 조회
-    @GetMapping("/views/interviews/practice/{id}")
-    public String viewInterviewDetails(@PathVariable("id") Long interviewId, Model model) {
+    @GetMapping("/views/users/interviews/practice/{id}")
+    public String viewInterviewDetails(@PathVariable("id") Long id, Model model) {
 
         // 인터뷰 상세 데이터를 가져오는 서비스 메서드 호출
-        MyPageInterviewWithDetailsDto interviewDetails = userService.getInterviewDetail(interviewId);
+        MyPageInterviewWithDetailsDto interviewDetails = userService.getInterviewDetail(id);
         // 모델에 인터뷰 상세 데이터 추가
         model.addAttribute("interviewDetails", interviewDetails);
 
