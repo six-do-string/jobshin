@@ -19,7 +19,7 @@ import lombok.Setter;
 public class CreateUserRequest {
 
     // RFC 5322 이메일 정규식
-    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$", message = "아이디는 이메일 형태로 입력해주세요.")
+    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+.[a-zA-z]{2,}$", message = "아이디는 이메일 형태로 입력해주세요.")
     @NotBlank(message = "아이디는 빈칸을 입력할 수 없습니다.")
     private String username;
 
