@@ -45,14 +45,15 @@ public class InterviewService {
 
     @Transactional
     public Interview createPracticeInterview(Category category, HttpSession session) {
+        User user = getCurrentUser();
         Interview interview = Interview.createInterview(
-                null, LocalDateTime.now(), getCurrentUser(), Mode.PRACTICE
+                null, LocalDateTime.now(), user, Mode.PRACTICE
         );
 
         Interview createdInterview = interviewRepository.save(interview);
 
 //        interviewDetailService.createInterviewDetail(interview);
-        interviewDetailService.practiceModeStarter(interview, category);
+        interviewDetailService.practiceModeStarter(interview, category, user);
 
         session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
         session.setAttribute("currentIndex", 0);
@@ -64,14 +65,15 @@ public class InterviewService {
 
     @Transactional
     public Interview createRealInterview(HttpSession session) {
+        User user = getCurrentUser();
         Interview interview = Interview.createInterview(
-                null, LocalDateTime.now(), getCurrentUser(), Mode.REAL
+                null, LocalDateTime.now(), user, Mode.REAL
         );
 
         Interview createdInterview = interviewRepository.save(interview);
 
 //        interviewDetailService.createInterviewDetail(interview);
-        interviewDetailService.realModeStarter(interview);
+        interviewDetailService.realModeStarter(interview, user);
 
         session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
         session.setAttribute("currentIndex", 0);

@@ -7,6 +7,7 @@ import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.util.Category;
+import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.infra.alan.AlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,27 +31,27 @@ public class InterviewDetailService {
     private final InterviewRepository interviewRepository;
 
     @Transactional
-    public void realModeStarter(Interview interview) {
+    public void realModeStarter(Interview interview, User user) {
         Category[] categories = selectCategories(5);
-        createInterviewDetail(interview, categories);
+        createInterviewDetail(interview, categories, user);
     }
 
     @Transactional
-    public void practiceModeStarter(Interview interview, Category category) {
+    public void practiceModeStarter(Interview interview, Category category, User user) {
         Category[] categories = new Category[5];
         Arrays.fill(categories, category);
-        createInterviewDetail(interview, categories);
+        createInterviewDetail(interview, categories, user);
     }
 
     @Transactional
-    public void createInterviewDetail(Interview interview, Category[] category) {
+    public void createInterviewDetail(Interview interview, Category[] category, User user) {
         //카테고리 선별 구현
         //임시로 구현
 //        Category[] category = {Category.CS, Category.CS, Category.CS, Category.CS, Category.CS};
 
         //callAlan 에 추가해야 할 파라미터
         //1. 카테고리
-        String questionData = alenService.callAlan(category);
+        String questionData = alenService.callAlan(category, user.getLanguage(), user.getPosition(), user.getLevel());
 
         //데이터 처리
         ArrayList<String> questionList = new ArrayList<>();
