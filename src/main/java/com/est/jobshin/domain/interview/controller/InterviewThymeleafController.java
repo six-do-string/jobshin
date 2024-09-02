@@ -1,6 +1,8 @@
 package com.est.jobshin.domain.interview.controller;
 
+import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import jakarta.servlet.http.HttpSession;
@@ -18,10 +20,10 @@ import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 @Controller
 public class InterviewThymeleafController {
 
-    private final InterviewDetailRepository interviewDetailRepository;
+    private final InterviewService interviewService;
 
-    public InterviewThymeleafController(InterviewDetailRepository interviewDetailRepository) {
-        this.interviewDetailRepository = interviewDetailRepository;
+    public InterviewThymeleafController(InterviewService interviewService) {
+        this.interviewService = interviewService;
     }
 
     @GetMapping("/views/interviewMainPage")
@@ -41,7 +43,12 @@ public class InterviewThymeleafController {
     }
 
     @GetMapping("/views/question")
-    public String startInterview(Model model) {
+    public String startInterview() {
         return "interview/interviewQuestion";
+    }
+
+    @GetMapping("/views/interview/result")
+    public String getInterviewResult() {
+        return "AlFeedback";
     }
 }
