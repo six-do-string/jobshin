@@ -1,5 +1,6 @@
 package com.est.jobshin.domain.interview.controller;
 
+import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
@@ -54,12 +55,15 @@ public class InterviewThymeleafController {
     }
 
     @GetMapping("/views/interview/result")
-    public String getInterviewResult() {
-//        List<InterviewResultDetail> interviewDetail = interviewService.getInterviewDetails(id);
-//        interviewDetail.forEach(interviewResultDetail -> {
-//            String feedback = interviewResultDetail.getExampleAnswer();
-//            model.addAttribute("exampleAnswer", feedback);
-//        });
+    public String getInterviewResult(@RequestParam("interviewId") Long interviewId, Model model) {
+        List<InterviewResultDetail> interviewDetail = interviewService.getInterviewDetails(interviewId);
+        Interview interview = interviewService.getInterviewById(interviewId).toInterview();
+
+        Long totalScore = interviewDetail.stream().mapToLong(InterviewResultDetail::getScore).sum();
+
+        model.addAttribute("totalScore", totalScore);
+        model.addAttribute("interview", interview);
+        model.addAttribute("interviewDetailList", interviewDetail);
 
         return "interviewFeedback";
     }

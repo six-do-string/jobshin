@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +8,9 @@
     <title>모의 면접</title>
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/interviewMainPage.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 </head>
 <body>
 <div th:replace="~{layout/header.html :: header}"></div>
@@ -18,7 +19,7 @@
         <h1>모의 면접</h1>
         <hr>
         <section class="mainSection">
-            <img class="logoImg" src="/img/logo.png" alt="로고">
+            <span class="logoImg">JOBSHIn</span>
             <h2 class="goToInterview">모의 면접<br>응시하기</h2>
             <p class="content">총 5개의 질문이 출제됩니다.</p>
             <div class="buttonCont">
