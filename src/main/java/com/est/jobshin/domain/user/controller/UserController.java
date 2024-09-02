@@ -60,7 +60,11 @@ public class UserController {
         return "user/signup";
     }
 
-    // 회원가입 수정 폼
+    @GetMapping("/views/users/mypage")
+    public String userMyPage(Model model) {
+        return "user/mypage";
+    }
+
     @GetMapping("/views/users/edit")
     public String userEditFrom(Model model) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
