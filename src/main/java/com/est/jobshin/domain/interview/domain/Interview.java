@@ -29,6 +29,7 @@ public class Interview {
 	private String title;
 
 //	@NotNull
+	@Enumerated(EnumType.STRING)
 	private Mode mode;
 
 //	@NotNull
