@@ -1,10 +1,9 @@
 package com.est.jobshin.domain.user.service;
 
 import com.est.jobshin.domain.interview.domain.Interview;
-import com.est.jobshin.domain.interview.dto.PracticeInterviewHistorySummaryResponse;
+import com.est.jobshin.domain.interview.dto.InterviewHistorySummaryResponse;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
-import com.est.jobshin.domain.interviewDetail.dto.InterviewDetailsResponse;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
@@ -80,14 +79,13 @@ public class UserService {
     // 마이 페이지
     // 모의 면접 리스트 페이징 처리
     @Transactional(readOnly = true)
-    public Page<PracticeInterviewHistorySummaryResponse> getPaginatedPracticeInterviews(
-            Pageable pageable, Long userId, Mode mode) {
+    public Page<InterviewHistorySummaryResponse> getPaginatedInterviews(Pageable pageable, Long userId, Mode mode) {
 
         // 인터뷰 목록을 페이지네이션으로 가져옴
         Page<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(userId, mode, pageable);
 
         // 인터뷰 목록을 DTO로 변환
-        List<PracticeInterviewHistorySummaryResponse> practiceInterviewList = interviewsPage.stream()
+        List<InterviewHistorySummaryResponse> practiceInterviewList = interviewsPage.stream()
                 .map(interview -> {
                     // 인터뷰의 모든 디테일에서 점수를 합산
                     Long totalScore = interview.getInterviewDetails().stream()
@@ -98,8 +96,8 @@ public class UserService {
                     InterviewDetail firstDetail = interview.getInterviewDetails().stream()
                             .findFirst().orElse(null);
 
-                    return PracticeInterviewHistorySummaryResponse.toDto(interview, firstDetail,
-                            totalScore / 5);
+                    return InterviewHistorySummaryResponse.toDto(interview, firstDetail, totalScore / 5);
+
                 })
                 .collect(Collectors.toList());
 
@@ -131,14 +129,5 @@ public class UserService {
         return myPageInterviewWithDetailsDto;
     }
 
-    // 모의 면접 상세 보기
-    @Transactional(readOnly = true)
-    public InterviewDetailsResponse getInterviewDetailsById(Long interviewId){
-        Interview interview = interviewRepository.findById(interviewId)
-                .orElseThrow(() -> new EntityNotFoundException("인터뷰를 찾을 수 없습니다."));
-        List<InterviewDetail> details = interviewDetailRepository.findByInterviewId(interviewId);
 
-        return InterviewDetailsResponse.toDto(interview, details);
-
-    }
 }
