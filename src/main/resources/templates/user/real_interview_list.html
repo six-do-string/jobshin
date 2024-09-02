@@ -48,9 +48,9 @@
 				</tr>
 				</thead>
 				<tbody align="center">
-				<tr th:each=" interview : ${interviewSummaryList}">
-					<td th:text="${interview.id}"><a th:href="@{/admin/users/{username}(username=${user.username})}" th:text="${user.username}">회원 아이디</a></td>
-					<td th:text="${interview.title}">제목</td>
+				<tr th:each="interview : ${interviewSummaryList}">
+					<td><a th:href="@{/views/users/interviews/real/{id}(id=${interview.id})}" th:text="${interview.id}">번호</a></td>
+					<td><a th:href="@{/views/users/interviews/real/{id}(id=${interview.id})}" th:text="${interview.title}">제목</a></td>
 					<td th:text="${interview.nickname}">사용자 이름</td>
 					<td th:text="${interview.createdAt}">날짜 및 시간</td>
 				</tr>
