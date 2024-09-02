@@ -29,7 +29,7 @@
 				<h3>면접 기록</h3>
 				<ul class="sidebar-menu">
 					<li><a href="/views/users/interviews/practice">연습 모드 이력</a></li>
-					<li><a href="/views/interviews/real">실전 모드 이력</a></li>
+					<li><a href="/views/users/interviews/real">실전 모드 이력</a></li>
 					<li><a href="/views/interviews/scheduled">Today's Scheduled</a></li>
 				</ul>
 			</div>
@@ -49,17 +49,17 @@
 				</thead>
 				<tbody>
 				<tr>
-					<td>yyyy.mm.dd</td>
-					<td>50 / 100</td>
-					<td>Java란 무엇입니까?</td>
-					<td>Java, BackEnd</td>
+					<td th:text="${#temporals.format(interviewDetails.createdAt, 'yyyy.MM.dd')}">yyyy.MM.dd</td>
+					<td th:text="${interviewDetails.averageScore + ' / 100'}">50 / 100</td>
+					<td th:text="${interviewDetails.title}">Java란 무엇입니까?</td>
+					<td>백엔드 전체</td>
 				</tr>
 				</tbody>
 			</table>
 			
 			<div class="questions">
 				<!-- 면접 질문과 답변 반복 렌더링 -->
-				<div class="question-item" th:each="interviewDetail : ${interviewDetails}">
+				<div class="question-item" th:each="interviewDetail : ${interviewDetails.getInterviewDetails()}">
 					<div class="question-header">
 						<span th:text="'문제 ' + ${interviewDetail.id} + '. ' + ${interviewDetail.question}">문제 1. ==와 equals()의 차이점은?</span>
 						<button class="toggle-button">▲</button>
@@ -72,8 +72,7 @@
 			</div>
 			
 			<div class="buttons">
-				<button class="btn-review">이전으로</button>
-				<button class="btn-submit">목록으로</button>
+				<a href="/views/users/interviews/real" class="button-link">목록으로</a>
 			</div>
 		</section>
 	</div>
