@@ -6,19 +6,13 @@ import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion2;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
 import com.est.jobshin.domain.interviewDetail.util.Category;
-import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.infra.alan.AlanService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static com.est.jobshin.domain.interviewDetail.util.Mode.PRACTICE;
-import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -38,14 +32,6 @@ public class InterviewController {
         Interview interview = interviewService.createRealInterview(session);
         return ResponseEntity.ok(InterviewDto.fromInterview(interview));
     }
-
-    //세션 테스트용
-//    @GetMapping
-//    public ResponseEntity<InterviewDto> createInterview(HttpSession session) {
-//        InterviewDto interviewDto = new InterviewDto();
-//        Interview interview = interviewService.createInterview(interviewDto, session);
-//        return ResponseEntity.ok(InterviewDto.fromInterview(interview));
-//    }
 
     @GetMapping("/api/mock-interviews/next")
     public ResponseEntity<InterviewQuestion2> next(HttpSession session) {
@@ -75,6 +61,4 @@ public class InterviewController {
         interviewService.deleteInterviewsById(interviewId);
         return ResponseEntity.noContent().build();
     }
-
-
 }

@@ -10,7 +10,6 @@ import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
-import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
 import com.est.jobshin.global.security.model.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;
@@ -24,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -52,7 +50,6 @@ public class InterviewService {
 
         Interview createdInterview = interviewRepository.save(interview);
 
-//        interviewDetailService.createInterviewDetail(interview);
         interviewDetailService.practiceModeStarter(interview, category, user);
 
         session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
@@ -72,7 +69,6 @@ public class InterviewService {
 
         Interview createdInterview = interviewRepository.save(interview);
 
-//        interviewDetailService.createInterviewDetail(interview);
         interviewDetailService.realModeStarter(interview, user);
 
         session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
@@ -88,7 +84,6 @@ public class InterviewService {
         InterviewQuestion2 nextQuestion = getNextQuestion2(session);
 
         CompletableFuture.runAsync(() -> {
-            //interviewDetailService 에서 getAnswerByUser 메서드 비동기 실행
             interviewDetailService.getAnswerByUser(interviewQuestion2);
         });
 
