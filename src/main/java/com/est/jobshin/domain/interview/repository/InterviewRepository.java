@@ -1,7 +1,6 @@
 package com.est.jobshin.domain.interview.repository;
 
 import com.est.jobshin.domain.interview.domain.Interview;
-import com.est.jobshin.domain.interview.dto.PracticeInterviewHistorySummaryResponse;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
