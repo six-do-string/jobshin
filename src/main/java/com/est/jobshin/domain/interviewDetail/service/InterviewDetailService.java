@@ -71,7 +71,7 @@ public class InterviewDetailService {
                 .orElseThrow(RuntimeException::new);
         interviewDetail.registerAnswer(interviewQuestion.getAnswer());
 
-        String feedback = alenService.callAnswer(interviewQuestion.getAnswer());
+        String feedback = alenService.callAnswer(interviewQuestion.getQuestion(), interviewQuestion.getAnswer());
 
         ArrayList<String> feedbackList = new ArrayList<>();
 

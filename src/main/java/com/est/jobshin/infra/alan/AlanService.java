@@ -48,8 +48,8 @@ public class AlanService {
 //		return callApiFeedback(defaultUrl, clientId, user, interviewDetail);
 //	}
 
-	public String callAnswer(String input) {
-		return callApiAnswer(defaultUrl, clientId, input);
+	public String callAnswer(String question, String answer) {
+		return callApiAnswer(defaultUrl, clientId, question, answer);
 	}
 
 	public String callAlan(Category[] categories, Language language, Position position, Level level) {
@@ -128,8 +128,8 @@ public class AlanService {
 //	}
 
 	// 모범답안
-	private String callApiAnswer(String apiUrl, String ClientId, String input) {
-		String message = input + PromptMessage.ANSWER_PROMPT;
+	private String callApiAnswer(String apiUrl, String ClientId, String question, String answer) {
+		String message = question + " 라는 질문에 대한 답변이야. " + answer + ". " + PromptMessage.ANSWER_PROMPT;
 		String content = String.format(message);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
 		log.info("Calling API: {}", requestUrl);
