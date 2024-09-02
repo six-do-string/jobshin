@@ -15,7 +15,7 @@
 
       <!-- 세션이 존재할 경우 로그아웃, 개인정보수정 버튼으로 대체 -->
       <li class="nav-items" sec:authorize="isAuthenticated()">
-        <a class="nav-links" th:href="@{/views/mypage}">마이페이지</a>
+        <a class="nav-links" th:href="@{/views/users/mypage}">마이페이지</a>
       </li>
       <li class="nav-items" sec:authorize="isAuthenticated()">
         <a class="nav-links" th:href="@{/views/users/edit}">회원정보 수정</a>
