@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/interviewFeedback.css">
+</head>
+<body>
+<div th:replace="~{layout/header.html :: header}"></div>
+<div class="container">
+    <h1>면접 결과</h1>
+    <table class="result-table">
+        <thead>
+        <tr>
+            <th>일자</th>
+            <th>점수</th>
+            <th>1번 질문</th>
+            <th>카테고리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>yyyy.mm.dd</td>
+            <td>50 / 100</td>
+            <td>Java란 무엇입니까?</td>
+            <td>Java, BackEnd</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="questions">
+        <!--        <div class="question-item">-->
+        <!--            <div class="question-header">-->
+        <!--                <span class="question1">문제 1. ==와 equals()의 차이점은?</span>-->
+        <!--                <button class="toggle-button">▲</button>-->
+        <!--            </div>-->
+        <!--            <div class="question-content">-->
+        <!--                <p><strong>내 답변:</strong> 오버라이딩으로...</p>-->
+        <!--                <p><strong>시스템:</strong> equals() 메서드는...</p>-->
+        <!--            </div>-->
+        <!--        </div>-->
+    </div>
+    <!--    <div class="questions">-->
+    <!--        <div class="question-item">-->
+    <!--            <div class="question-header">-->
+    <!--                <span>문제 2. ==와 equals()의 차이점은?</span>-->
+    <!--                <button class="toggle-button">▲</button>-->
+    <!--            </div>-->
+    <!--            <div class="question-content">-->
+    <!--                <p><strong>내 답변:</strong> 오버라이딩으로...</p>-->
+    <!--                <p><strong>시스템:</strong> equals() 메서드는...</p>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--    <div class="questions">-->
+    <!--        <div class="question-item">-->
+    <!--            <div class="question-header">-->
+    <!--                <span>문제 3. ==와 equals()의 차이점은?</span>-->
+    <!--                <button class="toggle-button">▲</button>-->
+    <!--            </div>-->
+    <!--            <div class="question-content">-->
+    <!--                <p><strong>내 답변:</strong> 오버라이딩으로...</p>-->
+    <!--                <p><strong>시스템:</strong> equals() 메서드는...</p>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--    <div class="questions">-->
+    <!--        <div class="question-item">-->
+    <!--            <div class="question-header">-->
+    <!--                <span>문제 4. ==와 equals()의 차이점은?</span>-->
+    <!--                <button class="toggle-button">▲</button>-->
+    <!--            </div>-->
+    <!--            <div class="question-content">-->
+    <!--                <p><strong>내 답변:</strong> 오버라이딩으로...</p>-->
+    <!--                <p><strong>시스템:</strong> equals() 메서드는...</p>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--    <div class="questions">-->
+    <!--        <div class="question-item">-->
+    <!--            <div class="question-header">-->
+    <!--                <span>문제 5. ==와 equals()의 차이점은?</span>-->
+    <!--                <button class="toggle-button">▲</button>-->
+    <!--            </div>-->
+    <!--            <div class="question-content">-->
+    <!--                <p><strong>내 답변:</strong> 오버라이딩으로...</p>-->
+    <!--                <p><strong>시스템:</strong> equals() 메서드는...</p>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
+    <div class="buttons">
+        <button class="btn-review">이전으로</button>
+        <button class="btn-submit">면접완료</button>
+    </div>
+</div>
+<script src="/js/AlFeedback.js" defer></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    let token = $("meta[name='_csrf']").attr("content");
+    let header = $("meta[name='_csrf_header']").attr("content");
+
+    window.onload = () => {
+        if (confirm("결과를 확인하시겠습니까?")) {
+            createFeedback();
+        }
+    }
+
+    function createFeedback() {
+        console.log('createFeedback() 함수 실행');
+
+        $.ajax({
+            type: 'GET',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            dataType: 'json',
+            url: "/api/mock-interviews/finish",
+            success: function (response) {
+                alert('로딩 완료');
+                let question = '';
+                // if (response.length === 0) {
+                //     document.querySelector('.comments').innerHTML = `<div><p>등록된 댓글이 없습니다.</p></div>`
+                //     return;
+                // }
+
+                if (Array.isArray(response)) {
+                    response.forEach((questions) => {
+                        question +=
+                            `<div class="question">
+                            <div class="question-item">
+                                <div class="question-header">
+                                    <span>${questions.question}</span>
+                                    <button class="toggle-button">▲</button>
+                                </div>
+                                <div class="question-content">
+                                    <p><strong>내 답변:</strong> ${questions.answer} </p>
+                                    <p><strong>시스템:</strong> ${questions.content} </p>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                    console.log(question);
+                    document.querySelector('.questions').innerHTML = question;
+                } else{
+                    console.log("배열 아님");
+                }
+            },
+            error: function (error) {
+                console.error("답변 제출 중 오류가 발생하였습니다: ", error);
+            }
+        });
+    }
+</script>
+</body>
+</html>

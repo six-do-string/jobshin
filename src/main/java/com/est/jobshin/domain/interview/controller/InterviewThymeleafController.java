@@ -1,13 +1,18 @@
 package com.est.jobshin.domain.interview.controller;
 
 import com.est.jobshin.domain.interview.service.InterviewService;
+import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 import static com.est.jobshin.domain.interviewDetail.util.Mode.PRACTICE;
 import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
@@ -15,9 +20,11 @@ import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 @Controller
 public class InterviewThymeleafController {
     private final InterviewDetailService interviewDetailService;
+    private final InterviewService interviewService;
 
-    public InterviewThymeleafController(InterviewService interviewService, InterviewDetailService interviewDetailService) {
+    public InterviewThymeleafController(InterviewDetailService interviewDetailService, InterviewService interviewService) {
         this.interviewDetailService = interviewDetailService;
+        this.interviewService = interviewService;
     }
 
     @GetMapping("/views/interviewMainPage")
@@ -37,7 +44,7 @@ public class InterviewThymeleafController {
     }
 
     @GetMapping("/views/question/real")
-    public String startInterviewReal(Model model) {
+    public String startInterviewReal() {
         return "interview/interviewQuestion";
     }
 
@@ -48,7 +55,13 @@ public class InterviewThymeleafController {
 
     @GetMapping("/views/interview/result")
     public String getInterviewResult() {
-        return "AlFeedback";
+//        List<InterviewResultDetail> interviewDetail = interviewService.getInterviewDetails(id);
+//        interviewDetail.forEach(interviewResultDetail -> {
+//            String feedback = interviewResultDetail.getExampleAnswer();
+//            model.addAttribute("exampleAnswer", feedback);
+//        });
+
+        return "interviewFeedback";
     }
 
     @GetMapping("/views/interviews/practice")

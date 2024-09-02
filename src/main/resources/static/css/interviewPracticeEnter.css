@@ -111,18 +111,18 @@ h2{
     font-weight: bold;
 }
 
-ul{
+.confer{
     display: flex;
     flex-direction: column;
     gap: 10px;
     padding: 81.5px 27px;
     list-style: none;
 }
-li{
+.conferText{
     font-size: 25px;
     text-align: start;
 
 }
-li:nth-child(3){
+.conferText:nth-child(3){
     padding-bottom: 42px;
 }

@@ -45,6 +45,7 @@ public class InterviewDetail {
 
     private Long score;
 
+    @Size(max = 1000)
     private String exampleAnswer;
 
     private LocalDateTime createdAt;

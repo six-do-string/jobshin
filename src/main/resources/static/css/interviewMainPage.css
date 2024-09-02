@@ -43,7 +43,7 @@ hr{
     border: 2px solid #B5B5B5;
     margin-bottom: 97px;
 }
-.logo{
+.logoImg{
     padding: 51px 0 61px 0;
 }
 
@@ -66,7 +66,7 @@ hr{
     padding-bottom: 51px;
 }
 
-a{
+.practiceMode, .realMode{
     padding: 16px 25px;
     font-size: 20px;
     font-weight: bold;
