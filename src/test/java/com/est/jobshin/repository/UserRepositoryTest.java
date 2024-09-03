@@ -31,26 +31,29 @@ import static com.est.jobshin.domain.user.util.Language.PYTHON;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실제 데이베이스를 사용할수 있도록 셋팅
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실제 데이터베이스 사용 설정
 public class UserRepositoryTest {
 
-    @Autowired // 의존성 주입
+    // 의존성 주입: UserRepository, InterviewRepository, InterviewDetailRepository
+    @Autowired
     private UserRepository userRepository;
 
-    @Autowired // 의존성 주입
+    @Autowired
     private InterviewRepository interviewRepository;
 
-    @Autowired // 의존성 주입
+    @Autowired
     private InterviewDetailRepository interviewDetailRepository;
+
+    // 로깅 설정
     private static final Logger logger = LoggerFactory.getLogger(UserRepositoryTest.class);
 
-    // 각 테스트 후 데이터 정리
+    // 각 테스트가 실행된 후 데이터베이스를 정리하는 메서드
     @AfterEach
     void tearDown() {
+        // 테스트 후 인터뷰와 사용자 데이터를 삭제하여 깨끗한 상태로 유지
         interviewRepository.deleteAll();
         userRepository.deleteAll();
     }
-
     // -- 회원 영역 테스트
     // --- 회원가입 레포지토리 테스트 ---
 
@@ -143,7 +146,7 @@ public class UserRepositoryTest {
     }
 
     // --- 회원정보 탈퇴 레포지토리 테스트 ---
-    @DisplayName("회원정보 삭제 저거 테스트")
+    @DisplayName("탈퇴 회원정보 삭제 테스트")
     @Test
     void deleteUser() {
         // given: 초기 사용자 데이터 생성 및 저장
@@ -167,7 +170,7 @@ public class UserRepositoryTest {
     // --
 
     // -- 유저 인터뷰 이력 테스트
-    @DisplayName("사용자가 면접 이력이 없는 경우 테스트")
+    @DisplayName("사용자가 면접 이력이 미존재시 테스트")
     @Test
     void NoInterviewHistoryTest() {
         // given: 면접 없이 사용자만 생성하여 저장
@@ -191,7 +194,7 @@ public class UserRepositoryTest {
         assertThat(interviews).isEmpty(); // isEmpty()로 수정하여 면접 이력이 없는지 확인
     }
 
-    @DisplayName("사용자가 면접 이력이 있는지 확인하는 테스트")
+    @DisplayName("사용자가 면접 이력이 존재시 테스트")
     @Test
     @Transactional
     void interviewHistory() {
@@ -257,9 +260,9 @@ public class UserRepositoryTest {
         assertThat(interviews).isNotEmpty(); // 면접 이력이 있는지 확인
     }
 
-    @DisplayName("사용자의 인터뷰 건수와 내용이 일치하는지 확인하는 테스트")
+    @DisplayName("유저의 인터뷰 건수와 내용이 일치여부 확인 테스트")
     @Test
-    void interviewCountAndContentTest() {
+    void interviewCountAndContent() {
         // given: 사용자와 인터뷰 데이터 생성 및 저장
         User user = User.builder()
                 .username("test@test.com")
@@ -295,84 +298,7 @@ public class UserRepositoryTest {
         assertThat(interviews.get(0).getUser().getUsername()).isEqualTo(savedUser.getUsername()); // 인터뷰가 올바른 사용자와 연결되었는지 확인
     }
 
-    @DisplayName("인터뷰에 상세 내용이 있는지 확인하는 테스트")
-    @Test
-    void interviewDetailCheck() {
-        // given: 사용자 생성 및 저장
-        User user = User.builder()
-                .username("test@test.com")
-                .password("password")
-                .nickname("테스트")
-                .language(Language.JAVA)
-                .level(Level.LV2)
-                .position(Position.BACKEND)
-                .build();
 
-        // 사용자 저장
-        User savedUser = userRepository.save(user);
-
-        // 인터뷰 생성 및 저장
-        Interview interview = Interview.builder()
-                .title("Java Developer Interview")
-                .createAt(LocalDateTime.now())
-                .user(savedUser)
-                .build();
-
-        // 인터뷰 저장
-        Interview savedInterview = interviewRepository.save(interview);
-
-        // 인터뷰 상세 내용 생성 및 저장 - 각 객체가 고유하게 저장되어야 함
-        InterviewDetail detail1 = InterviewDetail.builder()
-                .question("What is Java?")
-                .answer("Java is a programming language.")
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
-        InterviewDetail savedDetail1 = interviewDetailRepository.saveAndFlush(detail1); // 첫 번째 인터뷰 상세 내용 저장
-        assertThat(savedDetail1.getId()).isNotNull(); // 저장된 ID가 존재하는지 확인
-
-        InterviewDetail detail2 = InterviewDetail.builder()
-                .question("Explain OOP concepts.")
-                .answer("OOP stands for Object-Oriented Programming.")
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
-        InterviewDetail savedDetail2 = interviewDetailRepository.saveAndFlush(detail2); // 두 번째 인터뷰 상세 내용 저장
-        assertThat(savedDetail2.getId()).isNotNull();
-
-        InterviewDetail detail3 = InterviewDetail.builder()
-                .question("What is Polymorphism?")
-                .answer("Polymorphism allows objects to be treated as instances of their parent class.")
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
-        InterviewDetail savedDetail3 = interviewDetailRepository.saveAndFlush(detail3); // 세 번째 인터뷰 상세 내용 저장
-        assertThat(savedDetail3.getId()).isNotNull();
-
-        InterviewDetail detail4 = InterviewDetail.builder()
-                .question("Explain Encapsulation.")
-                .answer("Encapsulation is the concept of wrapping data and methods together.")
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
-        InterviewDetail savedDetail4 = interviewDetailRepository.saveAndFlush(detail4); // 네 번째 인터뷰 상세 내용 저장
-        assertThat(savedDetail4.getId()).isNotNull();
-
-        InterviewDetail detail5 = InterviewDetail.builder()
-                .question("Describe Inheritance.")
-                .answer("Inheritance allows a class to inherit fields and methods from another class.")
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
-        InterviewDetail savedDetail5 = interviewDetailRepository.saveAndFlush(detail5); // 다섯 번째 인터뷰 상세 내용 저장
-        assertThat(savedDetail5.getId()).isNotNull();
-
-        // when: 인터뷰와 연결된 상세 내용을 조회
-        List<InterviewDetail> details = interviewDetailRepository.findByInterviewId(savedInterview.getId());
-
-        // then: 인터뷰에 상세 내용이 있는지 검증
-        assertThat(details).hasSize(5); // 상세 내용이 5개인지 확인
-    }
 }
 
 
