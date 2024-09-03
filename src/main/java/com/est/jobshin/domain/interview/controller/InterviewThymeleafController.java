@@ -4,6 +4,7 @@ import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +15,11 @@ import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 
 @Controller
 public class InterviewThymeleafController {
-    private final InterviewDetailService interviewDetailService;
-
-    public InterviewThymeleafController(InterviewService interviewService, InterviewDetailService interviewDetailService) {
-        this.interviewDetailService = interviewDetailService;
-    }
+//    private final InterviewDetailService interviewDetailService;
+//
+//    public InterviewThymeleafController(InterviewService interviewService, InterviewDetailService interviewDetailService) {
+//        this.interviewDetailService = interviewDetailService;
+//    }
 
     @GetMapping("/views/interviewMainPage")
     public String getInterview(HttpSession session) {
@@ -37,7 +38,7 @@ public class InterviewThymeleafController {
     }
 
     @GetMapping("/views/question/real")
-    public String startInterviewReal(Model model) {
+    public String startInterviewReal() {
         return "interview/interviewQuestion";
     }
 
@@ -49,6 +50,11 @@ public class InterviewThymeleafController {
     @GetMapping("/views/interview/result")
     public String getInterviewResult() {
         return "AlFeedback";
+    }
+
+    @GetMapping("/views/interview/levelEval")
+    public String getInterviewLevelEval() {
+        return "levelFeedback";
     }
 
 }
