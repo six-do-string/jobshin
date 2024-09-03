@@ -1,22 +1,35 @@
 /* sidebar.css */
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
 .container {
   display: flex;
-  max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .sidebar {
-  width: 250px;
-  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  width: 216px;
+  height: calc(100vh - 120px);
+  background-color: #FFFFFF;
+  border-right: 1px solid #333333;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-section {
-  margin-bottom: 20px;
+  margin-bottom: 141px;
 }
 
 .sidebar-section h3 {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
 }
@@ -31,9 +44,10 @@
 }
 
 .sidebar-menu li a {
+  font-size: 14px;
+  margin-bottom: 21px;
   text-decoration: none;
   color: #333;
-  font-size: 14px;
 }
 
 .sidebar-menu li a:hover {
@@ -41,7 +55,7 @@
 }
 
 .content {
-  margin-left: 250px; /* Make room for the sidebar */
+  margin-left: 200px; /* Make room for the sidebar */
   padding: 20px; /* Padding for main content */
   width: calc(100% - 250px); /* Adjust width based on sidebar */
 }
