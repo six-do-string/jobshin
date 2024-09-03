@@ -34,6 +34,7 @@
                 <textarea id="answer" name="answer" placeholder="답변을 입력하세요"></textarea>
                 <button id="submitBtn" type="submit" onclick="submitAnswer(questionId, question, answer)"><img
                         class="sendLogoImg" src="/img/Send.png" alt="전송 버튼"></button>
+                <div id="statusMessage" style="display: none;">답변 보내는 중...</div>
             </div>
         </section>
     </div>
@@ -54,58 +55,61 @@
 
     // 답변 제출
     function submitAnswer() {
-        if (currentProblem < 5) {
-            let answer = $('#answer').val();
-            console.log(questionId);
+        // if (currentProblem < 5) {
+        let answer = $('#answer').val();
+        console.log(questionId);
 
-            console.log(answer);
-            if (!answer.trim()) {
-                alert('답변을 입력해주세요.');
-                return;
-            }
-
-            const params = {
-                id: questionId,
-                question: question,
-                answer: answer
-            }
-
-            $.ajax({
-                type: 'POST',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader(header, token);
-                },
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(params),
-                url: "/api/mock-interviews/next",
-                success: function (response) {
-                    currentProblem++;
-                    alert('답변이 제출되었습니다.')
-                    console.log(response);
-
-                    // 초기화
-                    questionId = response.id;
-                    console.log(questionId);
-                    question = response.question;
-                    console.log(question);
-                    $('#answer').val('');
-
-                    $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
-                    $('.content').html(`<p>${question}</p>`);
-
-                    console.log(currentProblem);
-                },
-                error: function (error) {
-                    console.error("답변 제출 중 오류가 발생하였습니다: ", error);
-                }
-            });
-
-        } else {
-            $('#submitBtn').prop('disabled', true).text('답변 완료');
-            if (confirm("질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?")) {
-                window.location.href = "/views/interview/result"
-            }
+        console.log(answer);
+        if (!answer.trim()) {
+            alert('답변을 입력해주세요.');
+            return;
         }
+
+        const params = {
+            id: questionId,
+            question: question,
+            answer: answer
+        }
+
+        $.ajax({
+            type: 'POST',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(params),
+            url: "/api/mock-interviews/next",
+            success: function (response) {
+                setTimeout(function() {
+                    $('#statusMessage').hide();
+                    alert("답변이 제출되었습니다.");
+
+                    console.log(response);
+                    currentProblem++;
+                    console.log("currentProblem:" + currentProblem);
+                    if (currentProblem >= 6) {
+                        $('#submitBtn').prop('disabled', true).text('답변 완료');
+                        if (confirm("질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?")) {
+                            getResult(response);
+                        }
+                    } else {
+                        questionId = response.id;
+                        question = response.question;
+                        $('#answer').val('');
+
+                        $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
+                        $('.content').html(`<p>${question}</p>`);
+                    }
+                }, 5000);
+            },
+            error: function (error) {
+                console.error("답변 제출 중 오류가 발생하였습니다: ", error);
+            }
+        });
+
+        // } else {
+        //
+        // }
     }
 
     // 면접 질문 불러오기
@@ -134,6 +138,27 @@
             },
             error: function (error) {
                 console.error('문제 가져오는 중 오류 발생: ', error);
+            }
+        });
+    }
+
+    function getResult(data) {
+        console.log('getResult() 함수 실행');
+
+        $.ajax({
+            type: 'POST',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            data: JSON.stringify(data),
+            dataType: 'json',
+            url: "/api/mock-interviews/finish",
+            success: function (response) {
+                alert('로딩 완료');
+                window.location.href = "/views/interview/result";
+            },
+            error: function (error) {
+                console.error("오류가 발생하였습니다: ", error);
             }
         });
     }

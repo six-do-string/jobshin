@@ -38,7 +38,7 @@ public class InterviewThymeleafController {
     }
 
     @GetMapping("/views/question/real")
-    public String startInterviewReal(Model model) {
+    public String startInterviewReal() {
         return "interview/interviewQuestion";
     }
 
@@ -50,6 +50,11 @@ public class InterviewThymeleafController {
     @GetMapping("/views/interview/result")
     public String getInterviewResult() {
         return "AlFeedback";
+    }
+
+    @GetMapping("/views/interview/levelEval")
+    public String getInterviewLevelEval() {
+        return "levelFeedback";
     }
 
 }
