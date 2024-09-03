@@ -47,11 +47,12 @@
 <!--    문제 항목-->
 
     <div class="buttons">
-        <button class="btn-review" th:href="@{/views/interviewMainPage}">이전으로</button>
-        <button class="btn-submit" th:href="@{/views/interview/levelEval}">면접완료</button>
+        <button class="btn-review">이전으로</button>
+        <button class="btn-submit">면접완료</button>
     </div>
 </div>
 
+<script src="/static/js/interviewResult.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script th:inline="javascript">
     window.onload = () => {
@@ -68,7 +69,6 @@
             dataType: 'json',
             success: function (response) {
                 renderInterviewSummary(response);
-                // localStorage.setItem('interviewScore', calculateTotalScore(response));
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching interview summary:", error);

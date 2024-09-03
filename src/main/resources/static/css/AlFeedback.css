@@ -1,74 +1,58 @@
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+body {
+    font-family: Arial, sans-serif; /* 전체 페이지에서 사용할 기본 글꼴을 지정 */
+    margin: 0; /* 페이지의 기본 여백을 제거 */
+    padding: 0; /* 페이지의 기본 패딩을 제거 */
+    background-color: #f4f4f4; /* 페이지의 배경색을 연한 회색으로 설정 */
 }
 
-body{
-    width: 100%;
-    height: 100%;
+header {
+    background-color: #5E8DC0; /* 헤더의 배경색을 파란색 계열로 설정 */
+    padding: 20px 40px; /* 헤더 내부의 모든 면에 여백을 추가 */
+    color: white; /* 헤더 내 텍스트의 색상을 흰색으로 설정 */
+    font-size: 24px; /* 헤더 내 텍스트의 크기를 24px로 설정 */
+    font-weight: bold; /* 헤더 내 텍스트를 굵게 표시 */
+    text-align: left; /* 헤더 내 텍스트를 왼쪽 정렬 */
+    box-sizing: border-box; /* 패딩과 테두리를 포함한 전체 크기를 설정 */
+    display: flex; /* 헤더 내 요소들을 플렉스 컨테이너로 설정 */
+    justify-content: space-between; /* 헤더 내 요소들을 양 끝에 배치 */
+    align-items: center; /* 헤더 내 요소들을 수직 중앙으로 정렬 */
+    height: 100px; /* 헤더의 고정 높이를 100px로 설정 */
 }
 
-.mainBody{
-    padding: 28px;
-    height: 100%;
+header .logo {
+    font-size: 24px; /* 로고 텍스트의 크기를 24px로 설정 */
+    font-weight: bold; /* 로고 텍스트를 굵게 표시 */
+    color: white; /* 로고 텍스트의 색상을 흰색으로 설정 */
 }
 
-/*body {*/
-/*    font-family: Arial, sans-serif; !* 전체 페이지에서 사용할 기본 글꼴을 지정 *!*/
-/*    margin: 0; !* 페이지의 기본 여백을 제거 *!*/
-/*    padding: 0; !* 페이지의 기본 패딩을 제거 *!*/
-/*    background-color: #f4f4f4; !* 페이지의 배경색을 연한 회색으로 설정 *!*/
-/*}*/
+header .menu {
+    display: flex; /* 메뉴 항목들을 가로로 배치 */
+    gap: 30px; /* 각 메뉴 항목 사이에 30px 간격을 추가 */
+}
 
-/*header {*/
-/*    background-color: #5E8DC0; !* 헤더의 배경색을 파란색 계열로 설정 *!*/
-/*    padding: 20px 40px; !* 헤더 내부의 모든 면에 여백을 추가 *!*/
-/*    color: white; !* 헤더 내 텍스트의 색상을 흰색으로 설정 *!*/
-/*    font-size: 24px; !* 헤더 내 텍스트의 크기를 24px로 설정 *!*/
-/*    font-weight: bold; !* 헤더 내 텍스트를 굵게 표시 *!*/
-/*    text-align: left; !* 헤더 내 텍스트를 왼쪽 정렬 *!*/
-/*    box-sizing: border-box; !* 패딩과 테두리를 포함한 전체 크기를 설정 *!*/
-/*    display: flex; !* 헤더 내 요소들을 플렉스 컨테이너로 설정 *!*/
-/*    justify-content: space-between; !* 헤더 내 요소들을 양 끝에 배치 *!*/
-/*    align-items: center; !* 헤더 내 요소들을 수직 중앙으로 정렬 *!*/
-/*    height: 100px; !* 헤더의 고정 높이를 100px로 설정 *!*/
-/*}*/
+header .menu a {
+    color: white; /* 메뉴 링크 텍스트의 색상을 흰색으로 설정 */
+    text-decoration: none; /* 메뉴 링크에서 밑줄을 제거 */
+    font-size: 16px; /* 메뉴 항목 텍스트의 크기를 16px로 설정 */
+    padding: 10px 15px; /* 각 메뉴 항목 내부의 텍스트와 테두리 사이에 여백을 추가 */
+    border-radius: 5px; /* 각 메뉴 항목의 모서리를 둥글게 설정 */
+}
 
-/*header .logo {*/
-/*    font-size: 24px; !* 로고 텍스트의 크기를 24px로 설정 *!*/
-/*    font-weight: bold; !* 로고 텍스트를 굵게 표시 *!*/
-/*    color: white; !* 로고 텍스트의 색상을 흰색으로 설정 *!*/
-/*}*/
+header .menu a.button {
+    background-color: #0F4584; /* "마이페이지"와 "Logout" 버튼의 배경색을 짙은 파란색으로 설정 */
+    padding: 10px 20px; /* 버튼 내부의 텍스트와 테두리 사이에 여백을 더 많이 추가 */
+    border-radius: 20px; /* 버튼의 모서리를 더 둥글게 설정 */
+    font-weight: bold; /* 버튼 텍스트를 굵게 표시 */
+}
 
-/*header .menu {*/
-/*    display: flex; !* 메뉴 항목들을 가로로 배치 *!*/
-/*    gap: 30px; !* 각 메뉴 항목 사이에 30px 간격을 추가 *!*/
-/*}*/
+header .menu a.button:hover {
+    background-color: #0F4584; /* 버튼에 마우스를 올렸을 때의 배경색을 동일하게 유지 */
+}
 
-/*header .menu a {*/
-/*    color: white; !* 메뉴 링크 텍스트의 색상을 흰색으로 설정 *!*/
-/*    text-decoration: none; !* 메뉴 링크에서 밑줄을 제거 *!*/
-/*    font-size: 16px; !* 메뉴 항목 텍스트의 크기를 16px로 설정 *!*/
-/*    padding: 10px 15px; !* 각 메뉴 항목 내부의 텍스트와 테두리 사이에 여백을 추가 *!*/
-/*    border-radius: 5px; !* 각 메뉴 항목의 모서리를 둥글게 설정 *!*/
-/*}*/
-
-/*header .menu a.button {*/
-/*    background-color: #0F4584; !* "마이페이지"와 "Logout" 버튼의 배경색을 짙은 파란색으로 설정 *!*/
-/*    padding: 10px 20px; !* 버튼 내부의 텍스트와 테두리 사이에 여백을 더 많이 추가 *!*/
-/*    border-radius: 20px; !* 버튼의 모서리를 더 둥글게 설정 *!*/
-/*    font-weight: bold; !* 버튼 텍스트를 굵게 표시 *!*/
-/*}*/
-
-/*header .menu a.button:hover {*/
-/*    background-color: #0F4584; !* 버튼에 마우스를 올렸을 때의 배경색을 동일하게 유지 *!*/
-/*}*/
-
-/*header .menu a:hover {*/
-/*    background-color: rgba(0, 0, 0, 0.1); !* 메뉴 항목에 마우스를 올렸을 때 배경색을 약간 어둡게 설정 *!*/
-/*    border-radius: 5px; !* 마우스 오버 시에도 둥근 모서리를 유지 *!*/
-/*}*/
+header .menu a:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* 메뉴 항목에 마우스를 올렸을 때 배경색을 약간 어둡게 설정 */
+    border-radius: 5px; /* 마우스 오버 시에도 둥근 모서리를 유지 */
+}
 
 .container {
     max-width: 1000px; /* 컨테이너의 최대 너비를 1000px로 설정 */
@@ -101,7 +85,7 @@ h1 {
     color: white; /* 테이블 헤더 셀의 텍스트 색상을 흰색으로 설정 */
 }
 
-.question {
+.questions {
     margin-bottom: 20px; /* 질문 섹션 아래에 20px의 여백을 추가 */
 }
 
