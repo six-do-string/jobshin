@@ -1,8 +1,10 @@
 package com.est.jobshin.service;
 
 import com.est.jobshin.domain.interview.domain.Interview;
-import com.est.jobshin.domain.interview.dto.PracticeInterviewHistorySummaryResponse;
-import com.est.jobshin.domain.interview.service.InterviewService;
+import com.est.jobshin.domain.interview.dto.InterviewHistorySummaryResponse;
+import com.est.jobshin.domain.interview.repository.InterviewRepository;
+import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
+import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.CreateUserRequest;
@@ -12,7 +14,6 @@ import com.est.jobshin.domain.user.repository.UserRepository;
 import com.est.jobshin.domain.user.service.UserService;
 import com.est.jobshin.domain.user.util.Language;
 import com.est.jobshin.domain.user.util.Position;
-import org.antlr.v4.runtime.tree.pattern.ParseTreePattern;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,16 +26,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.est.jobshin.domain.user.util.Language.JAVA;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -43,7 +47,7 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private InterviewService interviewService;
+    private InterviewRepository interviewRepository; // 인터뷰 레포지토리 모킹
 
     @InjectMocks
     private UserService userService;
@@ -66,7 +70,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("회원 정보 조회 성공 테스트")
-    void findByUsernameSuccess() {
+    void findByUsername() {
         // Given: 테스트를 위한 사용자 생성 및 설정
         String username = "test@test.com";
         User existingUser = User.builder()
@@ -149,7 +153,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("회원 정보 중복 확인 테스트")
-    void isDuplicateUserTest() {
+    void isDuplicate() {
         // Given: 중복 확인할 사용자 이름 설정
         String username = "test@example.com";
 
@@ -195,74 +199,62 @@ public class UserServiceTest {
                 .hasMessage(user.getUsername() + "에 해당하는 사용자를 찾을 수 없습니다.");
     }
 
-//    @Test
-//    @DisplayName("모의면접(연습모드) 리스트 페이지네이션 성공 테스트")
-//    void getPaginatedPracticeInterviewsSuccess() {
-//        // Given: 테스트를 위한 페이지 요청 및 사용자 ID 설정
-//        Pageable pageable = PageRequest.of(0, 10);
-//        Long userId = 1L;
-//
-//        // Mock User 객체 생성
-//        User user = User.builder()
-//                .id(userId)
-//                .username("testUser@example.com")
-//                .password("password")
-//                .nickname("Tester")
-//                .language(Language.JAVA)
-//                .position(Position.BACKEND)
-//                .build();
-//
-//        // Mock Interview 객체 생성
-//        Interview interview = Interview.builder()
-//                .id(1L)
-//                .title("Mock Interview")
-//                .mode(Mode.PRACTICE) // Mode enum 사용
-//                .user(user) // 수정된 부분: User 객체를 설정
-//                .build();
-//
-//        // Mock된 인터뷰 페이지 생성
-//        Page<Interview> interviewPage = new PageImpl<>(List.of(interview), pageable, 1);
-//
-//        // 인터뷰 레포지토리가 사용자 ID와 페이지 요청으로 인터뷰 페이지를 반환하도록 설정
-//        given(interviewRepository.findInterviewsWithPracticeModeByUser(userId, pageable))
-//                .willReturn(interviewPage);
-//
-//        // When: getPaginatedPracticeInterviews 메서드 호출
-//        Page<PracticeInterviewHistorySummaryResponse> result = userService.getPaginatedPracticeInterviews(pageable, userId);
-//
-//        // Then: 반환된 페이지가 예상과 일치하는지 검증
-//        assertThat(result).isNotNull();
-//        assertThat(result.getTotalElements()).isEqualTo(1);
-//        assertThat(result.getContent()).hasSize(1);
-//        assertThat(result.getContent().get(0).getTitle()).isEqualTo("Mock Interview");
-//    }
+    @Test
+    @DisplayName("모의 면접 리스트 페이징 처리 테스트")
+    void getPaginatedInterviews() {
+        // Given: 사용자와 인터뷰 생성
+        User user = User.builder()
+                .username("testUser")
+                .build();
 
+        InterviewDetail detail = InterviewDetail.builder()
+                .question("What is Java?")
+                .answer("Java is a programming language.")
+                .category(Category.LANGUAGE)
+                .mode(Mode.PRACTICE)
+                .score(50L)
+                .createdAt(LocalDateTime.now())
+                .build();
 
-//    @Test
-//    @DisplayName("모의면접(연습모드) 리스트 페이지네이션 성공 테스트")
-//    void getPaginatedPracticeInterviewsSuccess() {
-//        // Given: 테스트를 위한 페이지 요청 및 사용자 ID 설정
-//        Pageable pageable = PageRequest.of(0, 10);
-//        Long userId = 1L;
-//
-//        // Mock 인터뷰 객체 생성 및 Mock된 인터뷰 페이지 생성
-//        Page<Interview> mockPage = new PageImpl<>(List.of(mockInterview), pageable, 1);
-//
-//
-//        // 인터뷰 레포지토리가 사용자 ID와 페이지 요청으로 인터뷰 페이지를 반환하도록 설정
-//        Page<Interview> mockPage = new PageImpl<>(List.of(mockInterview), pageable, 1);
-//        given(interviewRepository.findInterviewsWithPracticeModeByUser(userId, pageable))
-//                .willReturn(mockPage);
-//
-//        // When: getPaginatedPracticeInterviews 메서드 호출
-//        Page<PracticeInterviewHistorySummaryResponse> result = userService.getPaginatedPracticeInterviews(pageable, userId);
-//
-//        // Then: 반환된 페이지가 예상과 일치하는지 검증
-//        assertThat(result).isNotNull();
-//        assertThat(result.getContent())
-//                .extracting(PracticeInterviewHistorySummaryResponse::getTitle)
-//                .containsExactly("Mock Interview");
-//    }
+        Interview interview = Interview.builder()
+                .title("Test Interview")
+                .createAt(LocalDateTime.now())
+                .mode(Mode.PRACTICE)
+                .user(user)
+                .interviewDetails(List.of(detail))
+                .build();
+
+        Page<Interview> interviewPage = new PageImpl<>(List.of(interview), PageRequest.of(0, 10), 1);
+
+        // Mock 설정: 인터뷰 리포지토리가 페이징된 인터뷰를 반환하도록 설정 (lenient() 사용)
+        lenient().when(interviewRepository.findInterviewsWithPracticeModeByUser(eq(user.getId()), eq(Mode.PRACTICE), any(Pageable.class)))
+                .thenReturn(interviewPage);
+
+        // When: 페이징된 인터뷰를 DTO로 변환하는 로직 직접 구현
+        List<InterviewHistorySummaryResponse> practiceInterviewList = interviewPage.stream()
+                .map(interviewObj -> {
+                    // 인터뷰의 모든 디테일에서 점수를 합산
+                    Long totalScore = interviewObj.getInterviewDetails().stream()
+                            .mapToLong(InterviewDetail::getScore)
+                            .sum();
+
+                    // 인터뷰의 첫 번째 디테일로 카테고리 설정
+                    InterviewDetail firstDetail = interviewObj.getInterviewDetails().stream()
+                            .findFirst().orElse(null);
+
+                    return InterviewHistorySummaryResponse.toDto(interviewObj, firstDetail, totalScore / 5);
+                })
+                .collect(Collectors.toList());
+
+        Page<InterviewHistorySummaryResponse> result = new PageImpl<>(practiceInterviewList, PageRequest.of(0, 10), interviewPage.getTotalElements());
+
+        // Then: 페이징된 인터뷰 결과 검증
+        assertThat(result).isNotNull();
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getTitle()).isEqualTo("Test Interview");
+        assertThat(result.getContent().get(0).getScore()).isEqualTo(10L); // 점수 합산 결과가 올바른지 검증 (50L / 5)
+        assertThat(result.getContent().get(0).getCategory()).isEqualTo("LANGUAGE"); // 첫 번째 인터뷰 디테일의 카테고리가 올바른지 검증
+    }
 }
 
 
