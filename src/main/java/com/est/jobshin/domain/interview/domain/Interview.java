@@ -23,15 +23,12 @@ public class Interview {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-//	@NotNull
 	private String title;
 
-//	@NotNull
 	@Enumerated(EnumType.STRING)
 	private Mode mode;
 
-//	@NotNull
-	private LocalDateTime createAt;
+	private LocalDateTime createdAt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -40,15 +37,15 @@ public class Interview {
 	@OneToMany(mappedBy = "interview", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InterviewDetail> interviewDetails = new ArrayList<>();
 
-	private Interview(String title, LocalDateTime createAt, User user, Mode mode) {
+	private Interview(String title, LocalDateTime createdAt, User user, Mode mode) {
 		this.title = title;
-		this.createAt = createAt;
+		this.createdAt = createdAt;
 		this.user = user;
 		this.mode = mode;
 	}
 
-	public static Interview createInterview(String title, LocalDateTime createAt, User user, Mode mode) {
-		return new Interview(title, createAt, user, mode);
+	public static Interview createInterview(String title, LocalDateTime createdAt, User user, Mode mode) {
+		return new Interview(title, createdAt, user, mode);
 	}
 
 	public void addInterviewDetails(InterviewDetail interview){

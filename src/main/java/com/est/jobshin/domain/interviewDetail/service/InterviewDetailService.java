@@ -26,12 +26,16 @@ public class InterviewDetailService {
     private final InterviewDetailRepository interviewDetailRepository;
     private final AlanService alenService;
 
+    //면접 실전모드로 진입시
+    //질문 카테고리 랜덤하게 생성
     @Transactional
     public void realModeStarter(Interview interview, User user) {
         Category[] categories = selectCategories(5);
         createInterviewDetail(interview, categories, user);
     }
 
+    //면접 연습모드로 진입시
+    //사용자가 선택한 카테고리로 질문 카테고리 생성
     @Transactional
     public void practiceModeStarter(Interview interview, Category category, User user) {
         Category[] categories = new Category[5];
@@ -39,6 +43,7 @@ public class InterviewDetailService {
         createInterviewDetail(interview, categories, user);
     }
 
+    //면접 질문 생성, db에 저장
     @Transactional
     public void createInterviewDetail(Interview interview, Category[] category, User user) {
         String questionData = alenService.callAlan(category, user.getLanguage(), user.getPosition(), user.getLevel());
@@ -65,6 +70,7 @@ public class InterviewDetailService {
         }
     }
 
+    //사용자의 답변으로 부터 피드백 생성, db에 저장
     @Transactional
     public void getAnswerByUser(InterviewQuestion interviewQuestion) {
         InterviewDetail interviewDetail = interviewDetailRepository.findById(interviewQuestion.getId())
@@ -102,6 +108,7 @@ public class InterviewDetailService {
 //                .orElseThrow(() -> new IllegalArgumentException("Invalid interview details id: " + interviewDetailId));
 //    }
 
+    //랜덤한 카테고리 배열 생성
     private Category[] selectCategories(int numberOfSelect) {
         Random random = new Random();
         Category[] categories = Category.values();
