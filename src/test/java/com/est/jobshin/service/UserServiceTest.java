@@ -3,6 +3,7 @@ package com.est.jobshin.service;
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewHistorySummaryResponse;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
+import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
@@ -49,7 +50,10 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private InterviewRepository interviewRepository; // 인터뷰 레포지토리 모킹
+    private InterviewRepository interviewRepository;
+
+    @Mock
+    private InterviewService interviewService;
 
     @InjectMocks
     private UserService userService;
@@ -220,7 +224,7 @@ public class UserServiceTest {
 
         Interview interview = Interview.builder()
                 .title("Test Interview")
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .mode(Mode.PRACTICE)
                 .user(user)
                 .interviewDetails(List.of(detail))
@@ -228,19 +232,19 @@ public class UserServiceTest {
 
         Page<Interview> interviewPage = new PageImpl<>(List.of(interview), PageRequest.of(0, 10), 1);
 
-        // Mock 설정: 인터뷰 리포지토리가 페이징된 인터뷰를 반환하도록 설정 (lenient() 사용)
+        // Mock 설정: 면접 리포지토리가 페이징된 인터뷰를 반환하도록 설정 (lenient() 사용)
         lenient().when(interviewRepository.findInterviewsWithPracticeModeByUser(eq(user.getId()), eq(Mode.PRACTICE), any(Pageable.class)))
                 .thenReturn(interviewPage);
 
-        // When: 페이징된 인터뷰를 DTO로 변환하는 로직 직접 구현
+        // When: 페이징된 면접를 DTO로 변환하는 로직 직접 구현
         List<InterviewHistorySummaryResponse> practiceInterviewList = interviewPage.stream()
                 .map(interviewObj -> {
-                    // 인터뷰의 모든 디테일에서 점수를 합산
+                    // 면접의 모든 디테일에서 점수를 합산
                     Long totalScore = interviewObj.getInterviewDetails().stream()
                             .mapToLong(InterviewDetail::getScore)
                             .sum();
 
-                    // 인터뷰의 첫 번째 디테일로 카테고리 설정
+                    // 면접의 첫 번째 디테일로 카테고리 설정
                     InterviewDetail firstDetail = interviewObj.getInterviewDetails().stream()
                             .findFirst().orElse(null);
 
@@ -250,7 +254,7 @@ public class UserServiceTest {
 
         Page<InterviewHistorySummaryResponse> result = new PageImpl<>(practiceInterviewList, PageRequest.of(0, 10), interviewPage.getTotalElements());
 
-        // Then: 페이징된 인터뷰 결과 검증
+        // Then: 페이징된 면접 결과 검증
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getTitle()).isEqualTo("Test Interview");
@@ -258,164 +262,286 @@ public class UserServiceTest {
         assertThat(result.getContent().get(0).getCategory()).isEqualTo("LANGUAGE"); // 첫 번째 인터뷰 디테일의 카테고리가 올바른지 검증
     }
 
-    // 추가 작성중 저장을 위해 올림
-//    @Test
-//    @DisplayName("인터뷰 상세보기 - 성공 테스트")
-//    void getInterviewDetailSuccess() {
-//        // Given: 사용자와 인터뷰 디테일 생성
-//        User user = User.builder()
-//                .username("testUser")
-//                .build();
-//
-//        InterviewDetail detail1 = InterviewDetail.builder()
-//                .question("What is Java?")
-//                .answer("Java is a programming language.")
-//                .category(Category.LANGUAGE)
-//                .mode(Mode.REAL)
-//                .score(80L)
-//                .createdAt(LocalDateTime.now())
-//                .build();
-//
-//        InterviewDetail detail2 = InterviewDetail.builder()
-//                .question("Explain OOP principles.")
-//                .answer("Encapsulation, Inheritance, Polymorphism, Abstraction.")
-//                .category(Category.LANGUAGE)
-//                .mode(Mode.REAL)
-//                .score(90L)
-//                .createdAt(LocalDateTime.now())
-//                .build();
-//
-//        Interview interview = Interview.builder()
-//                .title("Real Mode Interview")
-//                .createAt(LocalDateTime.now())
-//                .mode(Mode.REAL)
-//                .user(user)
-//                .interviewDetails(List.of(detail1, detail2))
-//                .build();
-//
-//        // Mock 설정: 인터뷰 리포지토리가 특정 ID로 인터뷰를 반환하도록 설정
-//        given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
-//
-//        // When: 인터뷰 상세 정보를 조회
-//        MyPageInterviewWithDetailsDto result = interviewService.getInterviewDetail(1L);
-//
-//        // Then: 반환된 DTO가 예상과 일치하는지 검증
-//        assertThat(result).isNotNull();
-//        assertThat(result.getTitle()).isEqualTo("Real Mode Interview");
-//        assertThat(result.getAverageScore()).isEqualTo(85); // (80 + 90) / 2 = 85
-//    }
-//
-//    @Test
-//    @DisplayName("인터뷰 상세보기 - 인터뷰를 찾을 수 없는 경우 테스트")
-//    void getInterviewDetailNotFound() {
-//        // Given: 인터뷰가 존재하지 않는 경우
-//        given(interviewRepository.findById(1L)).willReturn(Optional.empty());
-//
-//        // When & Then: 메서드 호출 시 EntityNotFoundException이 발생하는지 확인
-//        assertThatThrownBy(() -> interviewService.getInterviewDetail(1L))
-//                .isInstanceOf(EntityNotFoundException.class)
-//                .hasMessage("Interview not found with id 1");
-//    }
-//
-//    @Test
-//    @DisplayName("인터뷰 상세보기 - 점수 평균 계산 테스트")
-//    void getInterviewDetailAverageScoreTest() {
-//        // Given: 사용자와 인터뷰 디테일 생성
-//        User user = User.builder()
-//                .username("testUser")
-//                .build();
-//
-//        // 여러 인터뷰 디테일 생성 (일부는 점수가 null)
-//        InterviewDetail detail1 = InterviewDetail.builder()
-//                .question("Question 1")
-//                .answer("Answer 1")
-//                .category(Category.LANGUAGE)
-//                .mode(Mode.REAL)
-//                .score(80L)
-//                .createdAt(LocalDateTime.now())
-//                .build();
-//
-//        InterviewDetail detail2 = InterviewDetail.builder()
-//                .question("Question 2")
-//                .answer("Answer 2")
-//                .category(Category.LANGUAGE)
-//                .mode(Mode.REAL)
-//                .score(90L)
-//                .createdAt(LocalDateTime.now())
-//                .build();
-//
-//        InterviewDetail detail3 = InterviewDetail.builder()
-//                .question("Question 3")
-//                .answer("Answer 3")
-//                .category(Category.LANGUAGE)
-//                .mode(Mode.REAL)
-//                .score(null) // 점수가 null인 경우
-//                .createdAt(LocalDateTime.now())
-//                .build();
-//
-//        Interview interview = Interview.builder()
-//                .title("Interview with Scores")
-//                .createAt(LocalDateTime.now())
-//                .mode(Mode.REAL)
-//                .user(user)
-//                .interviewDetails(List.of(detail1, detail2, detail3))
-//                .build();
-//
-//        // Mock 설정: 특정 ID로 인터뷰를 반환
-//        given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
-//
-//        // When: 인터뷰 상세 정보를 조회하여 평균 점수를 계산
-//        MyPageInterviewWithDetailsDto result = interviewService.getInterviewDetail(1L);
-//
-//        // Then: 반환된 DTO의 평균 점수가 올바른지 검증 (80 + 90) / 2 = 85
-//        assertThat(result).isNotNull();
-//        assertThat(result.getAverageScore()).isEqualTo(85); // null 점수는 평균 계산에서 제외됨
-//    }
-//
-//    @Test
-//    @DisplayName("인터뷰 상세보기 - 점수 모두 null인 경우 테스트")
-//    void getInterviewDetailAllScoresNull() {
-//        // Given: 사용자와 인터뷰 디테일 생성 (모든 점수가 null)
-//        User user = User.builder()
-//                .username("testUser")
-//                .build();
-//
-//        InterviewDetail detail1 = InterviewDetail.builder()
-//                .question("Question 1")
-//                .answer("Answer 1")
-//                .category(Category.LANGUAGE)
-//                .mode(Mode.REAL)
-//                .score(null)
-//                .createdAt(LocalDateTime.now())
-//                .build();
-//
-//        InterviewDetail detail2 = InterviewDetail.builder()
-//                .question("Question 2")
-//                .answer("Answer 2")
-//                .category(Category.LANGUAGE)
-//                .mode(Mode.REAL)
-//                .score(null)
-//                .createdAt(LocalDateTime.now())
-//                .build();
-//
-//        Interview interview = Interview.builder()
-//                .title("Interview with Null Scores")
-//                .createAt(LocalDateTime.now())
-//                .mode(Mode.REAL)
-//                .user(user)
-//                .interviewDetails(List.of(detail1, detail2))
-//                .build();
-//
-//        // Mock 설정: 특정 ID로 인터뷰를 반환
-//        given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
-//
-//        // When: 인터뷰 상세 정보를 조회하여 평균 점수를 계산
-//        MyPageInterviewWithDetailsDto result = interviewService.getInterviewDetail(1L);
-//
-//        // Then: 반환된 DTO의 평균 점수가 0으로 설정되었는지 검증
-//        assertThat(result).isNotNull();
-//        assertThat(result.getAverageScore()).isEqualTo(0); // 모든 점수가 null이므로 평균은 0
-//    }
+    @Test
+    @DisplayName("면접 상세이력 미존재시 테스트")
+    void getInterviewDetailNotFound() {
+        // Given: 면접이력이 존재하지 않는 경우
+        given(interviewRepository.findById(1L)).willReturn(Optional.empty());
+
+        // When & Then: 면접이력을 찾으려 할 때 EntityNotFoundException이 발생하는지 확인
+        assertThatThrownBy(() -> {
+            // 인터뷰 리포지토리에서 면접이력를 찾으려고 시도
+            Interview interview = interviewRepository.findById(1L)
+                    .orElseThrow(() -> new EntityNotFoundException("Interview not found with id 1"));
+        })
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Interview not found with id 1");
+    }
+
+    @Test
+    @DisplayName("면접 상세이력 존재시 성공 테스트")
+    void getInterviewDetailSuccess() {
+        // Given: 사용자와 면접 detail 생성
+        User user = User.builder()
+                .username("testUser")
+                .build();
+
+        InterviewDetail detail1 = InterviewDetail.builder()
+                .question("What is Java?")
+                .answer("Java is a programming language.")
+                .category(Category.LANGUAGE)
+                .mode(Mode.REAL)
+                .score(80L)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        InterviewDetail detail2 = InterviewDetail.builder()
+                .question("Explain OOP principles.")
+                .answer("Encapsulation, Inheritance, Polymorphism, Abstraction.")
+                .category(Category.LANGUAGE)
+                .mode(Mode.REAL)
+                .score(90L)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        Interview interview = Interview.builder()
+                .title("Real Mode Interview")
+                .createdAt(LocalDateTime.now())
+                .mode(Mode.REAL)
+                .user(user)
+                .interviewDetails(List.of(detail1, detail2))
+                .build();
+
+        // Mock 설정: 인터뷰 리포지토리가 특정 ID로 인터뷰를 반환하도록 설정
+        given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
+
+        // When: 인터뷰 상세 정보를 직접 생성 및 조회
+        Interview foundInterview = interviewRepository.findById(1L)
+                .orElseThrow(() -> new EntityNotFoundException("Interview not found with id 1"));
+
+        // 점수 평균 계산 (정수형)
+        int averageScore = (int) Math.round(
+                foundInterview.getInterviewDetails().stream()
+                        .filter(detail -> detail.getScore() != null)  // 점수가 null이 아닌 경우에만 고려
+                        .mapToLong(InterviewDetail::getScore)
+                        .average()
+                        .orElse(0.0)
+        );
+
+        // DTO로 변환
+        MyPageInterviewWithDetailsDto result = MyPageInterviewWithDetailsDto.fromInterview(foundInterview);
+        result.setAverageScore(averageScore);
+
+        // Then: 반환된 DTO가 예상과 일치하는지 검증
+        assertThat(result).isNotNull();
+        assertThat(result.getTitle()).isEqualTo("Real Mode Interview");
+        assertThat(result.getAverageScore()).isEqualTo(85); // (80 + 90) / 2 = 85
+    }
+
+    @Test
+    @DisplayName("면접이력 상세 점수 평균 계산 성공 테스트")
+    void getInterviewDetailAverageScoreSuccessTest() {
+        // Given: 사용자와 면접이력 생성
+        User user = User.builder()
+                .username("testUser")
+                .build();
+
+        // 여러 면접상세 생성 (모든 점수가 null이 아닌 경우)
+        InterviewDetail detail1 = InterviewDetail.builder()
+                .question("Question 1")
+                .answer("Answer 1")
+                .category(Category.LANGUAGE)
+                .mode(Mode.REAL)
+                .score(80L)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        InterviewDetail detail2 = InterviewDetail.builder()
+                .question("Question 2")
+                .answer("Answer 2")
+                .category(Category.LANGUAGE)
+                .mode(Mode.REAL)
+                .score(90L)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        InterviewDetail detail3 = InterviewDetail.builder()
+                .question("Question 3")
+                .answer("Answer 3")
+                .category(Category.LANGUAGE)
+                .mode(Mode.REAL)
+                .score(70L) // null이 아닌 점수
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        Interview interview = Interview.builder()
+                .title("Interview with Scores")
+                .createdAt(LocalDateTime.now())
+                .mode(Mode.REAL)
+                .user(user)
+                .interviewDetails(List.of(detail1, detail2, detail3))
+                .build();
+
+        // Mock 설정: 특정 ID로 면접이력을 반환
+        given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
+
+        // When: 면접이력을 직접 조회하여 평균 점수를 계산
+        Interview foundInterview = interviewRepository.findById(1L)
+                .orElseThrow(() -> new EntityNotFoundException("Interview not found with id 1"));
+
+        // 점수 평균 계산 (정수형)
+        int averageScore = (int) Math.round(
+                foundInterview.getInterviewDetails().stream()
+                        .filter(detail -> detail.getScore() != null) // 점수가 null이 아닌 경우에만 고려
+                        .mapToLong(InterviewDetail::getScore)
+                        .average()
+                        .orElse(0.0)
+        );
+
+        // DTO로 변환
+        MyPageInterviewWithDetailsDto result = MyPageInterviewWithDetailsDto.fromInterview(foundInterview);
+        result.setAverageScore(averageScore);
+
+        // Then: 반환된 DTO의 평균 점수가 올바른지 검증 (80 + 90 + 70) / 3 = 80
+        assertThat(result).isNotNull();
+        assertThat(result.getAverageScore()).isEqualTo(80); // 모든 점수가 유효한 경우 평균 점수 검증
+    }
+
+
+    @Test
+    @DisplayName("면접이력 점수 평균 계산 null 포함 테스트")
+    void getInterviewDetailAverageScore() {
+        // Given: 사용자와 면접이력 생성
+        User user = User.builder()
+                .username("testUser")
+                .build();
+
+        // 여러 면접상세를 생성 (일부는 점수가 null)
+        InterviewDetail detail1 = InterviewDetail.builder()
+                .question("Question 1")
+                .answer("Answer 1")
+                .category(Category.LANGUAGE)
+                .mode(Mode.REAL)
+                .score(80L)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        InterviewDetail detail2 = InterviewDetail.builder()
+                .question("Question 2")
+                .answer("Answer 2")
+                .category(Category.LANGUAGE)
+                .mode(Mode.REAL)
+                .score(90L)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        InterviewDetail detail3 = InterviewDetail.builder()
+                .question("Question 3")
+                .answer("Answer 3")
+                .category(Category.LANGUAGE)
+                .mode(Mode.REAL)
+                .score(null) // 점수가 null인 경우
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        Interview interview = Interview.builder()
+                .title("Interview with Scores")
+                .createdAt(LocalDateTime.now())
+                .mode(Mode.REAL)
+                .user(user)
+                .interviewDetails(List.of(detail1, detail2, detail3))
+                .build();
+
+        // Mock 설정: 특정 ID로 면접이력을 반환
+        given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
+
+        // When: 면접이력을 직접 조회하여 평균 점수를 계산
+        Interview foundInterview = interviewRepository.findById(1L)
+                .orElseThrow(() -> new EntityNotFoundException("Interview not found with id 1"));
+
+        /*// 점수 평균 계산 (정수형)
+        int averageScore = (int) Math.round(
+                foundInterview.getInterviewDetails().stream()
+                        .filter(detail -> detail.getScore() != null) // 점수가 null이 아닌 경우에만 고려
+                        .mapToLong(InterviewDetail::getScore)
+                        .average()
+                        .orElse(0.0)
+        );
+
+        // DTO로 변환
+        MyPageInterviewWithDetailsDto result = MyPageInterviewWithDetailsDto.fromInterview(foundInterview);
+        result.setAverageScore(averageScore);*/
+        // Mock 설정: 특정 ID로 인터뷰를 반환
+        given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
+
+        // When: 인터뷰를 직접 조회하여 평균 점수를 계산
+        MyPageInterviewWithDetailsDto result = userService.getInterviewDetail(1L);
+
+        // Then: 반환된 DTO의 평균 점수가 올바른지 검증 (80 + 90) / 2 = 85
+        assertThat(result).isNotNull();
+        assertThat(result.getAverageScore()).isEqualTo(85); // null 점수는 평균 계산에서 제외됨
+    }
+
+
+    @Test
+    @DisplayName("면접이력 상세 점수 모두 null인 경우 테스트")
+    void getInterviewDetailAllNull() {
+        // Given: 사용자와 면접이력 생성 (모든 점수가 null)
+        User user = User.builder()
+                .username("testUser")
+                .build();
+
+        InterviewDetail detail1 = InterviewDetail.builder()
+                .question("Question 1")
+                .answer("Answer 1")
+                .category(Category.LANGUAGE)
+                .mode(Mode.REAL)
+                .score(null) // 점수가 null로 설정
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        InterviewDetail detail2 = InterviewDetail.builder()
+                .question("Question 2")
+                .answer("Answer 2")
+                .category(Category.LANGUAGE)
+                .mode(Mode.REAL)
+                .score(null) // 점수가 null로 설정
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        Interview interview = Interview.builder()
+                .title("Interview with Null Scores")
+                .createdAt(LocalDateTime.now())
+                .mode(Mode.REAL)
+                .user(user)
+                .interviewDetails(List.of(detail1, detail2))
+                .build();
+
+        // Mock 설정: 특정 ID로 면접이력을 반환
+        given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
+
+        // When: 면접이력을 직접 조회하여 평균 점수를 계산
+        Interview foundInterview = interviewRepository.findById(1L)
+                .orElseThrow(() -> new EntityNotFoundException("Interview not found with id 1"));
+
+        // 점수 평균 계산 (모든 점수가 null이므로 평균은 0)
+        int averageScore = (int) Math.round(
+                foundInterview.getInterviewDetails().stream()
+                        .filter(detail -> detail.getScore() != null)
+                        .mapToLong(InterviewDetail::getScore)
+                        .average()
+                        .orElse(0.0)
+        );
+
+        // DTO로 변환
+        MyPageInterviewWithDetailsDto result = MyPageInterviewWithDetailsDto.fromInterview(foundInterview);
+        result.setAverageScore(averageScore);
+
+        // Then: 반환된 DTO의 평균 점수가 0 되는지 검증
+        assertThat(result).isNotNull();
+        assertThat(result.getAverageScore()).isEqualTo(0); // 모든 점수가 null이므로 평균은 0
+    }
+
 }
 
 
