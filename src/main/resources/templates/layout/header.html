@@ -24,7 +24,9 @@
         <a class="nav-links" th:text="|로그인: ${#authentication.principal.username}|">로그인 사용자 이름</a>
       </li>
       <li class="nav-items" sec:authorize="isAuthenticated()">
-        <a class="nav-links" th:href="@{/api/users/logout}">Logout</a>
+          <form th:action="@{/api/users/logout}" method="post">
+              <button type="submit" class="nav-links">Logout</button>
+          </form>
       </li>
     </ul>
   </nav>
