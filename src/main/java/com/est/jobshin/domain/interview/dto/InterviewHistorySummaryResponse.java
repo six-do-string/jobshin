@@ -33,7 +33,7 @@ public class InterviewHistorySummaryResponse {
                 .id(interview.getId())
                 .title(interview.getTitle())
                 .nickname(interview.getUser().getNickname())
-                .createdAt(interview.getCreateAt())
+                .createdAt(interview.getCreatedAt())
                 .score(totalScore)
                 .category(interviewDetail.getCategory().toString())
                 .build();

@@ -88,7 +88,7 @@ public class InterviewService {
     //답변이 들어왔을때 다음 질문을 반환하고, 답변에 대한 처리는 비동기적으로 처리
     @Transactional
     public InterviewQuestion processAnswerAndGetNextQuestion(HttpSession session, InterviewQuestion interviewQuestion) {
-        InterviewQuestion nextQuestion = getNextQuestion2(session);
+        InterviewQuestion nextQuestion = getNextQuestion(session);
 
         CompletableFuture.runAsync(() -> {
             interviewDetailService.getAnswerByUser(interviewQuestion);
@@ -98,7 +98,7 @@ public class InterviewService {
     }
 
     //다음 질문 반환
-    public InterviewQuestion getNextQuestion2(HttpSession session) {
+    public InterviewQuestion getNextQuestion(HttpSession session) {
         List<InterviewDetail> questions = (List<InterviewDetail>) session.getAttribute("questions");
         Integer currentIndex = (Integer) session.getAttribute("currentIndex");
 
