@@ -1,15 +1,18 @@
 package com.est.jobshin.domain.user.service;
 
 import com.est.jobshin.domain.interview.domain.Interview;
-import com.est.jobshin.domain.interview.dto.PracticeInterviewHistorySummaryResponse;
+import com.est.jobshin.domain.interview.dto.InterviewHistorySummaryResponse;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
+import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
+import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
+import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.CreateUserRequest;
+import com.est.jobshin.domain.user.dto.MyPageInterviewWithDetailsDto;
 import com.est.jobshin.domain.user.dto.UpdateUserRequest;
 import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
-
-import com.est.jobshin.global.security.model.CustomUserDetails;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,8 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final InterviewRepository interviewRepository;
+    private final InterviewDetailRepository interviewDetailRepository;
 
     // 회원 가입 메서드
     @Transactional
@@ -74,22 +76,58 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    // 마이페이지
-    // 모의면접(연습모드) 리스트 페이지네이션
+    // 마이 페이지
+    // 모의 면접 리스트 페이징 처리
     @Transactional(readOnly = true)
-    public Page<PracticeInterviewHistorySummaryResponse> getPaginatedPracticeInterviews(
-            Pageable pageable, Long userId) {
+    public Page<InterviewHistorySummaryResponse> getPaginatedInterviews(Pageable pageable, Long userId, Mode mode) {
 
-        // 데이터베이스에서 페이지네이션된 인터뷰 목록을 가져옴
-        Page<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(
-                userId, pageable);
+        // 인터뷰 목록을 페이지네이션으로 가져옴
+        Page<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(userId, mode, pageable);
 
         // 인터뷰 목록을 DTO로 변환
-        List<PracticeInterviewHistorySummaryResponse> practiceInterviewList = interviewsPage.stream()
-                .map(PracticeInterviewHistorySummaryResponse::toDto)
+        List<InterviewHistorySummaryResponse> practiceInterviewList = interviewsPage.stream()
+                .map(interview -> {
+                    // 인터뷰의 모든 디테일에서 점수를 합산
+                    Long totalScore = interview.getInterviewDetails().stream()
+                            .mapToLong(InterviewDetail::getScore)
+                            .sum();
+
+                    // 인터뷰의 첫 번째 디테일로 카테고리 설정
+                    InterviewDetail firstDetail = interview.getInterviewDetails().stream()
+                            .findFirst().orElse(null);
+
+                    return InterviewHistorySummaryResponse.toDto(interview, firstDetail, totalScore / 5);
+
+                })
                 .collect(Collectors.toList());
 
         // DTO 리스트를 페이지네이션된 결과로 반환
         return new PageImpl<>(practiceInterviewList, pageable, interviewsPage.getTotalElements());
     }
+
+
+    // 모의면접(실전모드) 상세보기
+    @Transactional(readOnly = true)
+    public MyPageInterviewWithDetailsDto getInterviewDetail(Long id) {
+
+        Interview interview = interviewRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Interview not found with id " + id));
+
+        // 점수 평균 계산 (정수형)
+        int averageScore = (int) Math.round(
+            interview.getInterviewDetails().stream()
+                .filter(detail -> detail.getScore() != null)  // 점수가 null이 아닌 경우에만 고려
+                .mapToLong(InterviewDetail::getScore)
+                .average()
+                .orElse(0.0)
+        );
+
+        // DTO로 변환
+        MyPageInterviewWithDetailsDto myPageInterviewWithDetailsDto = MyPageInterviewWithDetailsDto.fromInterview(interview);
+        myPageInterviewWithDetailsDto.setAverageScore(averageScore);
+
+        return myPageInterviewWithDetailsDto;
+    }
+
+
 }

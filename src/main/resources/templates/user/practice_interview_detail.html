@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>마이페이지</title>
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="/css/header.css">
+	<link rel="stylesheet" href="/css/sidebar.css">
+	<link rel="stylesheet" href="/css/table.css">
+	<link rel="stylesheet" href="/css/detail.css">
+</head>
+<body>
+<div th:replace="~{layout/header.html :: header}"></div>
+<main class="main">
+	<div class="container">
+		<!-- Sidebar Section -->
+		<aside class="sidebar">
+			<div class="sidebar-section">
+				<h3>마이 페이지</h3>
+				<ul class="sidebar-menu">
+					<li><a href="/views/users/edit">회원 정보 수정</a></li>
+					<li><a href="/views/interviews/history">면접 이력</a></li>
+					<li><a href="/views/users/withdrawal">회원 탈퇴</a></li>
+				</ul>
+			</div>
+			<div class="sidebar-section">
+				<h3>면접 기록</h3>
+				<ul class="sidebar-menu">
+					<li><a href="/views/users/interviews/practice">연습 모드 이력</a></li>
+					<li><a href="/views/users/interviews/real">실전 모드 이력</a></li>
+					<li><a href="/views/interviews/scheduled">Today's Scheduled</a></li>
+				</ul>
+			</div>
+		</aside>
+		
+		<!-- Main Content Section -->
+		<section class="content">
+			<h1>면접 결과</h1>
+			<table class="result-table">
+				<thead>
+				<tr>
+					<th>번호</th>
+					<th>응시 일시</th>
+					<th>점수</th>
+					<th>문제 분류</th>
+					<th>카테고리</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td th:text="${interviewDetails.id}">Java란 무엇입니까?</td>
+					<td th:text="${#temporals.format(interviewDetails.createdAt, 'yyyy.MM.dd')}">yyyy.MM.dd</td>
+					<td th:text="${interviewDetails.averageScore + ' / 100'}">점수</td>
+					<td th:text="${interviewDetails.title}">J문제 분류</td>
+					<td th:text="${interviewDetails.getInterviewDetails().get(0).getCategory()}">카테고리</td>
+				</tr>
+				</tbody>
+			</table>
+			
+			<div class="questions">
+				<!-- 면접 질문과 답변 반복 렌더링 -->
+				<div class="question-item" th:each="interviewDetail : ${interviewDetails.getInterviewDetails()}">
+					<div class="question-header">
+						<span th:text="'문제 ' + ${interviewDetail.id} + '. ' + ${interviewDetail.question}">문제 1. ==와 equals()의 차이점은?</span>
+						<button class="toggle-button">▲</button>
+					</div>
+					<div class="question-content">
+						<p><strong>내 답변:</strong> <span th:text="${interviewDetail.answer}">오버라이딩으로...</span></p>
+						<p><strong>시스템:</strong> <span th:text="${interviewDetail.exampleAnswer}">equals() 메서드는...</span></p>
+					</div>
+				</div>
+			</div>
+			
+			<div class="buttons">
+				<a href="/views/users/interviews/practice" class="button-link">목록으로</a>
+			</div>
+		</section>
+	</div>
+</main>
+</body>
+</html>
