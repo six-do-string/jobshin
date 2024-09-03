@@ -59,7 +59,7 @@ class InterviewRepositoryTest {
         // Given: Interview 객체 생성 및 저장
         Interview interview = Interview.builder()
                 .title("Test Interview")
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .mode(Mode.PRACTICE)
                 .user(user)
                 .build();
@@ -86,16 +86,16 @@ class InterviewRepositoryTest {
         // Given: Interview 객체 생성 및 저장
         Interview interview = Interview.builder()
                 .title("Test Interview1")
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .mode(Mode.REAL)
                 .user(user)
                 .build();
         interviewRepository.save(interview);
 
-        // When: 인터뷰 조회
+        // When: 면접이력 조회
         Page<Interview> interviews = interviewRepository.findInterviewsWithPracticeModeByUser(user.getId(), PageRequest.of(0, 10), Mode.REAL);
 
-        // Then: 인터뷰 내용 검증
+        // Then: 면접 내용 검증
         assertThat(interviews.getContent()).hasSize(1);
         assertThat(interviews.getContent().get(0).getTitle()).isEqualTo("Test Interview1");
         assertThat(interviews.getContent().get(0).getMode()).isEqualTo(Mode.REAL);
@@ -126,7 +126,7 @@ class InterviewRepositoryTest {
         // 면접 생성 및 저장
         Interview interview = Interview.builder()
                 .title("Test Interview")
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .mode(Mode.PRACTICE)
                 .user(savedUser)
                 .build();
@@ -151,10 +151,10 @@ class InterviewRepositoryTest {
         InterviewDetail savedDetail = interviewDetailRepository.save(interviewDetail);
         interviewRepository.saveAndFlush(interview); // 면접 객체를 즉시 반영
 
-        // when: 특정 인터뷰의 상세 내용을 조회
+        // when: 특정 면접이력의 상세 내용을 조회
         List<InterviewDetail> details = interviewDetailRepository.findByInterviewId(savedInterview.getId());
 
-        // then: 인터뷰 디테일 검증
+        // then: 면접상세 검증
         assertThat(details).isNotEmpty(); // 면접 세부사항이 존재하는지 확인
         assertThat(details).hasSize(1); // 상세 내용의 개수가 올바른지 확인
         assertThat(details.get(0).getQuestion()).isEqualTo("What is Java?"); // 저장된 질문과 일치하는지 확인
@@ -162,7 +162,7 @@ class InterviewRepositoryTest {
     }
 
 
-    @DisplayName("인터뷰에 상세 내용이 확인하는 테스트")
+    @DisplayName("면접이력에 상세 내용이 확인하는 테스트")
     @Test
     void interviewDetailCheck() {
         // given: 사용자 생성 및 저장
@@ -178,24 +178,24 @@ class InterviewRepositoryTest {
         // 사용자 저장
         User savedUser = userRepository.save(user);
 
-        // 인터뷰 생성 및 저장
+        // 면접이력 생성 및 저장
         Interview interview = Interview.builder()
                 .title("Java Developer Interview")
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .user(savedUser)
                 .build();
 
-        // 인터뷰 저장
+        // 면접이력 저장
         Interview savedInterview = interviewRepository.save(interview);
 
-        // 인터뷰 상세 내용 생성 및 저장 - 각 객체가 고유하게 저장되어야 함
+        // 면접이력 상세 내용 생성 및 저장 - 각 객체가 고유하게 저장되어야 함
         InterviewDetail detail1 = InterviewDetail.builder()
                 .question("What is Java?")
                 .answer("Java is a programming language.")
                 .createdAt(LocalDateTime.now())
                 .interview(savedInterview)
                 .build();
-        InterviewDetail savedDetail1 = interviewDetailRepository.saveAndFlush(detail1); // 첫 번째 인터뷰 상세 내용 저장
+        InterviewDetail savedDetail1 = interviewDetailRepository.saveAndFlush(detail1); // 첫 번째 면접이력 상세 내용 저장
         assertThat(savedDetail1.getId()).isNotNull(); // 저장된 ID가 존재하는지 확인
 
         InterviewDetail detail2 = InterviewDetail.builder()
@@ -204,7 +204,7 @@ class InterviewRepositoryTest {
                 .createdAt(LocalDateTime.now())
                 .interview(savedInterview)
                 .build();
-        InterviewDetail savedDetail2 = interviewDetailRepository.saveAndFlush(detail2); // 두 번째 인터뷰 상세 내용 저장
+        InterviewDetail savedDetail2 = interviewDetailRepository.saveAndFlush(detail2); // 두 번째 면접이력 상세 내용 저장
         assertThat(savedDetail2.getId()).isNotNull();
 
         InterviewDetail detail3 = InterviewDetail.builder()
@@ -213,7 +213,7 @@ class InterviewRepositoryTest {
                 .createdAt(LocalDateTime.now())
                 .interview(savedInterview)
                 .build();
-        InterviewDetail savedDetail3 = interviewDetailRepository.saveAndFlush(detail3); // 세 번째 인터뷰 상세 내용 저장
+        InterviewDetail savedDetail3 = interviewDetailRepository.saveAndFlush(detail3); // 세 번째 면접이력 상세 내용 저장
         assertThat(savedDetail3.getId()).isNotNull();
 
         InterviewDetail detail4 = InterviewDetail.builder()
@@ -222,7 +222,7 @@ class InterviewRepositoryTest {
                 .createdAt(LocalDateTime.now())
                 .interview(savedInterview)
                 .build();
-        InterviewDetail savedDetail4 = interviewDetailRepository.saveAndFlush(detail4); // 네 번째 인터뷰 상세 내용 저장
+        InterviewDetail savedDetail4 = interviewDetailRepository.saveAndFlush(detail4); // 네 번째 면접이력 상세 내용 저장
         assertThat(savedDetail4.getId()).isNotNull();
 
         InterviewDetail detail5 = InterviewDetail.builder()
@@ -231,13 +231,13 @@ class InterviewRepositoryTest {
                 .createdAt(LocalDateTime.now())
                 .interview(savedInterview)
                 .build();
-        InterviewDetail savedDetail5 = interviewDetailRepository.saveAndFlush(detail5); // 다섯 번째 인터뷰 상세 내용 저장
+        InterviewDetail savedDetail5 = interviewDetailRepository.saveAndFlush(detail5); // 다섯 번째 면접이력 상세 내용 저장
         assertThat(savedDetail5.getId()).isNotNull();
 
-        // when: 인터뷰와 연결된 상세 내용을 조회
+        // when: 면접이력와 연결된 상세 내용을 조회
         List<InterviewDetail> details = interviewDetailRepository.findByInterviewId(savedInterview.getId());
 
-        // then: 인터뷰에 상세 내용이 있는지 검증
+        // then: 면접이력에 상세 내용이 있는지 검증
         assertThat(details).hasSize(5); // 상세 내용이 5개인지 확인
     }
 
