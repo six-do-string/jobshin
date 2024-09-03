@@ -1,6 +1,7 @@
 package com.est.jobshin.domain.interviewDetail.dto;
 
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
+import com.est.jobshin.domain.interviewDetail.util.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class InterviewResultDetail {
     private String answer;
     private String exampleAnswer;
     private Long score;
+    private Category category;
 
     public static InterviewResultDetail from(InterviewDetail interviewDetail) {
         return InterviewResultDetail.builder()
@@ -22,6 +24,7 @@ public class InterviewResultDetail {
                 .answer(interviewDetail.getAnswer())
                 .exampleAnswer(interviewDetail.getExampleAnswer())
                 .score(interviewDetail.getScore())
+                .category(interviewDetail.getCategory())
                 .build();
     }
 }
