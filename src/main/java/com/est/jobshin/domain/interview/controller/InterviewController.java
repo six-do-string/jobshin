@@ -6,7 +6,6 @@ import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
 import com.est.jobshin.domain.interviewDetail.util.Category;
-import com.est.jobshin.infra.alan.AlanService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
