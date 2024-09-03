@@ -55,10 +55,10 @@ public class InterviewController {
         return ResponseEntity.ok(interviewResultDetails);
     }
 
-    @GetMapping("/api/mock-interviews/{interviewId}")
-    public ResponseEntity<InterviewDto> getInterviewById(@PathVariable("interviewId") Long interviewId) {
-        return ResponseEntity.ok(interviewService.getInterviewById(interviewId));
-    }
+//    @GetMapping("/api/mock-interviews/{interviewId}")
+//    public ResponseEntity<InterviewDto> getInterviewById(@PathVariable("interviewId") Long interviewId) {
+//        return ResponseEntity.ok(interviewService.getInterviewById(interviewId));
+//    }
 
     @DeleteMapping("/api/mock-interviews/{interviewId}")
     public ResponseEntity<Void> deleteInterview(@PathVariable("interviewId") Long interviewId) {

@@ -1,31 +1,17 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>모의 면접 종료</title>
-    <link rel="stylesheet" href="/static/css/LevelFeedback.css">
-    <script src="/static/js/LevelFeedback.js" defer></script>
+    <link rel="stylesheet" href="/css/LevelFeedback.css">
 </head>
 <body>
-<header>
-    <div class="logo">
-        <!-- 로고 영역, 홈 페이지로 연결되는 링크 -->
-        <a href="/" style="text-decoration: none; color: white;">JOB SHIN</a>
-    </div>
-    <nav class="menu">
-        <!-- 네비게이션 메뉴 항목들 -->
-        <a href="#">메뉴2</a>
-        <a href="#">모의 면접</a>
-        <a href="#">커뮤니티</a>
-        <!-- 마이페이지와 Logout 버튼 (특수 스타일 적용) -->
-        <a href="#" class="button">마이페이지</a>
-        <a href="#" class="button">Logout</a>
-    </nav>
-</header>
-
+<div th:replace="~{layout/header.html :: header}"></div>
 <div class="container">
     <!-- 메인 콘텐츠 컨테이너 -->
     <h1>모의 면접 종료</h1> <!-- 페이지의 주요 제목 -->
@@ -48,5 +34,32 @@
         <button type="button" onclick="submitForm()">완료</button>
     </form>
 </div>
+<script src="/js/LevelFeedback.js" defer></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    let token = $("meta[name='_csrf']").attr("content");
+    let header = $("meta[name='_csrf_header']").attr("content");
+
+    let score = 0;
+    let level = $("input[name='difficulty']:checked").val();
+    let interviewScore = localStorage.getItem('interviewScore');
+
+    function setDifficulty(level) {
+        if (level === '상') {
+            return 0;
+        }
+        if (level === '중') {
+            return 50;
+        }
+        if (level === '하') {
+            return 100;
+        }
+    }
+
+    function setLevel() {
+        score = (setDifficulty(level) + interviewScore) / 2;
+        console.log(score);
+    }
+
+</script>
 </body>
 </html>
