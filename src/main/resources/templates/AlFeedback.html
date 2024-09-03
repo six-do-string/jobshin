@@ -52,7 +52,7 @@
     </div>
 </div>
 
-<script src="/static/js/interviewResult.js"></script>
+<script src="/static/js/AlFeedback.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script th:inline="javascript">
     window.onload = () => {
@@ -69,6 +69,9 @@
             dataType: 'json',
             success: function (response) {
                 renderInterviewSummary(response);
+
+                // levelFeedback 페이지에 전달할 데이터
+                localStorage.setItem('score', String(calculateTotalScore(response)));
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching interview summary:", error);
