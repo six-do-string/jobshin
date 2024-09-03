@@ -46,9 +46,9 @@ public class InterviewController {
     }
 
     @GetMapping("/api/mock-interviews/finish")
-    public ResponseEntity<List<InterviewResultDetail>> finish(HttpSession session) {
-        List<InterviewResultDetail> interviewResultDetails = interviewService.finishInterview(session);
-        return ResponseEntity.ok(interviewResultDetails);
+    public ResponseEntity<String> finish(@RequestBody InterviewQuestion interviewQuestion) {
+        String string = interviewService.lastQuestion(interviewQuestion);
+        return ResponseEntity.ok(string);
     }
 
     @GetMapping("/api/mock-interviews/{interviewId}")

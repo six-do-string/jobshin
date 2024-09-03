@@ -104,9 +104,14 @@ public class InterviewService {
         return InterviewQuestion.from(question);
     }
 
-    public List<InterviewResultDetail> finishInterview(HttpSession session) {
-        return getInterviewDetails((Long) session.getAttribute("interviewId"));
+    public String lastQuestion(InterviewQuestion interviewQuestion) {
+        interviewDetailService.getAnswerByUser(interviewQuestion);
+        return "success";
     }
+
+//    public List<InterviewResultDetail> finishInterview(HttpSession session) {
+//        return getInterviewDetails((Long) session.getAttribute("interviewId"));
+//    }
 
     public List<InterviewResultDetail> getInterviewDetails(Long interviewId) {
         Interview interview = interviewRepository.findById(interviewId)
