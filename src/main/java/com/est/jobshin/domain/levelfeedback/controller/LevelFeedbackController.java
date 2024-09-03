@@ -15,12 +15,6 @@ public class LevelFeedbackController {
 
     private final LevelFeedbackService feedbackService;
 
-    // 피드백 페이지 뷰 반환
-    @GetMapping("/views")
-    public String getFeedbackView() {
-        return "LevelFeedback";
-    }
-
     // 피드백 제출
     @PostMapping
     public ResponseEntity<LevelFeedbackDto> submitFeedback(@RequestBody @Valid LevelFeedbackDto feedbackDto) {

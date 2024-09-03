@@ -8,58 +8,94 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>모의 면접 종료</title>
+    <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/LevelFeedback.css">
 </head>
 <body>
 <div th:replace="~{layout/header.html :: header}"></div>
-<div class="container">
-    <!-- 메인 콘텐츠 컨테이너 -->
-    <h1>모의 면접 종료</h1> <!-- 페이지의 주요 제목 -->
+<main class="container">
+    <h1>모의 면접 종료</h1>
     <div id="message-box">
-        <!-- 사용자에게 난이도 선택을 안내하는 메시지 박스 -->
-        면접 질문에 대한 난이도를 선택해 주세요!
+        면접 질문에 대한 난이도를 선택해 주세요
     </div>
 
-    <form id="difficultyForm" action="/interview/submitDifficulty" method="post">
+    <form id="difficultyForm" th:action ="@{}" method="post"> <!-- api url을 몰라서 비워두었습니다.-->
         <!-- 난이도 선택 폼 -->
         <div class="options">
-            <!-- 난이도 값을 저장할 숨겨진 input 필드 -->
-            <input type="hidden" name="difficulty" id="difficulty" value="">
             <!-- 난이도 선택 버튼들 -->
-            <button type="button" class="option-button" onclick="setDifficulty('상')">상</button>
-            <button type="button" class="option-button" onclick="setDifficulty('중')">중</button>
-            <button type="button" class="option-button" onclick="setDifficulty('하')">하</button>
+            <div class="option">
+                <label for="hard" style="display: none"></label>
+                <input id="hard" name="level" value='상' class="option-button" type="button" onclick="setDifficulty()" />
+            </div>
+            <div class="option">
+                <label for="normal" style="display: none"></label>
+                <input id="normal" name="level" value='중' class="option-button" type="button" onclick="setDifficulty()" />
+            </div>
+            <div class="option">
+                <label for="easy" style="display: none"></label>
+                <input id="easy" name="level" value='하' class="option-button" type="button" onclick="setDifficulty()" />
+            </div>
         </div>
         <!-- 난이도 선택 후 폼 제출 버튼 -->
-        <button type="button" onclick="submitForm()">완료</button>
+        <button id="levelSubmit" type="button" onclick="submitForm()">완료</button>
     </form>
-</div>
-<script src="/js/LevelFeedback.js" defer></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+</main>
+<!--<script src="/js/LevelFeedback.js" defer></script>-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="/js/AlFeedback.js"></script>
+<script th:inline="javascript">
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
 
+    let level = 0;
     let score = 0;
-    let level = $("input[name='difficulty']:checked").val();
-    let interviewScore = localStorage.getItem('interviewScore');
 
-    function setDifficulty(level) {
-        if (level === '상') {
-            return 0;
+    function setDifficulty() {
+        console.log("setDifficulty() 실핼");
+        // 모든 옵션 버튼의 배경색을 기본값으로 설정
+        let buttons = document.getElementsByClassName("option-button");
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].style.backgroundColor = "#f0f0f0"; // 기본 배경색
+            buttons[i].style.color = "#000"; // 기본 글자 색상
         }
-        if (level === '중') {
-            return 50;
+
+        // 클릭된 버튼의 배경색과 글자 색상을 변경하여 강조
+        event.target.style.backgroundColor = "#1a73e8"; // 강조 배경색
+        event.target.style.color = "#fff"; // 강조 글자 색상
+
+        let checked = event.target.value;
+        console.log(checked);
+
+        if (checked === '상') {
+            level = 0;
         }
-        if (level === '하') {
-            return 100;
+        if (checked === '중') {
+            level = 50;
         }
+        if (checked === '하') {
+            level = 100;
+        }
+
+        return level;
     }
 
+    // AlFeedback 페이지에서 받아온 데이터
+    const value = parseInt(localStorage.getItem('score'), 10);
+    console.log("value: " + value);
+
+    // 레벨 조정
     function setLevel() {
-        score = (setDifficulty(level) + interviewScore) / 2;
+        level = setDifficulty() + value;
+        score = level / 2;
         console.log(score);
+        return score;
     }
 
+    // 완료 버튼을 눌렀을 때 실행되는 함수
+    function submitForm() {
+        let score = setLevel();
+        document.getElementById('difficultyForm').submit();
+    }
 </script>
 </body>
 </html>
