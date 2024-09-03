@@ -31,6 +31,8 @@ header nav .navbar-navs .nav-items {
 
 header nav .navbar-navs .nav-items .nav-links {
   text-decoration: none;
+  background-color: #5E8DC0;
+  border: none;
   color: #FFFFFF;
 }
 

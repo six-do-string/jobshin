@@ -1,6 +1,7 @@
 package com.est.jobshin.global.security.config;
 
 import com.est.jobshin.global.security.handler.CustomAuthenticationFailureHandler;
+import com.est.jobshin.global.security.service.UserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,8 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
-    public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain userSecurityFilterChain(HttpSecurity http,
+            UserDetailService userDetailService) throws Exception {
         http
                 .securityMatcher("/", "/views/**", "/views/users/login", "/views/users/signup",
                         "/views/edit", "/user/**", "/api/**")
@@ -37,9 +39,16 @@ public class SecurityConfig {
                         .failureHandler(authenticationFailureHandler())
                         .permitAll()
                 )
+                .rememberMe(rememberMe -> rememberMe
+                        .key("uniqueAndSecret")
+                        .tokenValiditySeconds(86400)
+                        .userDetailsService(userDetailService))
                 .logout(logout -> logout
                         .logoutUrl("/api/users/logout")
                         .logoutSuccessUrl("/")
+                        .deleteCookies("JSESSIONID", "remember-me")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
                         .permitAll()
                 )
                 .authenticationProvider(authenticationProvider);

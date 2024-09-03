@@ -233,7 +233,7 @@ public class UserController {
     }
 
     // 로그아웃
-    @GetMapping("/api/users/logout")
+    @PostMapping("/api/users/logout")
     public String userLogout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContextHolderStrategy()
                 .getContext().getAuthentication();
