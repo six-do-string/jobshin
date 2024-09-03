@@ -5,22 +5,24 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>면접 결과</title>
     <link rel="stylesheet" href="/css/AlFeedback.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:inline="javascript">
+        var header = [[${_csrf.headerName}]];
+        var token = [[${_csrf.token}]];
+    </script>
     <script src="/js/AlFeedback.js" defer></script>
 </head>
 <body>
 <header>
     <div class="logo">
-        <!-- 로고 영역, 홈 페이지로 연결되는 링크 -->
         <a href="/" style="text-decoration: none; color: white;">JOB SHIN</a>
     </div>
     <nav class="menu">
-        <!-- 네비게이션 메뉴 항목들 -->
         <a href="#">메뉴2</a>
         <a href="#">모의 면접</a>
         <a href="#">커뮤니티</a>
-        <!-- 마이페이지와 Logout 버튼 (특수 스타일 적용) -->
         <a href="#" class="button">마이페이지</a>
         <a href="#" class="button">Logout</a>
     </nav>
@@ -33,80 +35,16 @@
         <tr>
             <th>일자</th>
             <th>점수</th>
-            <th>1번 질문</th>
-            <th>카테고리</th>
+<!--            <th>1번 질문</th>-->
+<!--            <th>카테고리</th>-->
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>yyyy.mm.dd</td>
-            <td>50 / 100</td>
-            <td>Java란 무엇입니까?</td>
-            <td>Java, BackEnd</td>
-        </tr>
+<!--        날짜 점수-->
         </tbody>
     </table>
 
-    <div class="questions">
-        <div class="question-item">
-            <div class="question-header">
-                <span>문제 1. ==와 equals()의 차이점은?</span>
-                <button class="toggle-button">▲</button>
-            </div>
-            <div class="question-content">
-                <p><strong>내 답변:</strong> 오버라이딩으로...</p>
-                <p><strong>시스템:</strong> equals() 메서드는...</p>
-            </div>
-        </div>
-    </div>
-    <div class="questions">
-        <div class="question-item">
-            <div class="question-header">
-                <span>문제 2. ==와 equals()의 차이점은?</span>
-                <button class="toggle-button">▲</button>
-            </div>
-            <div class="question-content">
-                <p><strong>내 답변:</strong> 오버라이딩으로...</p>
-                <p><strong>시스템:</strong> equals() 메서드는...</p>
-            </div>
-        </div>
-    </div>
-    <div class="questions">
-        <div class="question-item">
-            <div class="question-header">
-                <span>문제 3. ==와 equals()의 차이점은?</span>
-                <button class="toggle-button">▲</button>
-            </div>
-            <div class="question-content">
-                <p><strong>내 답변:</strong> 오버라이딩으로...</p>
-                <p><strong>시스템:</strong> equals() 메서드는...</p>
-            </div>
-        </div>
-    </div>
-    <div class="questions">
-        <div class="question-item">
-            <div class="question-header">
-                <span>문제 4. ==와 equals()의 차이점은?</span>
-                <button class="toggle-button">▲</button>
-            </div>
-            <div class="question-content">
-                <p><strong>내 답변:</strong> 오버라이딩으로...</p>
-                <p><strong>시스템:</strong> equals() 메서드는...</p>
-            </div>
-        </div>
-    </div>
-    <div class="questions">
-        <div class="question-item">
-            <div class="question-header">
-                <span>문제 5. ==와 equals()의 차이점은?</span>
-                <button class="toggle-button">▲</button>
-            </div>
-            <div class="question-content">
-                <p><strong>내 답변:</strong> 오버라이딩으로...</p>
-                <p><strong>시스템:</strong> equals() 메서드는...</p>
-            </div>
-        </div>
-    </div>
+<!--    문제 항목-->
 
     <div class="buttons">
         <button class="btn-review">이전으로</button>
@@ -115,5 +53,79 @@
 </div>
 
 <script src="/static/js/interviewResult.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    window.onload = () => {
+        getInterviewSummary();
+    }
+
+    function getInterviewSummary() {
+        $.ajax({
+            type: 'GET',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            url: "/api/mock-interviews/summary",
+            dataType: 'json',
+            success: function (response) {
+                renderInterviewSummary(response);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching interview summary:", error);
+            }
+        });
+    }
+
+    function renderInterviewSummary(data) {
+        const tbody = document.querySelector('.result-table tbody');
+        tbody.innerHTML = '';
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${new Date().toLocaleDateString()}</td>
+            <td>${calculateTotalScore(data)} / 500</td>
+<!--            <td>${data[0].question}</td>-->
+<!--            <td>카테고리</td>-->
+        `;
+        tbody.appendChild(row);
+
+        // 질문 항목 업데이트
+        const questionsContainer = document.querySelector('.container');
+        data.forEach((item, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('questions');
+            questionDiv.innerHTML = `
+                <div class="question-item">
+                    <div class="question-header">
+                        <span>문제 ${index + 1}. ${item.question}</span>
+                        <button class="toggle-button">▲</button>
+                    </div>
+                    <div class="question-content">
+                        <p><strong>카테고리:</strong>${item.category}</p>
+                        <p><strong>내 답변:</strong> ${item.answer}</p>
+                        <p><strong>시스템:</strong> ${item.exampleAnswer}</p>
+                        <p><strong>점수:</strong> ${item.score}</p>
+                    </div>
+                </div>
+            `;
+            questionsContainer.insertBefore(questionDiv, questionsContainer.querySelector('.buttons'));
+        });
+        // 토글 버튼 이벤트 리스너 추가
+        addToggleListeners();
+    }
+
+    function calculateTotalScore(data) {
+        return data.reduce((total, item) => total + item.score, 0);
+    }
+
+    function addToggleListeners() {
+        document.querySelectorAll('.toggle-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const content = this.closest('.question-item').querySelector('.question-content');
+                content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                this.textContent = content.style.display === 'none' ? '▼' : '▲';
+            });
+        });
+    }
+</script>
 </body>
 </html>

@@ -19,7 +19,6 @@ import java.util.List;
 public class InterviewController {
 
     private final InterviewService interviewService;
-    private final AlanService alanService;
 
     @PostMapping("/api/mock-interviews/practice")
     public ResponseEntity<InterviewDto> createPracticeInterview(@RequestParam Category category, HttpSession session) {
@@ -45,9 +44,15 @@ public class InterviewController {
         return ResponseEntity.ok(question);
     }
 
-    @GetMapping("/api/mock-interviews/finish")
-    public ResponseEntity<List<InterviewResultDetail>> finish(HttpSession session) {
-        List<InterviewResultDetail> interviewResultDetails = interviewService.finishInterview(session);
+    @PostMapping("/api/mock-interviews/finish")
+    public ResponseEntity<String> finish(@RequestBody InterviewQuestion interviewQuestion) {
+        String string = interviewService.lastQuestion(interviewQuestion);
+        return ResponseEntity.ok(string);
+    }
+
+    @GetMapping("/api/mock-interviews/summary")
+    public ResponseEntity<List<InterviewResultDetail>> summary(HttpSession session) {
+        List<InterviewResultDetail> interviewResultDetails = interviewService.summaryInterview(session);
         return ResponseEntity.ok(interviewResultDetails);
     }
 
