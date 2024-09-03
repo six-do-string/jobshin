@@ -41,7 +41,7 @@ public class InterviewController {
         return ResponseEntity.ok(question);
     }
 
-    @GetMapping("/api/mock-interviews/finish")
+    @PostMapping("/api/mock-interviews/finish")
     public ResponseEntity<String> finish(@RequestBody InterviewQuestion interviewQuestion) {
         String string = interviewService.lastQuestion(interviewQuestion);
         return ResponseEntity.ok(string);
