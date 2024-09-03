@@ -4,6 +4,7 @@ import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +15,11 @@ import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 
 @Controller
 public class InterviewThymeleafController {
-    private final InterviewDetailService interviewDetailService;
-
-    public InterviewThymeleafController(InterviewService interviewService, InterviewDetailService interviewDetailService) {
-        this.interviewDetailService = interviewDetailService;
-    }
+//    private final InterviewDetailService interviewDetailService;
+//
+//    public InterviewThymeleafController(InterviewService interviewService, InterviewDetailService interviewDetailService) {
+//        this.interviewDetailService = interviewDetailService;
+//    }
 
     @GetMapping("/views/interviewMainPage")
     public String getInterview(HttpSession session) {
