@@ -117,11 +117,11 @@ public class InterviewService {
         return "success";
     }
 
-//    public List<InterviewResultDetail> finishInterview(HttpSession session) {
-//        return getInterviewDetails((Long) session.getAttribute("interviewId"));
-//    }
+    public List<InterviewResultDetail> summaryInterview(HttpSession session) {
+        return getInterviewDetailsById((Long) session.getAttribute("interviewId"));
+    }
 
-    public List<InterviewResultDetail> getInterviewDetails(Long interviewId) {
+    public List<InterviewResultDetail> getInterviewDetailsById(Long interviewId) {
         Interview interview = interviewRepository.findById(interviewId)
                 .orElseThrow(() -> new NoSuchElementException("Interview not found"));
 

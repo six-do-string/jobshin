@@ -4,12 +4,15 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewDto;
 import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
+import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.infra.alan.AlanService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,6 +48,12 @@ public class InterviewController {
     public ResponseEntity<String> finish(@RequestBody InterviewQuestion interviewQuestion) {
         String string = interviewService.lastQuestion(interviewQuestion);
         return ResponseEntity.ok(string);
+    }
+
+    @GetMapping("/api/mock-interviews/summary")
+    public ResponseEntity<List<InterviewResultDetail>> summary(HttpSession session) {
+        List<InterviewResultDetail> interviewResultDetails = interviewService.summaryInterview(session);
+        return ResponseEntity.ok(interviewResultDetails);
     }
 
     @GetMapping("/api/mock-interviews/{interviewId}")
