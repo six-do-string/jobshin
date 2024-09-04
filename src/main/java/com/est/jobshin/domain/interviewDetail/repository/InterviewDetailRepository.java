@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Repository
 public interface InterviewDetailRepository extends JpaRepository<InterviewDetail, Long> {
 
     List<InterviewDetail> findByInterviewId(Long interviewId);

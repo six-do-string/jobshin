@@ -1,7 +1,6 @@
 package com.est.jobshin.domain.interviewDetail.service;
 
 import com.est.jobshin.domain.interview.domain.Interview;
-import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
@@ -15,22 +14,25 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-//@Transactional
 @RequiredArgsConstructor
 public class InterviewDetailService {
     private final InterviewDetailRepository interviewDetailRepository;
     private final AlanService alenService;
+    private static final int NUMBER_OF_SELECT = 5;
+    private static final String REGEX = "\\[(.*?)\\]";
+
 
     //면접 실전모드로 진입시
     //질문 카테고리 랜덤하게 생성
     @Transactional
     public void realModeStarter(Interview interview, User user) {
-        Category[] categories = selectCategories(5);
+        Category[] categories = selectCategories();
         createInterviewDetail(interview, categories, user);
     }
 
@@ -38,7 +40,7 @@ public class InterviewDetailService {
     //사용자가 선택한 카테고리로 질문 카테고리 생성
     @Transactional
     public void practiceModeStarter(Interview interview, Category category, User user) {
-        Category[] categories = new Category[5];
+        Category[] categories = new Category[NUMBER_OF_SELECT];
         Arrays.fill(categories, category);
         createInterviewDetail(interview, categories, user);
     }
@@ -50,15 +52,14 @@ public class InterviewDetailService {
 
         ArrayList<String> questionList = new ArrayList<>();
 
-        String regex = "\\[(.*?)\\]";
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern = Pattern.compile(REGEX);
         Matcher matcher = pattern.matcher(questionData);
 
         while (matcher.find()) {
             questionList.add(matcher.group(1).substring(matcher.group(1).indexOf(':')+1).trim());
         }
 
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < NUMBER_OF_SELECT; i++){
             InterviewDetail interviewDetail = InterviewDetail.createInterviewDetail(
                     questionList.get(i),
                     category[i],
@@ -74,15 +75,14 @@ public class InterviewDetailService {
     @Transactional
     public void getAnswerByUser(InterviewQuestion interviewQuestion) {
         InterviewDetail interviewDetail = interviewDetailRepository.findById(interviewQuestion.getId())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoSuchElementException("InterviewDetail not found"));
         interviewDetail.registerAnswer(interviewQuestion.getAnswer());
 
         String feedback = alenService.callAnswer(interviewQuestion.getQuestion(), interviewQuestion.getAnswer());
 
         ArrayList<String> feedbackList = new ArrayList<>();
 
-        String regex = "\\[(.*?)\\]";
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern = Pattern.compile(REGEX);
         Matcher matcher = pattern.matcher(feedback);
 
         while (matcher.find()) {
@@ -92,28 +92,12 @@ public class InterviewDetailService {
         interviewDetail.registerFeedback(feedbackList.get(1), Long.parseLong(feedbackList.get(0)));
     }
 
-//    @Transactional(readOnly = true)
-//    public List<InterviewQuestion> getInterviewDetailByInterviewId(Long interviewId){
-//        return interviewDetailRepository
-//                .findByInterviewId(interviewId)
-//                .stream()
-//                .map(InterviewQuestion::fromInterviewDetail)
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public InterviewDetail getInterviewDetailById(Long interviewDetailId) {
-//        return interviewDetailRepository
-//                .findById(interviewDetailId)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid interview details id: " + interviewDetailId));
-//    }
-
     //랜덤한 카테고리 배열 생성
-    private Category[] selectCategories(int numberOfSelect) {
+    private Category[] selectCategories() {
         Random random = new Random();
         Category[] categories = Category.values();
-        Category[] selectedCategories = new Category[numberOfSelect];
-        for(int i = 0; i < numberOfSelect; i ++){
+        Category[] selectedCategories = new Category[NUMBER_OF_SELECT];
+        for(int i = 0; i < NUMBER_OF_SELECT; i ++){
             int randomIndex = random.nextInt(categories.length);
             selectedCategories[i] = categories[randomIndex];
         }
