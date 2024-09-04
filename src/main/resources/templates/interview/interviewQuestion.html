@@ -14,7 +14,7 @@
 <div th:replace="~{layout/header.html :: header}"></div>
 <main class="mainBody">
     <div class="mainCont">
-        <h1>모의 면접 - 실전 모드</h1>
+        <h1>모의 면접</h1>
         <hr>
         <section class="questionCont">
             <div class="questionBox">
@@ -25,10 +25,6 @@
                     <p class="content"></p>
                 </div>
             </div>
-            <!--            <div class="completeSubmit" style="display: none">-->
-            <!--                <span class="textSubmit">제출되었습니다.</span>-->
-            <!--                <button id="nextBtn">다음 문제</button>-->
-            <!--            </div>-->
             <div class="answerBox">
                 <label for="answer" style="display: none"></label>
                 <textarea id="answer" name="answer" placeholder="답변을 입력하세요"></textarea>
@@ -55,6 +51,10 @@
 
     let questionId = null;
     let question = null;
+
+    let url = new URL(window.location.href);
+    let pathSegments = url.pathname.split('/'); // ["", "views", "question", "practice"]
+    let lastSegment = pathSegments[pathSegments.length - 1]; // "practice"
 
     window.onload = () => {
         getQuestions();
@@ -115,8 +115,14 @@
                 success: function (response) {
                     loadingModal.style.display = 'none';
                     // if (confirm("질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?")) {
-                    window.location.href = "/views/interview/result"
+                    // window.location.href = "/views/interview/result"
                     // }
+                    if (lastSegment === "real") {
+                        return window.location.href = `/views/interview/result?mode=REAL`;
+                    }
+                    if (lastSegment === "practice"){
+                        return window.location.href = `/views/interview/result?mode=PRACTICE`;
+                    }
                 },
                 error: function (error) {
                     console.error("답변 제출 중 오류가 발생하였습니다: ", error);

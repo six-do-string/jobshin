@@ -6,28 +6,16 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>면접 결과</title>
+    <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/AlFeedback.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
     <script th:inline="javascript">
         var header = [[${_csrf.headerName}]];
         var token = [[${_csrf.token}]];
     </script>
-    <script src="/js/AlFeedback.js" defer></script>
 </head>
 <body>
-<header>
-    <div class="logo">
-        <a href="/" style="text-decoration: none; color: white;">JOB SHIN</a>
-    </div>
-    <nav class="menu">
-        <a href="#">메뉴2</a>
-        <a href="#">모의 면접</a>
-        <a href="#">커뮤니티</a>
-        <a href="#" class="button">마이페이지</a>
-        <a href="#" class="button">Logout</a>
-    </nav>
-</header>
-
+<div th:replace="~{layout/header.html :: header}"></div>
 <div class="container">
     <h1>면접 결과</h1>
     <table class="result-table">
@@ -47,12 +35,12 @@
 <!--    문제 항목-->
 
     <div class="buttons">
-        <button class="btn-review">이전으로</button>
-        <button class="btn-submit">면접완료</button>
+        <a class="btn-review" th:href="@{/views/interviewMainPage}">이전으로</a>
+        <a class="btn-submit" th:if="${mode.name()} == 'REAL'" th:href="@{/views/interview/levelEval}">면접완료</a>
+        <a class="btn-submit" th:if="${mode.name()} == 'PRACTICE'" th:href="@{/views/main}">면접완료</a>
     </div>
 </div>
-
-<script src="/static/js/AlFeedback.js"></script>
+<script src="/js/AlFeedback.js" defer></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script th:inline="javascript">
     window.onload = () => {
@@ -68,6 +56,7 @@
             url: "/api/mock-interviews/summary",
             dataType: 'json',
             success: function (response) {
+                console.log(response);
                 renderInterviewSummary(response);
 
                 // levelFeedback 페이지에 전달할 데이터
