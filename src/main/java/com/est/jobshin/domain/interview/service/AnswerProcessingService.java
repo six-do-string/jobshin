@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
@@ -16,18 +18,18 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class AnswerProcessingService {
     private static final Logger log = LoggerFactory.getLogger(AnswerProcessingService.class);
     private final InterviewDetailService interviewDetailService;
-    private final Queue<InterviewQuestion> answerQueue = new ConcurrentLinkedQueue<>();
+    private final Map<Long, Queue<InterviewQuestion>> answerQueues = new ConcurrentHashMap<>();
+    private final Map<Long, Integer> answerCounts = new ConcurrentHashMap<>();
     private final Object lock = new Object();
     private volatile boolean isProcessing = false;
-    private int count = 0;
 
     @PostConstruct
     public void init() {
         new Thread(this::processAnswers).start();
     }
 
-    public void addAnswer(InterviewQuestion interviewQuestion) {
-        answerQueue.add(interviewQuestion);
+    public void addAnswer(Long interviewId, InterviewQuestion interviewQuestion) {
+        answerQueues.computeIfAbsent(interviewId, k -> new ConcurrentLinkedQueue<>()).add(interviewQuestion);
         synchronized (lock) {
             if(!isProcessing) {
                 lock.notify();
@@ -35,19 +37,19 @@ public class AnswerProcessingService {
         }
     }
 
-    public boolean addAnswerAndReturnStatus(InterviewQuestion interviewQuestion, int num) {
-        addAnswer(interviewQuestion);
-        while(count < num) {
+    public boolean addAnswerAndReturnStatus(Long interviewId, InterviewQuestion interviewQuestion, int num) {
+        addAnswer(interviewId, interviewQuestion);
+        while(answerCounts.getOrDefault(interviewId, 0) < num) {
 
         }
-        count = 0;
+        answerCounts.remove(interviewId);
         return true;
     }
 
     private void processAnswers() {
         while (true) {
             synchronized (lock) {
-                while (answerQueue.isEmpty()) {
+                while (answerQueues.values().stream().allMatch(Queue::isEmpty)) {
                     try {
                         isProcessing = false;
                         lock.wait();
@@ -59,21 +61,23 @@ public class AnswerProcessingService {
                 isProcessing = true;
             }
 
-            while (!answerQueue.isEmpty()) {
-                InterviewQuestion interviewQuestion = answerQueue.poll();
-                if (interviewQuestion != null) {
-                    try {
-                        interviewDetailService.getAnswerByUser(interviewQuestion);
-                        count++;
-                    } catch (Exception e) {
-                        log.error("Error processing answer", e);
+            for(Map.Entry<Long, Queue<InterviewQuestion>> entry : answerQueues.entrySet()) {
+                Long interviewId = entry.getKey();
+                Queue<InterviewQuestion> answerQueue = entry.getValue();
+
+                while (!answerQueue.isEmpty()) {
+                    InterviewQuestion interviewQuestion = answerQueue.poll();
+                    if (interviewQuestion != null) {
+                        try {
+                            interviewDetailService.getAnswerByUser(interviewQuestion);
+                            answerCounts.put(interviewId, answerCounts.getOrDefault(interviewId, 0) + 1);
+                        } catch (Exception e) {
+                            log.error("Error processing answer", e);
+                        }
                     }
                 }
             }
+
         }
     }
-
-//    public boolean isProcessing() {
-//        return isProcessing;
-//    }
 }

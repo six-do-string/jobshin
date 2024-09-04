@@ -109,7 +109,9 @@ public class InterviewService {
     public InterviewQuestion processAnswerAndGetNextQuestion(HttpSession session, InterviewQuestion interviewQuestion) {
         InterviewQuestion nextQuestion = getNextQuestion(session);
 
-        answerProcessingService.addAnswer(interviewQuestion);
+        Long interviewId = (Long) session.getAttribute("interviewId");
+
+        answerProcessingService.addAnswer(interviewId, interviewQuestion);
 
 //        CompletableFuture.runAsync(() -> {
 //            interviewDetailService.getAnswerByUser(interviewQuestion);
@@ -141,9 +143,10 @@ public class InterviewService {
 //        interviewDetailService.getAnswerByUser(interviewQuestion);
 
         //
+        Long interviewId = (Long) session.getAttribute("interviewId");
         List<InterviewDetail> questions = (List<InterviewDetail>) session.getAttribute("questions");
         int size = questions.size();
-        answerProcessingService.addAnswerAndReturnStatus(interviewQuestion, size);
+        answerProcessingService.addAnswerAndReturnStatus(interviewId, interviewQuestion, size);
         return "success";
     }
 
