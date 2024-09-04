@@ -36,7 +36,7 @@ public class InterviewServiceTest {
 		Interview interview = Interview.builder()
 			.title("모의면접 테스트")
 			.mode(REAL)
-			.createAt(LocalDateTime.now())
+			.createdAt(LocalDateTime.now())
 			.build();
 
 		InterviewDetail interviewDetail = InterviewDetail.builder()
@@ -69,7 +69,7 @@ public class InterviewServiceTest {
 		Interview interview = Interview.builder()
 			.title("모의면접 테스트")
 			.mode(REAL)
-			.createAt(LocalDateTime.now())
+			.createdAt(LocalDateTime.now())
 			.build();
 
 	    //When

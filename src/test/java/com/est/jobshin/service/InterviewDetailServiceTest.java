@@ -57,8 +57,8 @@ public class InterviewDetailServiceTest {
 		Interview interview = Interview.builder()
 			.title("모의면접 테스트")
 			.mode(REAL)
-			.createAt(LocalDateTime.now())
 			.interviewDetails(new ArrayList<>())
+			.createdAt(LocalDateTime.now())
 			.build();
 
 		Category[] categories = {Category.CS, Category.LANGUAGE, Category.LANGUAGE, Category.ALGORITHM, Category.ALGORITHM};
