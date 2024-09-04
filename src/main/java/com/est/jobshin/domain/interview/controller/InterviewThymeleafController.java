@@ -4,28 +4,26 @@ import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import static com.est.jobshin.domain.interviewDetail.util.Mode.PRACTICE;
 import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 
 @Controller
+@RequestMapping("/views")
 public class InterviewThymeleafController {
-    private final InterviewDetailService interviewDetailService;
 
-    public InterviewThymeleafController(InterviewService interviewService, InterviewDetailService interviewDetailService) {
-        this.interviewDetailService = interviewDetailService;
-    }
-
-    @GetMapping("/views/interviewMainPage")
+    @GetMapping("/interviewMainPage")
     public String getInterview(HttpSession session) {
         return "interview/interviewMainPage";
     }
 
-    @GetMapping("/views/mode")
+    @GetMapping("/mode")
     public String getInterviewReal(@RequestParam Mode mode) {
         if (mode == REAL) {
             return "interview/interviewRealEnter";
@@ -36,19 +34,31 @@ public class InterviewThymeleafController {
         }
     }
 
-    @GetMapping("/views/question/real")
-    public String startInterviewReal(Model model) {
+    @GetMapping("/question/real")
+    public String startInterviewReal() {
         return "interview/interviewQuestion";
     }
 
-    @GetMapping("/views/question/practice")
+    @GetMapping("/question/practice")
     public String startInterviewPractice() {
         return "interview/interviewQuestion";
     }
 
-    @GetMapping("/views/interview/result")
-    public String getInterviewResult() {
-        return "AlFeedback";
+    @GetMapping("/interview/result")
+    public String getInterviewResult(@RequestParam("mode") Mode mode, Model model) {
+        if (mode == REAL) {
+            model.addAttribute("mode", REAL);
+            return "AlFeedback";
+        } else if (mode == PRACTICE) {
+            model.addAttribute("mode", PRACTICE);
+            return "AlFeedback";
+        } else {
+            return "error";
+        }
     }
 
+    @GetMapping("/interview/levelEval")
+    public String getInterviewLevelEval() {
+        return "levelFeedback";
+    }
 }

@@ -19,7 +19,7 @@ import java.util.List;
 public class InterviewDto {
     private String title;
 
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     private Mode mode;
 
@@ -34,7 +34,7 @@ public class InterviewDto {
         }
         return InterviewDto.builder()
                 .title(interview.getTitle())
-                .createAt(interview.getCreateAt())
+                .createdAt(interview.getCreatedAt())
                 .mode(interview.getMode())
                 .interviewDetailDto(interviewDetailDto)
                 .build();
@@ -43,7 +43,7 @@ public class InterviewDto {
     public Interview toInterview() {
         return Interview.builder()
                 .title(title)
-                .createAt(createAt)
+                .createdAt(createdAt)
                 .build();
     }
 }

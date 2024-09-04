@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>모의 면접 종료</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/LevelFeedback.css">
+</head>
+<body>
+<div th:replace="~{layout/header.html :: header}"></div>
+<main class="container">
+    <h1>모의 면접 종료</h1>
+    <div id="message-box">
+        면접 질문에 대한 난이도를 선택해 주세요
+    </div>
+
+    <form id="difficultyForm" method="post"> <!-- api url을 몰라서 비워두었습니다.-->
+        <!-- 난이도 선택 폼 -->
+        <div class="options">
+            <!-- 난이도 선택 버튼들 -->
+            <div class="option">
+                <label for="hard" style="display: none"></label>
+                <input id="hard" name="level" value='상' class="option-button" type="button" onclick="setDifficulty()" />
+            </div>
+            <div class="option">
+                <label for="normal" style="display: none"></label>
+                <input id="normal" name="level" value='중' class="option-button" type="button" onclick="setDifficulty()" />
+            </div>
+            <div class="option">
+                <label for="easy" style="display: none"></label>
+                <input id="easy" name="level" value='하' class="option-button" type="button" onclick="setDifficulty()" />
+            </div>
+        </div>
+        <!-- 난이도 선택 후 폼 제출 버튼 -->
+        <button id="levelSubmit" type="button" onclick="submitForm()">완료</button>
+    </form>
+</main>
+<!--<script src="/js/LevelFeedback.js" defer></script>-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="/js/AlFeedback.js"></script>
+<script th:inline="javascript">
+    let token = $("meta[name='_csrf']").attr("content");
+    let header = $("meta[name='_csrf_header']").attr("content");
+
+    let level = null;
+    let score = 0;
+
+    function setDifficulty() {
+        console.log("setDifficulty() 실행");
+        // 모든 옵션 버튼의 배경색을 기본값으로 설정
+        let buttons = document.getElementsByClassName("option-button");
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].style.backgroundColor = "#f0f0f0"; // 기본 배경색
+            buttons[i].style.color = "#000"; // 기본 글자 색상
+        }
+
+        // 클릭된 버튼의 배경색과 글자 색상을 변경하여 강조
+        event.target.style.backgroundColor = "#1a73e8"; // 강조 배경색
+        event.target.style.color = "#fff"; // 강조 글자 색상
+
+        let checked = event.target.value;
+        console.log(checked);
+
+        if (checked === '상') {
+            level = 0;
+        }
+        if (checked === '중') {
+            level = 50;
+        }
+        if (checked === '하') {
+            level = 100;
+        }
+
+        return level;
+    }
+
+    // AlFeedback 페이지에서 받아온 데이터
+    const value = parseInt(localStorage.getItem('score'), 10);
+    console.log("value: " + value);
+
+    // 레벨 조정
+    function setLevel() {
+        level = setDifficulty() + value;
+        score = level / 2;
+        console.log(score);
+        return score;
+    }
+
+    // 완료 버튼을 눌렀을 때 실행되는 함수
+    function submitForm() {
+        if (level == null) {
+            alert("난이도를 선택해주세요.");
+            return;
+        }
+        let score = setLevel();
+        document.getElementById('difficultyForm').submit();
+    }
+</script>
+</body>
+</html>
