@@ -33,6 +33,7 @@ public class InterviewService {
     private final InterviewRepository interviewRepository;
     private final InterviewDetailService interviewDetailService;
     private final UserRepository userRepository;
+    private final AnswerProcessingService answerProcessingService;
 
     @Transactional
     public InterviewDto getInterviewById(Long id) {
@@ -108,9 +109,11 @@ public class InterviewService {
     public InterviewQuestion processAnswerAndGetNextQuestion(HttpSession session, InterviewQuestion interviewQuestion) {
         InterviewQuestion nextQuestion = getNextQuestion(session);
 
-        CompletableFuture.runAsync(() -> {
-            interviewDetailService.getAnswerByUser(interviewQuestion);
-        });
+        answerProcessingService.addAnswer(interviewQuestion);
+
+//        CompletableFuture.runAsync(() -> {
+//            interviewDetailService.getAnswerByUser(interviewQuestion);
+//        });
 
         return nextQuestion;
     }
@@ -130,11 +133,17 @@ public class InterviewService {
         return InterviewQuestion.from(question, questions.size());
     }
 
+    @Transactional
     public String lastQuestion(InterviewQuestion interviewQuestion, HttpSession session) {
         Interview interview = interviewRepository.findById((Long)session.getAttribute("interviewId"))
                 .orElseThrow(() -> new NoSuchElementException("Interview not found"));
         interview.completeInterview();
-        interviewDetailService.getAnswerByUser(interviewQuestion);
+//        interviewDetailService.getAnswerByUser(interviewQuestion);
+
+        //
+        List<InterviewDetail> questions = (List<InterviewDetail>) session.getAttribute("questions");
+        int size = questions.size();
+        answerProcessingService.addAnswerAndReturnStatus(interviewQuestion, size);
         return "success";
     }
 
