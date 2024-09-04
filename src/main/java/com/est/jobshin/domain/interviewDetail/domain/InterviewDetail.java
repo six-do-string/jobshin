@@ -26,6 +26,7 @@ public class InterviewDetail {
     @Size(max = 1000)
     private String question;
 
+    @Column(length = 2000)
     private String answer;
 
     @Enumerated(EnumType.STRING)
