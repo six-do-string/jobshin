@@ -43,6 +43,7 @@ public class AnswerProcessingService {
 
         }
         answerCounts.remove(interviewId);
+        answerQueues.remove(interviewId);
         return true;
     }
 
