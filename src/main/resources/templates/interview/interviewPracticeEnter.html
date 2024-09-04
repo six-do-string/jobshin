@@ -53,8 +53,14 @@
         </div>
     </div>
 </main>
+<div id="loadingModal" class="modal">
+    <div class="modal-content">
+        <p>문제 생성이 완료되면 면접페이지로 자동으로 이동합니다. 잠시만 기다려주세요...</p>
+    </div>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+    const loadingModal = document.getElementById('loadingModal');
     // 질문 생성
     function createQuestions2(){
         let TOKEN = $("meta[name='_csrf']").attr("content");
@@ -67,7 +73,7 @@
             return;
         }
         console.log('createQuestions() 함수 실행')
-
+        loadingModal.style.display = 'block';
         $.ajax({
             type: 'POST',
             beforeSend : function(xhr) {
@@ -77,6 +83,7 @@
             contentType: 'application/json; charset =utf-8',
             dataType: 'json',
             success: function () {
+                loadingModal.style.display = 'none';
                 returnQuestionPage();
             },
             error: function (request, status, error){

@@ -14,11 +14,13 @@ public class InterviewQuestion {
     private Long id;
     private String question;
     private String answer;
+    private Integer size;
 
-    public static InterviewQuestion from(InterviewDetail interviewDetail) {
+    public static InterviewQuestion from(InterviewDetail interviewDetail, Integer size) {
         return InterviewQuestion.builder()
                 .id(interviewDetail.getId())
                 .question(interviewDetail.getQuestion())
+                .size(size)
                 .build();
     }
 }

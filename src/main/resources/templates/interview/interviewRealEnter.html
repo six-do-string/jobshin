@@ -41,33 +41,21 @@
         </div>
     </div>
 </main>
+<div id="loadingModal" class="modal">
+    <div class="modal-content">
+        <p>문제 생성이 완료되면 면접페이지로 자동으로 이동합니다. 잠시만 기다려주세요...</p>
+    </div>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script th:inline="javascript">
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const loadingModal = document.getElementById('loadingModal');
 
     // 질문 생성
     function createQuestions(){
         console.log('createQuestions() 함수 실행')
-
-        // $.ajax({
-        //     type: 'POST',
-        //     beforeSend : function(xhr) {
-        //         xhr.setRequestHeader(csrfToken, csrfHeader);
-        //     },
-        //     url: "/api/mock-interviews/real",
-        //     contentType: 'application/json',
-        //     dataType: 'json',
-        //     // data: JSON.stringify(params),
-        //     success: function (response) {
-        //         alert('실행')
-        //         returnQuestionPage();
-        //     },
-        //     error: function (request, status, error){
-        //         console.log(error);
-        //     }
-        // });
-
+        loadingModal.style.display = 'block';
         fetch('/api/mock-interviews/real', {
             method: 'POST',
             headers: {
@@ -76,14 +64,16 @@
             }
         })
         .then(response => {
+            loadingModal.style.display = 'none';
             if (response.ok) {
-                alert("질문 구성 완료");
+                // alert("질문 구성 완료");
                 returnQuestionPage();
             } else {
                 alert("질문 구성 실패");
             }
         })
         .catch(error => {
+            loadingModal.style.display = 'none';
             alert("질문 구성 중 오류가 발생했습니다.");
             console.error('Error:', error);
         });

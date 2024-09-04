@@ -39,12 +39,19 @@
         </section>
     </div>
 </main>
+<div id="loadingModal" class="modal">
+    <div class="modal-content">
+        <p>면접 결과 정리가 완료되면 자동으로 결과 페이지로 이동합니다. 잠시만 기다려주세요...</p>
+    </div>
+</div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     let currentProblem = 1;
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
+    let size;
+    const loadingModal = document.getElementById('loadingModal');
 
     let questionId = null;
     let question = null;
@@ -68,7 +75,7 @@
             answer: answer
         }
 
-        if(currentProblem < 5) {
+        if(currentProblem < size) {
             $.ajax({
                 type: 'POST',
                 beforeSend: function (xhr) {
@@ -96,6 +103,7 @@
                 }
             });
         } else {
+            loadingModal.style.display = 'block';
             $.ajax({
                 type: 'POST',
                 beforeSend: function (xhr) {
@@ -105,9 +113,10 @@
                 data: JSON.stringify(params),
                 url: "/api/mock-interviews/finish",
                 success: function (response) {
-                    if (confirm("질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?")) {
-                        window.location.href = "/views/interview/result"
-                    }
+                    loadingModal.style.display = 'none';
+                    // if (confirm("질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?")) {
+                    window.location.href = "/views/interview/result"
+                    // }
                 },
                 error: function (error) {
                     console.error("답변 제출 중 오류가 발생하였습니다: ", error);
@@ -136,6 +145,7 @@
                 console.log(questionId);
                 question = response.question;
                 console.log(question);
+                size = response.size;
 
                 $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
                 $(questionCont).html(`<p>${question}</p>`);
