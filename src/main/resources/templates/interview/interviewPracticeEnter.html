@@ -55,11 +55,11 @@
 </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+    let TOKEN = $("meta[name='_csrf']").attr("content");
+    let HEADER = $("meta[name='_csrf_header']").attr("content");
+
     // 질문 생성
     function createQuestions2(){
-        let TOKEN = $("meta[name='_csrf']").attr("content");
-        let HEADER = $("meta[name='_csrf_header']").attr("content");
-
         const category = $("input[name='category']:checked").val();
 
         if (category == null) {

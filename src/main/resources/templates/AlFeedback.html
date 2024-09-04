@@ -20,9 +20,9 @@
         <a href="/" style="text-decoration: none; color: white;">JOB SHIN</a>
     </div>
     <nav class="menu">
-        <a href="#">메뉴2</a>
+<!--        <a href="#">메뉴2</a>-->
         <a href="#">모의 면접</a>
-        <a href="#">커뮤니티</a>
+<!--        <a href="#">커뮤니티</a>-->
         <a href="#" class="button">마이페이지</a>
         <a href="#" class="button">Logout</a>
     </nav>
@@ -47,12 +47,12 @@
 <!--    문제 항목-->
 
     <div class="buttons">
-        <button class="btn-review">이전으로</button>
-        <button class="btn-submit">면접완료</button>
+        <button class="btn-review" th:href="@{/views/main}">이전으로</button>
+        <button class="btn-submit" onclick="returnPage()">면접완료</button>
     </div>
 </div>
 
-<script src="/static/js/AlFeedback.js"></script>
+<script src="/js/AlFeedback.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script th:inline="javascript">
     window.onload = () => {
@@ -68,6 +68,7 @@
             url: "/api/mock-interviews/summary",
             dataType: 'json',
             success: function (response) {
+                console.log(response);
                 renderInterviewSummary(response);
 
                 // levelFeedback 페이지에 전달할 데이터
@@ -128,6 +129,11 @@
                 this.textContent = content.style.display === 'none' ? '▼' : '▲';
             });
         });
+    }
+
+    function returnPage(){
+        // if ()
+        window.location.href = "/views/interview/levelEval";
     }
 </script>
 </body>

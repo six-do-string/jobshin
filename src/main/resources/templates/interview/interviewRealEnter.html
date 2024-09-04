@@ -42,50 +42,33 @@
     </div>
 </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script th:inline="javascript">
-    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+<script>
+    let TOKEN = $("meta[name='_csrf']").attr("content");
+    let HEADER = $("meta[name='_csrf_header']").attr("content");
 
     // 질문 생성
     function createQuestions(){
         console.log('createQuestions() 함수 실행')
 
-        // $.ajax({
-        //     type: 'POST',
-        //     beforeSend : function(xhr) {
-        //         xhr.setRequestHeader(csrfToken, csrfHeader);
-        //     },
-        //     url: "/api/mock-interviews/real",
-        //     contentType: 'application/json',
-        //     dataType: 'json',
-        //     // data: JSON.stringify(params),
-        //     success: function (response) {
-        //         alert('실행')
-        //         returnQuestionPage();
-        //     },
-        //     error: function (request, status, error){
-        //         console.log(error);
-        //     }
-        // });
-
-        fetch('/api/mock-interviews/real', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                [csrfHeader]: csrfToken
+        $.ajax({
+            type: 'POST',
+            beforeSend : function(xhr) {
+                xhr.setRequestHeader(HEADER, TOKEN);
+            },
+            url: "/api/mock-interviews/real",
+            contentType: 'application/json; charset =utf-8',
+            dataType: 'json',
+            success: function (response) {
+                if (response) {
+                    alert("질문 구성 완료");
+                    returnQuestionPage();
+                } else {
+                    alert("질문 구성 실패");
+                }
+            },
+            error: function (request, status, error){
+                console.log(error);
             }
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("질문 구성 완료");
-                returnQuestionPage();
-            } else {
-                alert("질문 구성 실패");
-            }
-        })
-        .catch(error => {
-            alert("질문 구성 중 오류가 발생했습니다.");
-            console.error('Error:', error);
         });
     }
 

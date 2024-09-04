@@ -19,7 +19,7 @@
         면접 질문에 대한 난이도를 선택해 주세요
     </div>
 
-    <form id="difficultyForm" th:action ="@{}" method="post"> <!-- api url을 몰라서 비워두었습니다.-->
+    <form id="difficultyForm" method="post"> <!-- api url을 몰라서 비워두었습니다.-->
         <!-- 난이도 선택 폼 -->
         <div class="options">
             <!-- 난이도 선택 버튼들 -->
@@ -51,7 +51,7 @@
     let score = 0;
 
     function setDifficulty() {
-        console.log("setDifficulty() 실핼");
+        console.log("setDifficulty() 실행");
         // 모든 옵션 버튼의 배경색을 기본값으로 설정
         let buttons = document.getElementsByClassName("option-button");
         for (let i = 0; i < buttons.length; i++) {
