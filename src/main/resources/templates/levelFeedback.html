@@ -47,7 +47,7 @@
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
 
-    let level = 0;
+    let level = null;
     let score = 0;
 
     function setDifficulty() {
@@ -93,6 +93,10 @@
 
     // 완료 버튼을 눌렀을 때 실행되는 함수
     function submitForm() {
+        if (level == null) {
+            alert("난이도를 선택해주세요.");
+            return;
+        }
         let score = setLevel();
         document.getElementById('difficultyForm').submit();
     }

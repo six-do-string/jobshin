@@ -14,7 +14,7 @@
 <div th:replace="~{layout/header.html :: header}"></div>
 <main class="mainBody">
     <div class="mainCont">
-        <h1>모의 면접 - 실전 모드</h1>
+        <h1>모의 면접</h1>
         <hr>
         <section class="questionCont">
             <div class="questionBox">
@@ -45,6 +45,10 @@
     let questionId = null;
     let question = null;
 
+    let url = new URL(window.location.href);
+    let pathSegments = url.pathname.split('/'); // ["", "views", "question", "practice"]
+    let lastSegment = pathSegments[pathSegments.length - 1]; // "practice"
+
     window.onload = () => {
         getQuestions();
     };
@@ -64,7 +68,7 @@
             answer: answer
         }
 
-        if(currentProblem < 5) {
+        if (currentProblem < 5) {
             $.ajax({
                 type: 'POST',
                 beforeSend: function (xhr) {
@@ -100,9 +104,14 @@
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(params),
                 url: "/api/mock-interviews/finish",
-                success: function (response) {
+                success: function () {
                     if (confirm("질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?")) {
-                        window.location.href = "/views/interview/result"
+                        if (lastSegment === "real") {
+                            return window.location.href = `/views/interview/result?mode=REAL`;
+                        }
+                        if (lastSegment === "practice"){
+                            return window.location.href = `/views/interview/result?mode=PRACTICE`;
+                        }
                     }
                 },
                 error: function (error) {
@@ -138,27 +147,6 @@
             },
             error: function (error) {
                 console.error('문제 가져오는 중 오류 발생: ', error);
-            }
-        });
-    }
-
-    function getResult(data) {
-        console.log('getResult() 함수 실행');
-
-        $.ajax({
-            type: 'POST',
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(header, token);
-            },
-            data: JSON.stringify(data),
-            dataType: 'json',
-            url: "/api/mock-interviews/finish",
-            success: function (response) {
-                alert('로딩 완료');
-                window.location.href = "/views/interview/result";
-            },
-            error: function (error) {
-                console.error("오류가 발생하였습니다: ", error);
             }
         });
     }
