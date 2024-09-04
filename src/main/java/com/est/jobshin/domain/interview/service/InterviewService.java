@@ -131,10 +131,10 @@ public class InterviewService {
     }
 
     public String lastQuestion(InterviewQuestion interviewQuestion, HttpSession session) {
-        interviewDetailService.getAnswerByUser(interviewQuestion);
-        Interview interview = interviewRepository.findById((Long) session.getAttribute("interviewId"))
+        Interview interview = interviewRepository.findById((Long)session.getAttribute("interviewId"))
                 .orElseThrow(() -> new NoSuchElementException("Interview not found"));
         interview.completeInterview();
+        interviewDetailService.getAnswerByUser(interviewQuestion);
         return "success";
     }
 
