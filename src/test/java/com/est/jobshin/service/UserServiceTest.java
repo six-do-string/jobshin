@@ -1,9 +1,6 @@
 package com.est.jobshin.service;
 
-import com.est.jobshin.domain.interview.domain.Interview;
-import com.est.jobshin.domain.interview.dto.PracticeInterviewHistorySummaryResponse;
 import com.est.jobshin.domain.interview.service.InterviewService;
-import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.CreateUserRequest;
 import com.est.jobshin.domain.user.dto.UpdateUserRequest;
@@ -12,20 +9,14 @@ import com.est.jobshin.domain.user.repository.UserRepository;
 import com.est.jobshin.domain.user.service.UserService;
 import com.est.jobshin.domain.user.util.Language;
 import com.est.jobshin.domain.user.util.Position;
-import org.antlr.v4.runtime.tree.pattern.ParseTreePattern;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.est.jobshin.domain.user.util.Language.JAVA;
@@ -34,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {

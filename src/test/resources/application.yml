@@ -25,7 +25,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
@@ -35,4 +35,4 @@ spring:
 alan:
   api:
     default-url: https://kdt-api-function.azurewebsites.net/api/v1/question
-    client-id: e8a8a93a-a5ff-4f26-9075-b7960ec81fe1
+    client-id: e8a8a93a-a5ff-4f26-9075-b7960ec81fe1ff-4f26-9075-b7960ec81fe1
