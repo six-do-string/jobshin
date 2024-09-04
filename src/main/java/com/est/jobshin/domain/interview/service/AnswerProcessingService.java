@@ -30,27 +30,26 @@ public class AnswerProcessingService {
 
     public void addAnswer(Long interviewId, InterviewQuestion interviewQuestion) {
         answerQueues.computeIfAbsent(interviewId, k -> new ConcurrentLinkedQueue<>()).add(interviewQuestion);
-        synchronized (lock) {
+        synchronized(lock) {
             if(!isProcessing) {
                 lock.notify();
             }
         }
     }
 
-    public boolean addAnswerAndReturnStatus(Long interviewId, InterviewQuestion interviewQuestion, int num) {
+    public void addAnswerAndReturnStatus(Long interviewId, InterviewQuestion interviewQuestion, int num) {
         addAnswer(interviewId, interviewQuestion);
         while(answerCounts.getOrDefault(interviewId, 0) < num) {
 
         }
         answerCounts.remove(interviewId);
         answerQueues.remove(interviewId);
-        return true;
     }
 
     private void processAnswers() {
-        while (true) {
-            synchronized (lock) {
-                while (answerQueues.values().stream().allMatch(Queue::isEmpty)) {
+        while(true) {
+            synchronized(lock) {
+                while(answerQueues.values().stream().allMatch(Queue::isEmpty)) {
                     try {
                         isProcessing = false;
                         lock.wait();
@@ -66,9 +65,9 @@ public class AnswerProcessingService {
                 Long interviewId = entry.getKey();
                 Queue<InterviewQuestion> answerQueue = entry.getValue();
 
-                while (!answerQueue.isEmpty()) {
+                while(!answerQueue.isEmpty()) {
                     InterviewQuestion interviewQuestion = answerQueue.poll();
-                    if (interviewQuestion != null) {
+                    if(interviewQuestion != null) {
                         try {
                             interviewDetailService.getAnswerByUser(interviewQuestion);
                             answerCounts.put(interviewId, answerCounts.getOrDefault(interviewId, 0) + 1);
