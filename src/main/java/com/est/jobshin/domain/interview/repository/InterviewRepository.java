@@ -2,6 +2,7 @@ package com.est.jobshin.domain.interview.repository;
 
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
+import com.est.jobshin.domain.user.util.Level;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,5 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
     Page<Interview> findInterviewsWithPracticeModeByUser(@Param("userId") Long userId
             , @Param("mode") Mode mode, Pageable pageable);
 
+    Interview findByUser_Level(Level level);
 }

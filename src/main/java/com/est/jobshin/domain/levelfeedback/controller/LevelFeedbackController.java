@@ -16,9 +16,9 @@ public class LevelFeedbackController {
     private final LevelFeedbackService feedbackService;
 
     // 피드백 제출
-    @PostMapping
-    public ResponseEntity<LevelFeedbackDto> submitFeedback(@RequestBody @Valid LevelFeedbackDto feedbackDto) {
-        feedbackService.saveFeedback(feedbackDto);
-        return ResponseEntity.ok(feedbackDto);
-    }
+//    @PostMapping
+//    public ResponseEntity<LevelFeedbackDto> submitFeedback(@RequestBody @Valid LevelFeedbackDto feedbackDto) {
+//        feedbackService.saveFeedback(feedbackDto);
+//        return ResponseEntity.ok(feedbackDto);
+//    }
 }

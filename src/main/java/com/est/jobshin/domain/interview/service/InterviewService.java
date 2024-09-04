@@ -2,6 +2,7 @@ package com.est.jobshin.domain.interview.service;
 
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewDto;
+import com.est.jobshin.domain.interview.dto.InterviewLevel;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
@@ -11,6 +12,8 @@ import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.repository.UserRepository;
+import com.est.jobshin.domain.user.service.UserService;
+import com.est.jobshin.domain.user.util.Level;
 import com.est.jobshin.global.security.model.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,7 @@ public class InterviewService {
     private final InterviewRepository interviewRepository;
     private final InterviewDetailService interviewDetailService;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional
     public InterviewDto getInterviewById(Long id) {
@@ -167,4 +171,24 @@ public class InterviewService {
         return userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
+
+    public void updateUserLevel(Long score) {
+        User user = getCurrentUser();
+//        interviewLevel = (InterviewLevel) session.getAttribute("level");
+        Level newLevel = updateLevel(score);
+        System.out.println(newLevel);
+        user.updateUserLevel(newLevel);
+        userRepository.save(user);
+    }
+
+    private Level updateLevel(Long score) {
+        if (score < 40) {
+            return Level.LV1;
+        } else if (score > 60) {
+            return Level.LV3;
+        } else {
+            return Level.LV2;
+        }
+    }
+
 }

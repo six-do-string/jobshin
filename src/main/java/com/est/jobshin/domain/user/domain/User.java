@@ -66,6 +66,10 @@ public class User extends BaseEntity {
 		this.language = language;
 		this.position = position;
 	}
+
+	public void updateUserLevel(Level level){
+		this.level = level;
+	}
 }
 
 
