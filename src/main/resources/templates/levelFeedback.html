@@ -19,7 +19,7 @@
         면접 질문에 대한 난이도를 선택해 주세요
     </div>
 
-    <form id="difficultyForm" method="post"> <!-- api url을 몰라서 비워두었습니다.-->
+    <form id="difficultyForm" method="post">
         <!-- 난이도 선택 폼 -->
         <div class="options">
             <!-- 난이도 선택 버튼들 -->
@@ -40,7 +40,6 @@
         <button id="levelSubmit" type="button" onclick="submitForm()">완료</button>
     </form>
 </main>
-<!--<script src="/js/LevelFeedback.js" defer></script>-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="/js/AlFeedback.js"></script>
 <script th:inline="javascript">
@@ -84,7 +83,7 @@
     console.log("value: " + value);
 
     // 레벨 조정
-    function setLevel() {
+    function setScore() {
         level = setDifficulty() + value;
         score = level / 2;
         console.log(score);
@@ -93,12 +92,30 @@
 
     // 완료 버튼을 눌렀을 때 실행되는 함수
     function submitForm() {
-        if (level == null) {
+        if (event.target.value == null) {
             alert("난이도를 선택해주세요.");
             return;
         }
-        let score = setLevel();
-        document.getElementById('difficultyForm').submit();
+
+        let form = document.getElementById('difficultyForm');
+        let score = setScore();
+        form.action = '/views/updateLevel?score=' + encodeURIComponent(score);
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                [header]: token
+            },
+            body: JSON.stringify({"score": score})
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '/views/main';
+            } else {
+                console.error('Error:', response.statusText);
+            }
+        });
     }
 </script>
 </body>

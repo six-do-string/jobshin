@@ -1,15 +1,11 @@
 package com.est.jobshin.domain.interview.controller;
 
+import com.est.jobshin.domain.interview.dto.InterviewLevel;
 import com.est.jobshin.domain.interview.service.InterviewService;
-import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import static com.est.jobshin.domain.interviewDetail.util.Mode.PRACTICE;
 import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
@@ -17,9 +13,14 @@ import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 @Controller
 @RequestMapping("/views")
 public class InterviewThymeleafController {
+    private final InterviewService interviewService;
+
+    public InterviewThymeleafController(InterviewService interviewService) {
+        this.interviewService = interviewService;
+    }
 
     @GetMapping("/interviewMainPage")
-    public String getInterview(HttpSession session) {
+    public String getInterview() {
         return "interview/interviewMainPage";
     }
 
@@ -58,7 +59,13 @@ public class InterviewThymeleafController {
     }
 
     @GetMapping("/interview/levelEval")
-    public String getInterviewLevelEval() {
+    public String getInterviewLevelEval(@ModelAttribute InterviewLevel interviewLevel) {
         return "levelFeedback";
+    }
+
+    @PostMapping("/updateLevel")
+    public String updateLevel(@RequestParam Long score) {
+        interviewService.updateUserLevel(score);
+        return "redirect:/views/main";
     }
 }

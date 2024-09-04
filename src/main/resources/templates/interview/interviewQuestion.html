@@ -161,26 +161,5 @@
             }
         });
     }
-
-    function getResult(data) {
-        console.log('getResult() 함수 실행');
-
-        $.ajax({
-            type: 'POST',
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(header, token);
-            },
-            data: JSON.stringify(data),
-            dataType: 'json',
-            url: "/api/mock-interviews/finish",
-            success: function (response) {
-                alert('로딩 완료');
-                window.location.href = "/views/interview/result";
-            },
-            error: function (error) {
-                console.error("오류가 발생하였습니다: ", error);
-            }
-        });
-    }
 </script>
 </html>
