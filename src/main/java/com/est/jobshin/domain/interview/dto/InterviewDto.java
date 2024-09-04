@@ -3,7 +3,6 @@ package com.est.jobshin.domain.interview.dto;
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewDetailDto;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
-import com.est.jobshin.domain.user.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,8 +20,6 @@ public class InterviewDto {
     private String title;
 
     private LocalDateTime createdAt;
-
-    private UserDto user;
 
     private Mode mode;
 
