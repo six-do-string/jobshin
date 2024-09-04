@@ -26,6 +26,7 @@ public class InterviewDetail {
     @Size(max = 1000)
     private String question;
 
+    @Column(length = 2000)
     private String answer;
 
     @Enumerated(EnumType.STRING)
@@ -38,6 +39,8 @@ public class InterviewDetail {
 
     @Column(length = 2000)
     private String exampleAnswer;
+
+    private boolean complete = false;
 
     private LocalDateTime createdAt;
 
@@ -63,5 +66,6 @@ public class InterviewDetail {
     public void registerFeedback(String exampleAnswer, Long score) {
         this.exampleAnswer = exampleAnswer;
         this.score = score;
+        this.complete = true;
     }
 }

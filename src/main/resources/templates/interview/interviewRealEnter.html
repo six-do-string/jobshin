@@ -41,15 +41,21 @@
         </div>
     </div>
 </main>
+<div id="loadingModal" class="modal">
+    <div class="modal-content">
+        <p>문제 생성이 완료되면 면접페이지로 자동으로 이동합니다. 잠시만 기다려주세요...</p>
+    </div>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
+<script th:inline="javascript">
     let TOKEN = $("meta[name='_csrf']").attr("content");
     let HEADER = $("meta[name='_csrf_header']").attr("content");
+    const loadingModal = document.getElementById('loadingModal');
 
     // 질문 생성
     function createQuestions(){
         console.log('createQuestions() 함수 실행')
-
+        loadingModal.style.display = 'block';
         $.ajax({
             type: 'POST',
             beforeSend : function(xhr) {
@@ -59,14 +65,17 @@
             contentType: 'application/json; charset =utf-8',
             dataType: 'json',
             success: function (response) {
+                loadingModal.style.display = 'none';
                 if (response) {
-                    alert("질문 구성 완료");
+                    // alert("질문 구성 완료");
                     returnQuestionPage();
                 } else {
                     alert("질문 구성 실패");
                 }
             },
             error: function (request, status, error){
+                loadingModal.style.display = 'none';
+                alert("질문 구성 중 오류가 발생했습니다.");
                 console.log(error);
             }
         });

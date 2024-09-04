@@ -33,7 +33,7 @@ public class MyPageInterviewDetailDto {
 			.answer(interviewDetail.getAnswer())
 			.category(interviewDetail.getCategory())
 			.mode(interviewDetail.getMode())
-			.score(interviewDetail.getScore())
+			.score(interviewDetail.getScore() != null ? interviewDetail.getScore() : 0L)
 			.exampleAnswer(interviewDetail.getExampleAnswer())
 			.createdAt(interviewDetail.getCreatedAt())
 			.build();
