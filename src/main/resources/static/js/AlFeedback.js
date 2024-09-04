@@ -10,10 +10,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const content = this.closest(".question-item").querySelector(".question-content");
             // 콘텐츠가 숨겨져 있으면 보이게, 보이면 숨기기
             if (content.style.display === "none" || content.style.display === "") {
-                content.style.display = "block"; // 콘텐츠 보이기
+                content.style.display = "block";
                 this.textContent = "▼"; // 버튼 텍스트 변경
             } else {
-                content.style.display = "none"; // 콘텐츠 숨기기
+                content.style.display = "none";
                 this.textContent = "▲"; // 버튼 텍스트 변경
             }
         });

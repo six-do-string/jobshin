@@ -1,7 +1,6 @@
 package com.est.jobshin.domain.interviewDetail.service;
 
 import com.est.jobshin.domain.interview.domain.Interview;
-import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;

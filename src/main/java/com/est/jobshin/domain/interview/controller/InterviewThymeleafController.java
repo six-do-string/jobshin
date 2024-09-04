@@ -1,10 +1,6 @@
 package com.est.jobshin.domain.interview.controller;
 
-import com.est.jobshin.domain.interview.service.InterviewService;
-import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +15,7 @@ import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 public class InterviewThymeleafController {
 
     @GetMapping("/interviewMainPage")
-    public String getInterview(HttpSession session) {
+    public String getInterview() {
         return "interview/interviewMainPage";
     }
 
