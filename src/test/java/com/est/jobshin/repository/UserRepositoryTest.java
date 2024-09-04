@@ -169,7 +169,7 @@ public class UserRepositoryTest {
     }
     // --
 
-    // -- 유저 인터뷰 이력 테스트
+    // -- 유저 면접 이력 테스트
     @DisplayName("사용자가 면접 이력이 미존재시 테스트")
     @Test
     void NoInterviewHistoryTest() {
@@ -222,7 +222,7 @@ public class UserRepositoryTest {
         // 면접 생성 및 저장
         Interview interview = Interview.builder()
                 .title("java test")
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .mode(PRACTICE)
                 .user(savedUser)
                 .build();
@@ -260,7 +260,7 @@ public class UserRepositoryTest {
         assertThat(interviews).isNotEmpty(); // 면접 이력이 있는지 확인
     }
 
-    @DisplayName("유저의 인터뷰 건수와 내용이 일치여부 확인 테스트")
+    @DisplayName("유저의 면접 건수와 내용이 일치여부 확인 테스트")
     @Test
     void interviewCountAndContent() {
         // given: 사용자와 인터뷰 데이터 생성 및 저장
@@ -276,29 +276,27 @@ public class UserRepositoryTest {
         // 사용자 저장
         User savedUser = userRepository.save(user);
 
-        // 인터뷰 데이터 생성 및 저장
+        // 면접 데이터 생성 및 저장
         Interview interview = Interview.builder()
                 .title("java test")
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .user(savedUser) // 저장된 User 객체를 설정
                 .build();
 
-        // 인터뷰 저장
+        // 면접이력 저장
         Interview savedInterview = interviewRepository.save(interview);
 
-        // when: 특정 사용자의 인터뷰를 조회
+        // when: 특정 사용자의 면접이력을 조회
         List<Interview> interviews = interviewRepository.findAll().stream()
                 .filter(interviewItem -> interviewItem.getUser().getUsername().equals("test@test.com"))
                 .collect(Collectors.toList());
 
-        // then: 인터뷰 건수와 내용이 맞는지 검증
+        // then: 면접 건수와 내용이 맞는지 검증
         assertThat(interviews).hasSize(1); // 인터뷰 건수가 1건인지 확인
         assertThat(interviews.get(0).getTitle()).isEqualTo(savedInterview.getTitle()); // 인터뷰 제목이 저장된 내용과 일치하는지 확인
-        assertThat(interviews.get(0).getCreateAt()).isEqualToIgnoringSeconds(savedInterview.getCreateAt()); // 인터뷰 생성 시간이 일치하는지 확인
+        assertThat(interviews.get(0).getCreatedAt()).isEqualToIgnoringSeconds(savedInterview.getCreatedAt()); // 인터뷰 생성 시간이 일치하는지 확인
         assertThat(interviews.get(0).getUser().getUsername()).isEqualTo(savedUser.getUsername()); // 인터뷰가 올바른 사용자와 연결되었는지 확인
     }
-
-
 }
 
 

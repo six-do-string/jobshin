@@ -4,16 +4,7 @@ import com.est.jobshin.domain.interview.domain.Interview;
 
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -35,6 +26,7 @@ public class InterviewDetail {
     @Size(max = 1000)
     private String question;
 
+    @Column(length = 2000)
     private String answer;
 
     @Enumerated(EnumType.STRING)
@@ -45,7 +37,10 @@ public class InterviewDetail {
 
     private Long score;
 
+    @Column(length = 2000)
     private String exampleAnswer;
+
+    private boolean complete = false;
 
     private LocalDateTime createdAt;
 
@@ -71,5 +66,6 @@ public class InterviewDetail {
     public void registerFeedback(String exampleAnswer, Long score) {
         this.exampleAnswer = exampleAnswer;
         this.score = score;
+        this.complete = true;
     }
 }

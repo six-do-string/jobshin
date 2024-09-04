@@ -36,7 +36,7 @@ public class MyPageInterviewWithDetailsDto {
 			.id(interview.getId())
 			.title(interview.getTitle())
 			.mode(interview.getMode())
-			.createdAt(interview.getCreateAt())
+			.createdAt(interview.getCreatedAt())
 			.userId(interview.getUser().getId())
 			.interviewDetails(interviewDetailDtos)
 			.build();

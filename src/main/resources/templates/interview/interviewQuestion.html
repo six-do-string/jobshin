@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -15,7 +14,7 @@
 <div th:replace="~{layout/header.html :: header}"></div>
 <main class="mainBody">
     <div class="mainCont">
-        <h1>모의 면접 - 실전 모드</h1>
+        <h1>모의 면접</h1>
         <hr>
         <section class="questionCont">
             <div class="questionBox">
@@ -23,31 +22,39 @@
                 <div class="question">
                     <h2 class="questionNum">Q1</h2>
                     <span style="display: none"></span>
-                    <p class="content">ArrayList와 LinkedList의 차이점에 대해 말해주세요.</p>
+                    <p class="content"></p>
                 </div>
             </div>
-            <!--            <div class="completeSubmit" style="display: none">-->
-            <!--                <span class="textSubmit">제출되었습니다.</span>-->
-            <!--                <button id="nextBtn">다음 문제</button>-->
-            <!--            </div>-->
             <div class="answerBox">
                 <label for="answer" style="display: none"></label>
                 <textarea id="answer" name="answer" placeholder="답변을 입력하세요"></textarea>
                 <button id="submitBtn" type="submit" onclick="submitAnswer(questionId, question, answer)"><img
                         class="sendLogoImg" src="/img/Send.png" alt="전송 버튼"></button>
+                <div id="statusMessage" style="display: none;">답변 보내는 중...</div>
             </div>
         </section>
     </div>
 </main>
+<div id="loadingModal" class="modal">
+    <div class="modal-content">
+        <p>면접 결과 정리가 완료되면 자동으로 결과 페이지로 이동합니다. 잠시만 기다려주세요...</p>
+    </div>
+</div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script th:inline="javascript">
+<script>
     let currentProblem = 1;
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
+    let size;
+    const loadingModal = document.getElementById('loadingModal');
 
     let questionId = null;
     let question = null;
+
+    let url = new URL(window.location.href);
+    let pathSegments = url.pathname.split('/'); // ["", "views", "question", "practice"]
+    let lastSegment = pathSegments[pathSegments.length - 1]; // "practice"
 
     window.onload = () => {
         getQuestions();
@@ -55,22 +62,20 @@
 
     // 답변 제출
     function submitAnswer() {
-        if (currentProblem < 5) {
-            let answer = $('#answer').val();
-            console.log(questionId);
+        let answer = $('#answer').val();
+        console.log(questionId);
+        console.log(answer);
+        if (!answer.trim()) {
+            alert('답변을 입력해주세요.');
+            return;
+        }
+        const params = {
+            id: questionId,
+            question: question,
+            answer: answer
+        }
 
-            console.log(answer);
-            if (!answer.trim()) {
-                alert('답변을 입력해주세요.');
-                return;
-            }
-
-            const params = {
-                id: questionId,
-                question: question,
-                answer: answer
-            }
-
+        if(currentProblem < size) {
             $.ajax({
                 type: 'POST',
                 beforeSend: function (xhr) {
@@ -83,29 +88,46 @@
                     currentProblem++;
                     alert('답변이 제출되었습니다.')
                     console.log(response);
-
                     // 초기화
                     questionId = response.id;
                     console.log(questionId);
                     question = response.question;
                     console.log(question);
                     $('#answer').val('');
-
                     $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
                     $('.content').html(`<p>${question}</p>`);
-
                     console.log(currentProblem);
                 },
                 error: function (error) {
                     console.error("답변 제출 중 오류가 발생하였습니다: ", error);
                 }
             });
-
         } else {
-            $('#submitBtn').prop('disabled', true).text('답변 완료');
-            if (confirm("질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?")) {
-                window.location.href = "/views/interview/result"
-            }
+            loadingModal.style.display = 'block';
+            $.ajax({
+                type: 'POST',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(params),
+                url: "/api/mock-interviews/finish",
+                success: function (response) {
+                    loadingModal.style.display = 'none';
+                    // if (confirm("질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?")) {
+                    // window.location.href = "/views/interview/result"
+                    // }
+                    if (lastSegment === "real") {
+                        return window.location.href = `/views/interview/result?mode=REAL`;
+                    }
+                    if (lastSegment === "practice"){
+                        return window.location.href = `/views/interview/result?mode=PRACTICE`;
+                    }
+                },
+                error: function (error) {
+                    console.error("답변 제출 중 오류가 발생하였습니다: ", error);
+                }
+            });
         }
     }
 
@@ -129,12 +151,34 @@
                 console.log(questionId);
                 question = response.question;
                 console.log(question);
+                size = response.size;
 
                 $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
                 $(questionCont).html(`<p>${question}</p>`);
             },
             error: function (error) {
                 console.error('문제 가져오는 중 오류 발생: ', error);
+            }
+        });
+    }
+
+    function getResult(data) {
+        console.log('getResult() 함수 실행');
+
+        $.ajax({
+            type: 'POST',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            data: JSON.stringify(data),
+            dataType: 'json',
+            url: "/api/mock-interviews/finish",
+            success: function (response) {
+                alert('로딩 완료');
+                window.location.href = "/views/interview/result";
+            },
+            error: function (error) {
+                console.error("오류가 발생하였습니다: ", error);
             }
         });
     }

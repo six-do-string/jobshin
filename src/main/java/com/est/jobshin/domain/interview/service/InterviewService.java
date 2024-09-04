@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,9 @@ public class InterviewService {
                 .orElseThrow(() -> new IllegalArgumentException("Interview not found"));
     }
 
+    //면접 연습모드로 진입시
+    //면접 생성 메서드 호출
+    //세션에 면접 진행에 필요한 변수들 초기화
     @Transactional
     public Interview createPracticeInterview(Category category, HttpSession session) {
         User user = getCurrentUser();
@@ -60,6 +64,9 @@ public class InterviewService {
         return createdInterview;
     }
 
+    //면접 실전모드로 진입시
+    //면접 생성 메서드 호출
+    //세션에 면접 진행에 필요한 변수들 초기화
     @Transactional
     public Interview createRealInterview(HttpSession session) {
         User user = getCurrentUser();
@@ -80,8 +87,26 @@ public class InterviewService {
     }
 
     @Transactional
+    public Interview loadIncompleteInterview(Long interviewId, HttpSession session) {
+        Interview interview = interviewRepository.findById(interviewId)
+                .orElseThrow(() -> new NoSuchElementException("Interview not found"));
+
+        List<InterviewDetail> questions = interview.getInterviewDetails().stream()
+                .filter(interviewDetail -> !interviewDetail.isComplete())
+                .collect(Collectors.toList());
+
+        session.setAttribute("questions", questions);
+        session.setAttribute("currentIndex", 0);
+
+        session.setAttribute("interviewId", interviewId);
+
+        return interview;
+    }
+
+    //답변이 들어왔을때 다음 질문을 반환하고, 답변에 대한 처리는 비동기적으로 처리
+    @Transactional
     public InterviewQuestion processAnswerAndGetNextQuestion(HttpSession session, InterviewQuestion interviewQuestion) {
-        InterviewQuestion nextQuestion = getNextQuestion2(session);
+        InterviewQuestion nextQuestion = getNextQuestion(session);
 
         CompletableFuture.runAsync(() -> {
             interviewDetailService.getAnswerByUser(interviewQuestion);
@@ -90,7 +115,8 @@ public class InterviewService {
         return nextQuestion;
     }
 
-    public InterviewQuestion getNextQuestion2(HttpSession session) {
+    //다음 질문 반환
+    public InterviewQuestion getNextQuestion(HttpSession session) {
         List<InterviewDetail> questions = (List<InterviewDetail>) session.getAttribute("questions");
         Integer currentIndex = (Integer) session.getAttribute("currentIndex");
 
@@ -101,14 +127,22 @@ public class InterviewService {
         InterviewDetail question = questions.get(currentIndex);
         session.setAttribute("currentIndex", currentIndex + 1);
 
-        return InterviewQuestion.from(question);
+        return InterviewQuestion.from(question, questions.size());
     }
 
-    public List<InterviewResultDetail> finishInterview(HttpSession session) {
-        return getInterviewDetails((Long) session.getAttribute("interviewId"));
+    public String lastQuestion(InterviewQuestion interviewQuestion, HttpSession session) {
+        Interview interview = interviewRepository.findById((Long)session.getAttribute("interviewId"))
+                .orElseThrow(() -> new NoSuchElementException("Interview not found"));
+        interview.completeInterview();
+        interviewDetailService.getAnswerByUser(interviewQuestion);
+        return "success";
     }
 
-    public List<InterviewResultDetail> getInterviewDetails(Long interviewId) {
+    public List<InterviewResultDetail> summaryInterview(HttpSession session) {
+        return getInterviewDetailsById((Long) session.getAttribute("interviewId"));
+    }
+
+    public List<InterviewResultDetail> getInterviewDetailsById(Long interviewId) {
         Interview interview = interviewRepository.findById(interviewId)
                 .orElseThrow(() -> new NoSuchElementException("Interview not found"));
 
