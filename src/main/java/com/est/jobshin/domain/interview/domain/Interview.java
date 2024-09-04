@@ -30,6 +30,8 @@ public class Interview {
 
 	private LocalDateTime createdAt;
 
+	private boolean complete = false;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -46,6 +48,10 @@ public class Interview {
 
 	public static Interview createInterview(String title, LocalDateTime createdAt, User user, Mode mode) {
 		return new Interview(title, createdAt, user, mode);
+	}
+
+	public void completeInterview() {
+		this.complete = true;
 	}
 
 	public void addInterviewDetails(InterviewDetail interview){

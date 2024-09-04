@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -85,6 +86,23 @@ public class InterviewService {
         return createdInterview;
     }
 
+    @Transactional
+    public Interview loadIncompleteInterview(Long interviewId, HttpSession session) {
+        Interview interview = interviewRepository.findById(interviewId)
+                .orElseThrow(() -> new NoSuchElementException("Interview not found"));
+
+        List<InterviewDetail> questions = interview.getInterviewDetails().stream()
+                .filter(interviewDetail -> !interviewDetail.isComplete())
+                .collect(Collectors.toList());
+
+        session.setAttribute("questions", questions);
+        session.setAttribute("currentIndex", 0);
+
+        session.setAttribute("interviewId", interviewId);
+
+        return interview;
+    }
+
     //답변이 들어왔을때 다음 질문을 반환하고, 답변에 대한 처리는 비동기적으로 처리
     @Transactional
     public InterviewQuestion processAnswerAndGetNextQuestion(HttpSession session, InterviewQuestion interviewQuestion) {
@@ -109,11 +127,14 @@ public class InterviewService {
         InterviewDetail question = questions.get(currentIndex);
         session.setAttribute("currentIndex", currentIndex + 1);
 
-        return InterviewQuestion.from(question);
+        return InterviewQuestion.from(question, questions.size());
     }
 
-    public String lastQuestion(InterviewQuestion interviewQuestion) {
+    public String lastQuestion(InterviewQuestion interviewQuestion, HttpSession session) {
         interviewDetailService.getAnswerByUser(interviewQuestion);
+        Interview interview = interviewRepository.findById((Long) session.getAttribute("interviewId"))
+                .orElseThrow(() -> new NoSuchElementException("Interview not found"));
+        interview.completeInterview();
         return "success";
     }
 

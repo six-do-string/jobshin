@@ -50,6 +50,7 @@
     let currentProblem = 1;
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
+    let size;
     const loadingModal = document.getElementById('loadingModal');
 
     let questionId = null;
@@ -74,7 +75,7 @@
             answer: answer
         }
 
-        if(currentProblem < 5) {
+        if(currentProblem < size) {
             $.ajax({
                 type: 'POST',
                 beforeSend: function (xhr) {
@@ -144,6 +145,7 @@
                 console.log(questionId);
                 question = response.question;
                 console.log(question);
+                size = response.size;
 
                 $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
                 $(questionCont).html(`<p>${question}</p>`);

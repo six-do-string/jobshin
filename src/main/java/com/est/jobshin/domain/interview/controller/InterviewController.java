@@ -32,6 +32,12 @@ public class InterviewController {
         return ResponseEntity.ok(InterviewDto.fromInterview(interview));
     }
 
+    @GetMapping("/incomplete/{interviewId}")
+    public ResponseEntity<InterviewDto> continueIncompleteInterview(@PathVariable Long interviewId, HttpSession session) {
+        Interview interview = interviewService.loadIncompleteInterview(interviewId, session);
+        return ResponseEntity.ok(InterviewDto.fromInterview(interview));
+    }
+
     @GetMapping("/next")
     public ResponseEntity<InterviewQuestion> getNextQuestion(HttpSession session) {
         InterviewQuestion question = interviewService.getNextQuestion(session);
@@ -45,8 +51,8 @@ public class InterviewController {
     }
 
     @PostMapping("/finish")
-    public ResponseEntity<String> finish(@RequestBody InterviewQuestion interviewQuestion) {
-        String string = interviewService.lastQuestion(interviewQuestion);
+    public ResponseEntity<String> finish(@RequestBody InterviewQuestion interviewQuestion, HttpSession session) {
+        String string = interviewService.lastQuestion(interviewQuestion, session);
         return ResponseEntity.ok(string);
     }
 

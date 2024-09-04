@@ -40,6 +40,8 @@ public class InterviewDetail {
     @Column(length = 2000)
     private String exampleAnswer;
 
+    private boolean complete = false;
+
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -64,5 +66,6 @@ public class InterviewDetail {
     public void registerFeedback(String exampleAnswer, Long score) {
         this.exampleAnswer = exampleAnswer;
         this.score = score;
+        this.complete = true;
     }
 }
