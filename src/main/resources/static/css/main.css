@@ -1,6 +1,9 @@
-body, html {
+/* 공통 스타일 */
+/* 모든 HTML 요소의 마진과 패딩을 강제로 0으로 설정 */
+body, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, address, cite, code, img, ol, ul, li, fieldset, form, label, legend, table {
   margin: 0;
   padding: 0;
+  border: 0;
   font-family: Arial, sans-serif;
 }
 
@@ -10,94 +13,199 @@ body, html {
   padding: 20px;
 }
 
-.hero {
-  text-align: center;
-  padding: 50px 0;
-  background-color: #5E8DC0;
-}
-.hero h1 {
-  font-size: 36px;
-  color: #333;
-}
-.hero p {
-  font-size: 18px;
-  color: #666;
-  margin-bottom: 30px;
-}
-.hero .btn {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #0F4584;
-  color: #FFFFFF;
-  text-decoration: none;
-  border-radius: 5px;
-}
-
-.feature {
-  display: flex;
-  height: 316px;
-  justify-content: space-around;
-  align-items: center;
-}
-.feature h2 {
-  font-size: 24px;
-  color: #333;
-}
-.feature .feature-content {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-.feature .feature-content .feature-item {
-  flex: 1;
-  padding: 20px;
-  background-color: white;
-  border-radius: 10px;
-  margin: 0 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-.feature .feature-content .feature-item img {
-  width: 100%;
-  border-radius: 5px;
-}
-.feature .feature-content .feature-item h3 {
-  font-size: 20px;
-  color: #333;
-}
-.feature .feature-content .feature-item p {
-  font-size: 16px;
-  width: 508px;
-  height: 136px;
-  color: #666;
-}
-
 .information {
   color: #FFFFFF;
 }
 
-.feedback {
+/* Hero 섹션 스타일 */
+.hero {
+  height: 730px;
+  text-align: center;
+  padding-top: 50px;
   background-color: #5E8DC0;
 }
 
-.mode {
-  height: 565px;
+.hero .text img {
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  display: inline-block;
+  width: 100%;
+  height: 220px;
 }
 
-.cta {
-  text-align: center;
-  padding: 50px 0;
+.hero .text h1 {
+  font-size: 56px;
+  color: #FFFFFF;
 }
-.cta h2 {
-  font-size: 24px;
-  color: #333;
+
+.hero .text p {
+  font-size: 20px;
+  color: #FFFFFF;
+  margin-bottom: 30px;
 }
-.cta .btn {
-  display: inline-block;
-  padding: 10px 20px;
+
+.hero .text .btn {
+  position: relative;
+  z-index: 1;
+  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 250px;
+  height: 52px;
   background-color: #0F4584;
   color: #FFFFFF;
   text-decoration: none;
-  border-radius: 5px;
+  border-radius: 26px;
 }
 
-/*# sourceMappingURL=main.css.map */
+.hero .header-mock-image {
+  width: 1176px;
+  height: 450px;
+  margin: 105px auto 0;
+}
+
+.hero .header-mock-image img {
+  width: 100%;
+  height: 100%;
+}
+
+/* Feature 섹션 스타일 */
+.feature {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 316px;
+}
+
+.feature h2 {
+  font-size: 48px;
+  padding: 108px 0 72px;
+  color: #333;
+}
+
+.feature p {
+  font-size: 20px;
+  width: 514px;
+  padding: 108px 0 72px;
+}
+
+/* .Feature.mode 섹션 스타일*/
+.feature-mode {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 565px;
+  width: 100%;
+}
+
+.feature-mode .feature-text h2 {
+  font-size: 40px;
+  width: 421px;
+}
+
+.feature-mode .feature-text p {
+  margin-top: 24px;
+  font-size: 16px;
+  width: 396px;
+}
+
+.feature-mode .feature-content {
+  width: 653px;
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.feature-mode .feature-content .practice {
+  width: 306px;
+  height: 326px;
+  background-color: #F5F1FE;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.feature-mode .feature-content .real {
+  width: 306px;
+  height: 326px;
+  background-color: #FFF0F6;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.feature-mode .feature-content .feature-item img {
+  width: 100%;
+  height: 183px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.feature-mode .feature-content .feature-item h3 {
+  margin: 18px 0 0 16px;
+  font-size: 20px;
+  color: #333;
+}
+
+.feature-mode .feature-content .feature-item p {
+  margin: 9px 0 0 16px;
+  padding: 0;
+  width: 274px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* feature-feedback 섹션 스타일 */
+.feature-feedback {
+  height: 526px;
+  background-color: #5E8DC0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.feature-feedback .feature-feedback-text h2 {
+  font-size: 40px;
+  width: 314px;
+  color: #FFFFFF;
+}
+
+.feature-feedback .feature-feedback-text p {
+  margin-top: 16px;
+  font-size: 16px;
+  width: 434px;
+  color: #FFFFFF;
+}
+
+.feature-feedback img {
+  width: 614px;
+  height: 405px;
+}
+
+/* CTA 섹션 스타일 */
+.cta {
+  height: 506px;
+  padding: 50px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.cta h2 {
+  font-size: 40px;
+  color: #333;
+}
+
+.cta .btn {
+  width: 250px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0F4584;
+  color: #FFFFFF;
+  text-decoration: none;
+  border-radius: 26px;
+  font-size: 20px;
+}
