@@ -44,10 +44,6 @@ public class AlanService {
 		return callApiPracticeMode(defaultUrl, clientId, user, interviewDetail);
 	}
 
-//	public String callFeedback(){
-//		return callApiFeedback(defaultUrl, clientId, user, interviewDetail);
-//	}
-
 	public String callAnswer(String question, String answer) {
 		return callApiAnswer(defaultUrl, clientId, question, answer);
 	}
@@ -112,20 +108,6 @@ public class AlanService {
 
 		return response;
 	}
-
-	// 피드백
-//	private String callApiFeedback(String apiUrl, String ClientId, User user, InterviewDetail interviewDetail) {
-//
-//		String content = String.format(PromptMessage.FEEDBACK_PROMPT);
-//		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
-//		log.info("Calling API: {}", requestUrl);
-//
-//		String response = restTemplate.getForObject(requestUrl, String.class);
-//		log.info("API response received");
-//		log.info("Response: {}", response);
-//
-//		return response;
-//	}
 
 	// 모범답안
 	private String callApiAnswer(String apiUrl, String ClientId, String question, String answer) {

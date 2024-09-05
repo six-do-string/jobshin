@@ -45,51 +45,51 @@
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
 
-    let level = null;
+    let feedback = 0;
     let score = 0;
 
+    // AlFeedback 페이지에서 받아온 데이터
+    const scoreAverage = parseInt(localStorage.getItem('score'), 10) / 5;
+    console.log("scoreAverage: " + scoreAverage);
+
+    // 난이도 점수 반환
     function setDifficulty() {
         console.log("setDifficulty() 실행");
         // 모든 옵션 버튼의 배경색을 기본값으로 설정
         let buttons = document.getElementsByClassName("option-button");
         for (let i = 0; i < buttons.length; i++) {
-            buttons[i].style.backgroundColor = "#f0f0f0"; // 기본 배경색
-            buttons[i].style.color = "#000"; // 기본 글자 색상
+            buttons[i].style.backgroundColor = "#f0f0f0";
+            buttons[i].style.color = "#000";
         }
 
-        // 클릭된 버튼의 배경색과 글자 색상을 변경하여 강조
-        event.target.style.backgroundColor = "#1a73e8"; // 강조 배경색
-        event.target.style.color = "#fff"; // 강조 글자 색상
+        event.target.style.backgroundColor = "#1a73e8";
+        event.target.style.color = "#fff";
 
         let checked = event.target.value;
         console.log(checked);
 
         if (checked === '상') {
-            level = 0;
+            feedback = 0;
         }
         if (checked === '중') {
-            level = 50;
+            feedback = 50;
         }
         if (checked === '하') {
-            level = 100;
+            feedback = 100;
         }
 
-        return level;
+        return feedback;
     }
 
-    // AlFeedback 페이지에서 받아온 데이터
-    const value = parseInt(localStorage.getItem('score'), 10);
-    console.log("value: " + value);
-
-    // 레벨 조정
+    // 총 점수 반환
     function setScore() {
-        level = setDifficulty() + value;
-        score = level / 2;
+        feedback = setDifficulty() + scoreAverage;
+        score = feedback / 2;
         console.log(score);
         return score;
     }
 
-    // 완료 버튼을 눌렀을 때 실행되는 함수
+    // 총 점수를 서버로 전송
     function submitForm() {
         if (event.target.value == null) {
             alert("난이도를 선택해주세요.");
@@ -98,7 +98,7 @@
 
         let form = document.getElementById('difficultyForm');
         let score = setScore();
-        form.action = '/views/updateLevel?score=' + encodeURIComponent(score);
+        form.action = '/api/users/updateLevel?score=' + encodeURIComponent(score);
 
         fetch(form.action, {
             method: 'POST',
@@ -106,7 +106,7 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
                 [header]: token
             },
-            body: JSON.stringify({score: score})
+            body: JSON.stringify({level: score})
         })
         .then(response => {
             if (response.ok) {

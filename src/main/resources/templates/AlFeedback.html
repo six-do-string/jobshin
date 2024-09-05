@@ -59,7 +59,7 @@
                 renderInterviewSummary(response);
 
                 // levelFeedback 페이지에 전달할 데이터
-                localStorage.setItem('score', String(calculateTotalScore(response)/5));
+                localStorage.setItem('score', String(calculateTotalScore(response)));
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching interview summary:", error);

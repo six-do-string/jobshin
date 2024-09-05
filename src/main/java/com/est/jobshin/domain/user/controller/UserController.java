@@ -183,6 +183,17 @@ public class UserController {
         return "user/practice_interview_detail";
     }
 
+    // 유저 레벨 업데이트 요청
+    @PostMapping("/api/users/updateLevel")
+    public String updateLevel(@RequestParam Double score) {
+        CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        String username = principal.getUsername();
+
+        userService.updateUserLevel(username, score);
+        return "redirect:/views/main";
+    }
+
     // 회원가입 요청
     @PostMapping("/api/users/signup")
     public String userSignUp(@Valid CreateUserRequest createUserRequest,
