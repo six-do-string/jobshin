@@ -16,13 +16,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,7 +37,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class UserController {
@@ -63,10 +60,11 @@ public class UserController {
 
     // 마이페이지 폼
     @GetMapping("/views/users/mypage")
-    public String userMyPage(Model model) {
+    public String userMyPage() {
         return "user/mypage";
     }
 
+    // 회원 정보 수정 폼
     @GetMapping("/views/users/edit")
     public String userEditFrom(Model model) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -90,8 +88,11 @@ public class UserController {
     public String listInterviews(@RequestParam("page") Optional<Integer> page,
             @RequestParam("size") Optional<Integer> size,
             @RequestParam(value = "mode", defaultValue = "PRACTICE") Mode mode,
-            @AuthenticationPrincipal CustomUserDetails userDetails,
             Model model) {
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        Long userId = customUserDetails.getUserId();
 
         // 페이징 처리 기본값 설정
         int currentPage = page.orElse(1); // 기본값 1
@@ -101,9 +102,6 @@ public class UserController {
         if (pageSize < 1) {
             pageSize = 10; // 기본 페이지 사이즈
         }
-
-        // 현재 인증된 사용자 ID 가져오기
-        Long userId = userDetails.getUserId();
 
         // 페이지네이션된 인터뷰 목록 가져오기
         Page<InterviewHistorySummaryResponse> interviewSummaryList =
@@ -128,9 +126,12 @@ public class UserController {
     // 유저 인터뷰(실전모드) 이력 리스트
     @GetMapping("/views/users/interviews/real")
     public String realInterviews(@RequestParam("page") Optional<Integer> page,
-        @RequestParam("size") Optional<Integer> size,
-        @AuthenticationPrincipal CustomUserDetails userDetails,
-        Model model) {
+            @RequestParam("size") Optional<Integer> size,
+            Model model) {
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        Long userId = customUserDetails.getUserId();
 
         // 페이징 처리 기본값 설정
         int currentPage = page.orElse(1); // 기본값 1
@@ -141,12 +142,9 @@ public class UserController {
             pageSize = 10; // 기본 페이지 사이즈
         }
 
-        // 현재 인증된 사용자 ID 가져오기
-        Long userId = userDetails.getUserId();
-
         // 페이지네이션된 인터뷰 목록 가져오기
         Page<InterviewHistorySummaryResponse> interviewSummaryList = userService.getPaginatedInterviews(
-            PageRequest.of(currentPage - 1, pageSize), userId, Mode.REAL);
+                PageRequest.of(currentPage - 1, pageSize), userId, Mode.REAL);
 
         model.addAttribute("interviewSummaryList", interviewSummaryList);
 
@@ -155,14 +153,15 @@ public class UserController {
         // 페이지 번호 리스트 생성
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                .boxed()
-                .collect(Collectors.toList());
+                    .boxed()
+                    .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
         return "user/real_interview_list";
     }
 
+    // 실전모드 상세 조회
     @GetMapping("/views/users/interviews/real/{id}")
     public String realInterviewDetail(@PathVariable Long id, Model model) {
 
@@ -208,17 +207,16 @@ public class UserController {
     // 회원정보 수정 요청
     @PutMapping("/api/users/edit")
     public String userEdit(@Valid UpdateUserRequest updateUserRequest,
-            BindingResult bindingResult,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            BindingResult bindingResult) {
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        String username = customUserDetails.getUsername();
 
         // 인증 정보가 없거나 인증되지 않은 사용자인 경우 로그인 페이지로 리디렉션
-        if (userDetails == null) {
+        if (username == null) {
             return "redirect:/views/users/login";
         }
-
-        // 사용자 정보 가져오기
-        String username = userDetails.getUsername();
 
         // 유효성 검사 오류가 있는 경우 편집 페이지로 리디렉션
         if (bindingResult.hasErrors()) {
@@ -232,7 +230,7 @@ public class UserController {
         return "redirect:/";
     }
 
-    // 로그아웃
+    // 로그아웃 요청
     @PostMapping("/api/users/logout")
     public String userLogout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContextHolderStrategy()
