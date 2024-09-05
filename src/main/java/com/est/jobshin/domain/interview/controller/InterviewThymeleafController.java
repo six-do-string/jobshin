@@ -34,13 +34,8 @@ public class InterviewThymeleafController {
         }
     }
 
-    @GetMapping("/question/real")
-    public String startInterviewReal() {
-        return "interview/interviewQuestion";
-    }
-
-    @GetMapping("/question/practice")
-    public String startInterviewPractice() {
+    @GetMapping("/interview/question")
+    public String startInterview(@RequestParam("mode") Mode mode){
         return "interview/interviewQuestion";
     }
 

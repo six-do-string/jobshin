@@ -36,7 +36,7 @@
                             </div>
                         <div class="buttonCont">
                             <a class="click" th:href="@{/interview/interviewMainPage}">돌아가기</a>
-                            <button class="click" onclick="createQuestions2()" type="submit">시작하기</button>
+                            <button class="click" onclick="createQuestions2()" type="button">시작하기</button>
                         </div>
                     </div>
                 </div>
@@ -64,9 +64,11 @@
 
     let TOKEN = $("meta[name='_csrf']").attr("content");
     let HEADER = $("meta[name='_csrf_header']").attr("content");
+
     // 질문 생성
     function createQuestions2(){
         const category = $("input[name='category']:checked").val();
+        localStorage.setItem('category', category);
 
         if (category == null) {
             alert("카테고리를 선택해주세요.");
@@ -92,9 +94,11 @@
         });
     }
 
-    // postTypeId에 따라 반환되는 게시판 링크가 다르게 설정
     function returnQuestionPage() {
-        window.location.href = "/views/question/practice";
+        const url = new URL(window.location.href);
+        const params = new URLSearchParams(url.search);
+        const mode = params.get('mode');
+        window.location.href = "/views/interview/question?mode=" + mode;
     }
 </script>
 </body>
