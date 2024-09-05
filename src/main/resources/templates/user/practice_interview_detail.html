@@ -21,8 +21,6 @@
                 <h4>계정 정보</h4>
                 <ul class="sidebar-menu">
                     <li><a href="/views/users/edit">회원 정보 수정</a></li>
-                    <li><a href="/views/interviews/history">면접 이력</a></li>
-                    <li><a href="/views/users/withdrawal">회원 탈퇴</a></li>
                 </ul>
             </div>
             <div class="sidebar-section">
@@ -31,21 +29,19 @@
                 <ul class="sidebar-menu">
                     <li><a href="/views/users/interviews/practice">연습 모드 이력</a></li>
                     <li><a href="/views/users/interviews/real">실전 모드 이력</a></li>
-                    <li><a href="/views/interviews/scheduled">Today's Scheduled</a></li>
                 </ul>
             </div>
         </aside>
 		
 		<!-- Main Content Section -->
 		<section class="content">
-			<h1>면접 결과</h1>
+			<h1>연습 모드 면접 결과</h1>
 			<table class="result-table">
 				<thead>
 				<tr>
 					<th>번호</th>
 					<th>응시 일시</th>
 					<th>점수</th>
-					<th>문제 분류</th>
 					<th>카테고리</th>
 				</tr>
 				</thead>
@@ -54,7 +50,6 @@
 					<td th:text="${interviewDetails.id}">Java란 무엇입니까?</td>
 					<td th:text="${#temporals.format(interviewDetails.createdAt, 'yyyy.MM.dd')}">yyyy.MM.dd</td>
 					<td th:text="${interviewDetails.averageScore + ' / 100'}">점수</td>
-					<td th:text="${interviewDetails.title}">J문제 분류</td>
 					<td th:text="${interviewDetails.getInterviewDetails().get(0).getCategory()}">카테고리</td>
 				</tr>
 				</tbody>
@@ -80,5 +75,31 @@
 		</section>
 	</div>
 </main>
+<script>
+    function continueInterview(interviewId) {
+        fetch(`/api/mock-interviews/incomplete/` + interviewId, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include'
+        })
+        .then(response => {
+            if (response.ok) {
+                return window.location.href = `/views/interview/question?mode=PRACTICE`;
+            } else {
+                throw new Error('인터뷰를 계속하는데 실패했습니다.');
+            }
+        })
+        .then(data => {
+            console.log('Incomplete interview data:', data);
+            alert('인터뷰를 계속합니다.');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('인터뷰를 계속하는 중 오류가 발생했습니다.');
+        });
+    }
+</script>
 </body>
 </html>
