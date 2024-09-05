@@ -18,7 +18,7 @@
         <a class="nav-links" th:href="@{/views/users/mypage}">마이페이지</a>
       </li>
       <li class="nav-items" sec:authorize="isAuthenticated()">
-        <a class="nav-links" th:text="|반갑습니다! ${#authentication.principal.username} 님|">로그인 사용자 이름</a>
+        <a class="nav-links" th:text="|${#authentication.principal.username} 님 반갑습니다!|">로그인 사용자 이름</a>
       </li>
       <li class="nav-items" sec:authorize="isAuthenticated()">
           <form th:action="@{/api/users/logout}" method="post">
