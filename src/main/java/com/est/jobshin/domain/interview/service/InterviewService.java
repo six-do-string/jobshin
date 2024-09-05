@@ -174,9 +174,7 @@ public class InterviewService {
 
     public void updateUserLevel(Long score) {
         User user = getCurrentUser();
-//        interviewLevel = (InterviewLevel) session.getAttribute("level");
         Level newLevel = updateLevel(score);
-        System.out.println(newLevel);
         user.updateUserLevel(newLevel);
         userRepository.save(user);
     }
