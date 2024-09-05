@@ -14,20 +14,26 @@ import com.est.jobshin.domain.user.util.Position;
 import com.est.jobshin.global.security.model.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.mockito.MockitoAnnotations;
@@ -35,22 +41,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-
-
-
 import org.springframework.security.core.Authentication;
 
 import static org.mockito.Mockito.doNothing;
@@ -58,7 +58,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 class UserControllerTest {
 
@@ -77,6 +76,7 @@ class UserControllerTest {
 
     @Mock
     private HttpServletResponse response; // HttpServletResponse를 Mock 객체로 정의하여 응답 객체를 대체
+
 
     // UserController에 위의 Mock 객체들을 주입
     @InjectMocks
@@ -220,7 +220,6 @@ class UserControllerTest {
         verify(authentication).isAuthenticated();
     }
 
-
     @Test
     @DisplayName("회원 가입 성공 테스트")
         //-7-1
@@ -334,16 +333,49 @@ class UserControllerTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        // CustomUserDetails 객체 생성
-        CustomUserDetails userDetails = new CustomUserDetails(userResponse, List.of());
+        // GrantedAuthority 리스트 생성
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
+        // CustomUserDetails 객체 생성
+        CustomUserDetails userDetails = new CustomUserDetails(userResponse, authorities);
+
+        // 비밀번호 암호화 Mock 설정
+        given(passwordEncoder.encode(anyString())).willReturn("encodedPassword");
+        doNothing().when(userService).updateUser(eq("testUser@email.com"), any(UpdateUserRequest.class));
+
+        // When: 회원정보 수정 요청
+        mockMvc.perform(put("/api/users/edit")
+                        .param("password", "newPassword123!")
+                        .param("nickname", "UpdatedNickname")
+                        .param("language", "JAVA")
+                        .param("position", "BACKEND")
+                        .with(user(userDetails))
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+
+        // Then: 수정 메서드 호출 검증
+        verify(userService).updateUser(eq("testUser@email.com"), any(UpdateUserRequest.class));
+    }
+
+    @Test
+    @DisplayName("회원정보 수정완료 요청 - 성공")
+    void userEditSuccess1() throws Exception {
+        // Given: 필요한 Mock 설정
         // 비밀번호 암호화 Mock 설정
         given(passwordEncoder.encode(anyString())).willReturn("encodedPassword");
         doNothing().when(userService).updateUser(eq("testUser"), any(UpdateUserRequest.class));
 
+        // `CustomUserDetails`를 가데이터 없이 직접 생성
+        // Mock 설정으로 필요한 값만 반환하도록 설정
+        UserResponse mockUserResponse = mock(UserResponse.class);
+        given(mockUserResponse.getUsername()).willReturn("testUser");
+
+        CustomUserDetails userDetails = new CustomUserDetails(mockUserResponse, List.of());
+
         // When: 회원정보 수정 요청
         mockMvc.perform(put("/api/users/edit")
-                        .param("password", "newPassword123!") // UpdateUserRequest의 필드명과 일치시켜야 함
+                        .param("password", "newPassword123") // UpdateUserRequest의 필드명과 일치시켜야 함
                         .param("nickname", "UpdatedNickname")
                         .param("language", "JAVA")
                         .param("position", "BACKEND")
@@ -355,127 +387,97 @@ class UserControllerTest {
         // Then: 수정 메서드 호출 검증
         verify(userService).updateUser(eq("testUser"), any(UpdateUserRequest.class));
     }
-// 위에 수정전 원래 코드 ㅜㅜ 에러나서 가데이터 추가
-//    @Test
-//    @DisplayName("회원정보 수정완료 요청 - 성공")
-//    void userEditSuccess1() throws Exception {
-//        // Given: 필요한 Mock 설정
-//        // 비밀번호 암호화 Mock 설정
-//        given(passwordEncoder.encode(anyString())).willReturn("encodedPassword");
-//        doNothing().when(userService).updateUser(eq("testUser"), any(UpdateUserRequest.class));
-//
-//        // `CustomUserDetails`를 가데이터 없이 직접 생성
-//        // Mock 설정으로 필요한 값만 반환하도록 설정
-//        UserResponse mockUserResponse = mock(UserResponse.class);
-//        given(mockUserResponse.getUsername()).willReturn("testUser");
-//
-//        CustomUserDetails userDetails = new CustomUserDetails(mockUserResponse, List.of());
-//
-//        // When: 회원정보 수정 요청
-//        mockMvc.perform(put("/api/users/edit")
-//                        .param("password", "newPassword123") // UpdateUserRequest의 필드명과 일치시켜야 함
-//                        .param("nickname", "UpdatedNickname")
-//                        .param("language", "JAVA")
-//                        .param("position", "BACKEND")
-//                        .with(user(userDetails)) // 로그인 사용자 정보 설정
-//                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
-//                .andExpect(status().is3xxRedirection()) // 리다이렉션 상태 코드 확인
-//                .andExpect(redirectedUrl("/"));
-//
-//        // Then: 수정 메서드 호출 검증
-//        verify(userService).updateUser(eq("testUser"), any(UpdateUserRequest.class));
-//    }
 
-// 아래 코드 모두 동일 이슈 발생중 위에거 확인후 수정 예쩡
-//        @Test
-//    @DisplayName("면접 (연습모드) 이력 리스트 - 성공")
-//    void listInterviewsSuccess() throws Exception {
-//        // Given: Mock 데이터 설정
-//        Long mockUserId = 1L;
-//        UserResponse mockUserResponse = UserResponse.builder()
-//                .id(mockUserId)
-//                .username("testUser")
-//                .build();
-//        CustomUserDetails userDetails = new CustomUserDetails(mockUserResponse, List.of());
-//
-//        InterviewHistorySummaryResponse mockResponse = InterviewHistorySummaryResponse.builder()
-//                .id(1L)
-//                .title("Mock Interview")
-//                .nickname("testUser")
-//                .createdAt(null)
-//                .score(85L)
-//                .category("LANGUAGE")
-//                .build();
-//
-//        Page<InterviewHistorySummaryResponse> mockPage = new PageImpl<>(
-//                Collections.singletonList(mockResponse),
-//                PageRequest.of(0, 10),
-//                1
-//        );
-//
-//        given(userService.getPaginatedInterviews(any(Pageable.class), eq(mockUserId), eq(Mode.PRACTICE)))
-//                .willReturn(mockPage);
-//
-//        // When & Then: 요청을 보내고 결과 검증
-//        mockMvc.perform(get("/views/users/interviews/practice")
-//                        .param("page", "1")
-//                        .param("size", "10")
-//                        .with(user(userDetails)))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("user/practice_interview_list"))
-//                .andExpect(model().attributeExists("interviewSummaryList"))
-//                .andExpect(model().attributeExists("pageNumbers"));
-//    }
-//
-//    @Test
-//    @DisplayName("유저 면접(실전모드) 상세 이력 리스트 - 성공")
-//    void realInterviewsSuccess() throws Exception {
-//        // Given: 가데이터로 사용할 UserResponse 객체 생성 및 초기화
-//        UserResponse userResponse = UserResponse.builder()
-//                .id(1L)
-//                .username("testUser")
-//                .password("encodedPassword")
-//                .nickname("Tester")
-//                .language(Language.JAVA)
-//                .level(Level.LV2)
-//                .position(Position.BACKEND)
-//                .createdAt(LocalDateTime.now())
-//                .updatedAt(LocalDateTime.now())
-//                .build();
-//
-//        // CustomUserDetails 객체 생성
-//        CustomUserDetails userDetails = new CustomUserDetails(userResponse, List.of());
-//
-//        // Mock 데이터 설정
-//        InterviewHistorySummaryResponse mockResponse = InterviewHistorySummaryResponse.builder()
-//                .id(1L)
-//                .title("Mock Interview")
-//                .nickname("testUser")
-//                .createdAt(LocalDateTime.now())
-//                .score(85L)
-//                .category("LANGUAGE")
-//                .build();
-//
-//        Page<InterviewHistorySummaryResponse> mockPage = new PageImpl<>(
-//                Collections.singletonList(mockResponse),
-//                PageRequest.of(0, 10),
-//                1
-//        );
-//
-//        // Mock 설정
-//        given(userService.getPaginatedInterviews(any(Pageable.class), eq(1L), eq(Mode.REAL)))
-//                .willReturn(mockPage);
-//
-//        // When & Then: 요청을 보내고 결과 검증
-//        mockMvc.perform(get("/views/users/interviews/real")
-//                        .param("page", "1")
-//                        .param("size", "10")
-//                        .with(user(userDetails))) // 로그인 사용자 정보 설정
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("user/real_interview_list"))
-//                .andExpect(model().attributeExists("interviewSummaryList"))
-//                .andExpect(model().attributeExists("pageNumbers"));
-//    }
+
+    @Test
+    @DisplayName("면접 (연습모드) 이력 리스트 - 성공")
+    void listInterviewsSuccess() throws Exception {
+        // Given: Mock 데이터 설정
+        Long mockUserId = 1L;
+        UserResponse mockUserResponse = UserResponse.builder()
+                .id(mockUserId)
+                .username("testUser")
+                .build();
+        CustomUserDetails userDetails = new CustomUserDetails(mockUserResponse, List.of());
+
+        InterviewHistorySummaryResponse mockResponse = InterviewHistorySummaryResponse.builder()
+                .id(1L)
+                .title("Mock Interview")
+                .nickname("testUser")
+                .createdAt(null)
+                .score(85L)
+                .category("LANGUAGE")
+                .build();
+
+        Page<InterviewHistorySummaryResponse> mockPage = new PageImpl<>(
+                Collections.singletonList(mockResponse),
+                PageRequest.of(0, 10),
+                1
+        );
+
+        given(userService.getPaginatedInterviews(any(Pageable.class), eq(mockUserId), eq(Mode.PRACTICE)))
+                .willReturn(mockPage);
+
+        // When & Then: 요청을 보내고 결과 검증
+        mockMvc.perform(get("/views/users/interviews/practice")
+                        .param("page", "1")
+                        .param("size", "10")
+                        .with(user(userDetails)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/practice_interview_list"))
+                .andExpect(model().attributeExists("interviewSummaryList"))
+                .andExpect(model().attributeExists("pageNumbers"));
+    }
+
+    @Test
+    @DisplayName("유저 면접(실전모드) 상세 이력 리스트 - 성공")
+    void realInterviewsSuccess() throws Exception {
+        // Given: 가데이터로 사용할 UserResponse 객체 생성 및 초기화
+        UserResponse userResponse = UserResponse.builder()
+                .id(1L)
+                .username("testUser")
+                .password("encodedPassword")
+                .nickname("Tester")
+                .language(Language.JAVA)
+                .level(Level.LV2)
+                .position(Position.BACKEND)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        // CustomUserDetails 객체 생성
+        CustomUserDetails userDetails = new CustomUserDetails(userResponse, List.of());
+
+        // Mock 데이터 설정
+        InterviewHistorySummaryResponse mockResponse = InterviewHistorySummaryResponse.builder()
+                .id(1L)
+                .title("Mock Interview")
+                .nickname("testUser")
+                .createdAt(LocalDateTime.now())
+                .score(85L)
+                .category("LANGUAGE")
+                .build();
+
+        Page<InterviewHistorySummaryResponse> mockPage = new PageImpl<>(
+                Collections.singletonList(mockResponse),
+                PageRequest.of(0, 10),
+                1
+        );
+
+        // Mock 설정
+        given(userService.getPaginatedInterviews(any(Pageable.class), eq(1L), eq(Mode.REAL)))
+                .willReturn(mockPage);
+
+        // When & Then: 요청을 보내고 결과 검증
+        mockMvc.perform(get("/views/users/interviews/real")
+                        .param("page", "1")
+                        .param("size", "10")
+                        .with(user(userDetails))) // 로그인 사용자 정보 설정
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/real_interview_list"))
+                .andExpect(model().attributeExists("interviewSummaryList"))
+                .andExpect(model().attributeExists("pageNumbers"));
+    }
 
     @Test
     @DisplayName("실전 모드 상세 정보 조회 - 성공")
