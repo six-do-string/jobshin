@@ -18,11 +18,11 @@
         <hr>
         <section class="questionCont">
             <div class="questionBox">
-                <a class="goToBack">처음으로 돌아가기</a>
+                <div class="questionHeader">
+                    <a class="goToBack">처음으로 돌아가기</a>
+                </div>
                 <div class="question">
-                    <h2 class="questionNum">Q1</h2>
-                    <span style="display: none"></span>
-                    <p class="content"></p>
+<!--                    <h2 class="questionNum">Q1</h2>-->
                 </div>
             </div>
             <div class="answerBox">
@@ -43,8 +43,8 @@
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    let token = $("meta[name='_csrf']").attr("content");
-    let header = $("meta[name='_csrf_header']").attr("content");
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
 
     let currentProblem = 1;
     let size;
@@ -54,12 +54,21 @@
     let question = null;
 
     let url = new URL(window.location.href);
-    let pathSegments = url.pathname.split('/'); // ["", "views", "question", "practice"]
-    let lastSegment = pathSegments[pathSegments.length - 1]; // "practice"
+    const params = new URLSearchParams(url.search);
+    const mode = params.get('mode');
+    // let pathSegments = url.pathname.split('/');
+    // let lastSegment = pathSegments[pathSegments.length - 1];
+
+    const category = localStorage.getItem("category");
+
 
     window.onload = () => {
         getQuestions();
     };
+
+    if (mode === "PRACTICE") {
+        $('.questionHeader').html(`<a class="goToBack">처음으로 돌아가기</a> <span>Category / ${category}</span>`)
+    }
 
     // 답변 제출
     function submitAnswer() {
@@ -96,9 +105,11 @@
                     question = response.question;
                     console.log(question);
 
+                    let questionNum = question.substring(0, 1);
+                    let content = question.substring(3);
+
                     $('#answer').val('');
-                    $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
-                    $('.content').html(`<p>${question}</p>`);
+                    $('.question').html(`<h2>Q${questionNum}</h2><p class="content">${content}</p>`);
                     console.log(currentProblem);
                 },
                 error: function (error) {
@@ -121,10 +132,10 @@
                     // if (confirm("질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?")) {
                     // window.location.href = "/views/interview/result"
                     // }
-                    if (lastSegment === "real") {
+                    if (mode === "REAL") {
                         return window.location.href = `/views/interview/result?mode=REAL`;
                     }
-                    if (lastSegment === "practice"){
+                    if (mode === "PRACTICE"){
                         return window.location.href = `/views/interview/result?mode=PRACTICE`;
                     }
                 },
@@ -158,8 +169,9 @@
                 console.log(question);
                 size = response.size;
 
-                $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
-                $(questionCont).html(`<p>${question}</p>`);
+                let questionNum = question.substring(0, 1);
+                let content = question.substring(3);
+                $('.question').html(`<h2>Q${questionNum}</h2><p class="content">${content}</p>`);
             },
             error: function (error) {
                 console.error('문제 가져오는 중 오류 발생: ', error);

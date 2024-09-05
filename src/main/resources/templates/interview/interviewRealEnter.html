@@ -82,7 +82,10 @@
     }
 
     function returnQuestionPage() {
-        window.location.href = "/views/question/real";
+        const url = new URL(window.location.href);
+        const params = new URLSearchParams(url.search);
+        const mode = params.get('mode');
+        window.location.href = "/views/interview/question?mode=" + mode;
     }
 </script>
 </body>
