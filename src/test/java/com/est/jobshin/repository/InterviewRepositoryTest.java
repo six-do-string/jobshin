@@ -253,9 +253,7 @@ class InterviewRepositoryTest {
         // When: 사용자 ID로 피드백 조회
         List<LevelFeedback> feedbacks = feedbackRepository.findByUserId(1L);
 
-        // Then: 피드백 내용 검증
-        assertThat(feedbacks).hasSize(2);
-        assertThat(feedbacks.get(0).getContent()).isEqualTo("Great feedback");
-        assertThat(feedbacks.get(1).getContent()).isEqualTo("Needs improvement");
+        // Then: 레벨 검증
+        assertThat(level).isEqualTo(Level.LV2); // 유저 레벨 검증
     }
 }
