@@ -185,8 +185,11 @@ public class UserController {
 
     // 유저 레벨 업데이트 요청
     @PostMapping("/api/users/updateLevel")
-    public String updateLevel(@RequestParam Double score, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        String username = userDetails.getUsername();
+    public String updateLevel(@RequestParam Double score) {
+        CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        String username = principal.getUsername();
+
         userService.updateUserLevel(username, score);
         return "redirect:/views/main";
     }
