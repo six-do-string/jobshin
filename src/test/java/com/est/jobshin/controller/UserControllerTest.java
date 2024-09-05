@@ -289,9 +289,6 @@ class UserControllerTest {
         // CustomUserDetails 객체 생성
         CustomUserDetails userDetails = new CustomUserDetails(userResponse, List.of());
 
-        logger.info("userDetails: " + userDetails);
-        logger.info("userResponse in userDetails: " + userDetails.getUserResponse());
-
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
         SecurityContextHolder.setContext(securityContext);
@@ -358,35 +355,6 @@ class UserControllerTest {
         verify(userService).updateUser(eq("testUser@email.com"), any(UpdateUserRequest.class));
     }
 
-    @Test
-    @DisplayName("회원정보 수정완료 요청 - 성공")
-    void userEditSuccess1() throws Exception {
-        // Given: 필요한 Mock 설정
-        // 비밀번호 암호화 Mock 설정
-        given(passwordEncoder.encode(anyString())).willReturn("encodedPassword");
-        doNothing().when(userService).updateUser(eq("testUser"), any(UpdateUserRequest.class));
-
-        // `CustomUserDetails`를 가데이터 없이 직접 생성
-        // Mock 설정으로 필요한 값만 반환하도록 설정
-        UserResponse mockUserResponse = mock(UserResponse.class);
-        given(mockUserResponse.getUsername()).willReturn("testUser");
-
-        CustomUserDetails userDetails = new CustomUserDetails(mockUserResponse, List.of());
-
-        // When: 회원정보 수정 요청
-        mockMvc.perform(put("/api/users/edit")
-                        .param("password", "newPassword123") // UpdateUserRequest의 필드명과 일치시켜야 함
-                        .param("nickname", "UpdatedNickname")
-                        .param("language", "JAVA")
-                        .param("position", "BACKEND")
-                        .with(user(userDetails)) // 로그인 사용자 정보 설정
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
-                .andExpect(status().is3xxRedirection()) // 리다이렉션 상태 코드 확인
-                .andExpect(redirectedUrl("/"));
-
-        // Then: 수정 메서드 호출 검증
-        verify(userService).updateUser(eq("testUser"), any(UpdateUserRequest.class));
-    }
 
 
     @Test
