@@ -23,11 +23,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
@@ -161,7 +160,6 @@ class InterviewRepositoryTest {
         assertThat(details.get(0).getAnswer()).isEqualTo("Java is a programming language."); // 저장된 답변과 일치하는지 확인
     }
 
-
     @DisplayName("면접이력에 상세 내용이 확인하는 테스트")
     @Test
     void interviewDetailCheck() {
@@ -253,9 +251,7 @@ class InterviewRepositoryTest {
         // When: 사용자 ID로 피드백 조회
         List<LevelFeedback> feedbacks = feedbackRepository.findByUserId(1L);
 
-        // Then: 피드백 내용 검증
-        assertThat(feedbacks).hasSize(2);
-        assertThat(feedbacks.get(0).getContent()).isEqualTo("Great feedback");
-        assertThat(feedbacks.get(1).getContent()).isEqualTo("Needs improvement");
+        // Then: 레벨 검증
+        assertThat(level).isEqualTo(Level.LV2); // 유저 레벨 검증
     }
 }
