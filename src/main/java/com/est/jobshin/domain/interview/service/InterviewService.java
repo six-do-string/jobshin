@@ -109,13 +109,13 @@ public class InterviewService {
     public InterviewQuestion processAnswerAndGetNextQuestion(HttpSession session, InterviewQuestion interviewQuestion) {
         InterviewQuestion nextQuestion = getNextQuestion(session);
 
-        Long interviewId = (Long) session.getAttribute("interviewId");
+//        Long interviewId = (Long) session.getAttribute("interviewId");
 
-        answerProcessingService.addAnswer(interviewId, interviewQuestion);
+//        answerProcessingService.addAnswer(interviewId, interviewQuestion);
 
-//        CompletableFuture.runAsync(() -> {
-//            interviewDetailService.getAnswerByUser(interviewQuestion);
-//        });
+        CompletableFuture.runAsync(() -> {
+            interviewDetailService.getAnswerByUser(interviewQuestion);
+        });
 
         return nextQuestion;
     }
@@ -140,13 +140,13 @@ public class InterviewService {
         Interview interview = interviewRepository.findById((Long)session.getAttribute("interviewId"))
                 .orElseThrow(() -> new NoSuchElementException("Interview not found"));
         interview.completeInterview();
-//        interviewDetailService.getAnswerByUser(interviewQuestion);
+        interviewDetailService.getAnswerByUser(interviewQuestion);
 
         //
-        Long interviewId = (Long) session.getAttribute("interviewId");
-        List<InterviewDetail> questions = (List<InterviewDetail>) session.getAttribute("questions");
-        int size = questions.size();
-        answerProcessingService.addAnswerAndReturnStatus(interviewId, interviewQuestion, size);
+//        Long interviewId = (Long) session.getAttribute("interviewId");
+//        List<InterviewDetail> questions = (List<InterviewDetail>) session.getAttribute("questions");
+//        int size = questions.size();
+//        answerProcessingService.addAnswerAndReturnStatus(interviewId, interviewQuestion, size);
         return "success";
     }
 
