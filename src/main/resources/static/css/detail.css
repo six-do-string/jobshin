@@ -44,14 +44,6 @@
   gap: 10px; /* 버튼 사이에 10px의 간격을 추가 */
 }
 
-button {
-  padding: 10px 20px; /* 버튼 내부의 텍스트와 테두리 사이에 여백을 추가 */
-  font-size: 16px; /* 버튼 텍스트의 크기를 16px로 설정 */
-  border: none; /* 버튼의 테두리를 제거 */
-  border-radius: 5px; /* 버튼의 모서리를 둥글게 설정 */
-  cursor: pointer; /* 버튼 위에 마우스를 올렸을 때 포인터 커서로 변경 */
-}
-
 .btn-review {
   background-color: #cccccc; /* "이전으로" 버튼의 배경색을 밝은 회색으로 설정 */
 }
