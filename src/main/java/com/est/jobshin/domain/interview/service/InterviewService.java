@@ -11,30 +11,30 @@ import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.repository.UserRepository;
-import com.est.jobshin.domain.user.service.UserService;
-import com.est.jobshin.domain.user.util.Level;
 import com.est.jobshin.global.security.model.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class InterviewService {
+
+    private static final String PRACTICE_MODE = " 파트 연습 모드";
+    private static final String REAL_MODE = "실전 모드";
+
     private final InterviewRepository interviewRepository;
     private final InterviewDetailService interviewDetailService;
     private final UserRepository userRepository;
-    private final UserService userService;
 
     @Transactional
     public InterviewDto getInterviewById(Long id) {
@@ -51,7 +51,7 @@ public class InterviewService {
     public Interview createPracticeInterview(Category category, HttpSession session) {
         User user = getCurrentUser();
         Interview interview = Interview.createInterview(
-                null, LocalDateTime.now(), user, Mode.PRACTICE
+            category.name() + PRACTICE_MODE, LocalDateTime.now(), user, Mode.PRACTICE
         );
 
         Interview createdInterview = interviewRepository.save(interview);
@@ -73,7 +73,7 @@ public class InterviewService {
     public Interview createRealInterview(HttpSession session) {
         User user = getCurrentUser();
         Interview interview = Interview.createInterview(
-                null, LocalDateTime.now(), user, Mode.REAL
+                REAL_MODE, LocalDateTime.now(), user, Mode.REAL
         );
 
         Interview createdInterview = interviewRepository.save(interview);

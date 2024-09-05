@@ -104,9 +104,9 @@
                     console.log(questionId);
                     question = response.question;
                     console.log(question);
-
-                    let questionNum = question.substring(0, 1);
-                    let content = question.substring(3);
+	                
+	                let questionNum = currentProblem;
+	                let content = question;
 
                     $('#answer').val('');
                     $('.question').html(`<h2>Q${questionNum}</h2><p class="content">${content}</p>`);
@@ -168,9 +168,10 @@
                 question = response.question;
                 console.log(question);
                 size = response.size;
+	            
+	            let questionNum = currentProblem;
+	            let content = question;
 
-                let questionNum = question.substring(0, 1);
-                let content = question.substring(3);
                 $('.question').html(`<h2>Q${questionNum}</h2><p class="content">${content}</p>`);
             },
             error: function (error) {
