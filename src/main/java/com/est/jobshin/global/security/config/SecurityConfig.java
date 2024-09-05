@@ -28,7 +28,7 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/images/**", "/js/**", "/favicon.*",
                                 "/*/icon-*").permitAll()
                         .requestMatchers("/", "/views/users/login", "/views/users/signup",
-                                "/api/users/signup", "/views/main")
+                                "/api/users/signup", "/views/main", "/actuator/health")
                         .permitAll()
                         .anyRequest().authenticated()
                 )
