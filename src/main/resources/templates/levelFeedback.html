@@ -106,7 +106,7 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
                 [header]: token
             },
-            body: JSON.stringify({"score": score})
+            body: JSON.stringify({score: score})
         })
         .then(response => {
             if (response.ok) {
