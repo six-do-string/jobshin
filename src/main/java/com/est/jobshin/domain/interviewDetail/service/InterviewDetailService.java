@@ -7,21 +7,20 @@ import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailReposito
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.infra.alan.AlanService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-//@Transactional
 @RequiredArgsConstructor
 public class InterviewDetailService {
+
     private final InterviewDetailRepository interviewDetailRepository;
     private final AlanService alenService;
 
@@ -90,22 +89,6 @@ public class InterviewDetailService {
 
         interviewDetail.registerFeedback(feedbackList.get(1), Long.parseLong(feedbackList.get(0)));
     }
-
-//    @Transactional(readOnly = true)
-//    public List<InterviewQuestion> getInterviewDetailByInterviewId(Long interviewId){
-//        return interviewDetailRepository
-//                .findByInterviewId(interviewId)
-//                .stream()
-//                .map(InterviewQuestion::fromInterviewDetail)
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public InterviewDetail getInterviewDetailById(Long interviewDetailId) {
-//        return interviewDetailRepository
-//                .findById(interviewDetailId)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid interview details id: " + interviewDetailId));
-//    }
 
     //랜덤한 카테고리 배열 생성
     private Category[] selectCategories(int numberOfSelect) {

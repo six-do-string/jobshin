@@ -49,7 +49,7 @@ public class InterviewDetail {
     @Enumerated(EnumType.STRING)
     private Mode mode;
 
-    private Long score;
+    private Long score = 0L;
 
     @Column(length = 2000)
     private String exampleAnswer;
