@@ -21,7 +21,7 @@ h1{
     color: #5E8DC0;
 }
 
-.mainCont{
+.mainCont {
     display: flex;
     flex-direction: column;
     padding: 0 35px;
@@ -29,21 +29,16 @@ h1{
     border: 2px solid #B5B5B5;
 }
 
-hr{
-    margin-bottom: 99px;
-}
-
 .sectionCont{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    flex-grow: 1;
     justify-content: center;
+    padding: 41px 0 123px 0;
     gap: 32px;
 }
 section{
-    flex-basis: 647px;
-    padding-bottom: 123px;
+    flex-basis: 90vh;
 }
 
 h2{
@@ -57,37 +52,46 @@ h2{
     letter-spacing: 0;
 }
 
-.realMode{
+.practiceMode{
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
     border: 2px solid #B5B5B5;
     border-radius: 6px;
+    height: 444px;
+    gap: 30px
 }
 
 .text1{
     font-size: 35px;
     font-weight: bolder;
-    padding-top: 60px;
 }
 .text2{
     font-size: 18px;
     font-weight: normal;
-    padding-top: 21px;
 }
 
-.category{
+.categoryBox{
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     border: none;
-    padding-top: 44px;
+    gap: 49px;
+}
+.category{
+    display: flex;
+    align-items: center;
     gap: 21px;
+    font-size: 20px;
 }
 
 .radio{
     font-weight: bold;
+}
+.option{
+    vertical-align: middle;
 }
 
 .buttonCont{
@@ -96,7 +100,6 @@ h2{
     align-items: center;
     justify-content: center;
     gap: 71px;
-    padding: 78px 0 112px 0;
 }
 
 .click{
@@ -115,10 +118,12 @@ h2{
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 81.5px 27px;
+    justify-content: center;
+    padding: 0 27px;
     list-style: none;
     border: 2px solid #B5B5B5;
     border-radius: 6px;
+    height: 444px;
 }
 .conferText{
     font-size: 25px;
