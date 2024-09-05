@@ -7,13 +7,12 @@ import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.util.Language;
 import com.est.jobshin.domain.user.util.Level;
 import com.est.jobshin.domain.user.util.Position;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
 
 
 @Slf4j
@@ -22,7 +21,6 @@ import java.util.Arrays;
 public class AlanService {
 
 	private final RestTemplate restTemplate;
-//	private final InterviewResultService interviewResultService;
 
 	private Interview interview;
 
@@ -52,16 +50,6 @@ public class AlanService {
 		return callApi(defaultUrl, clientId, categories, language, position, level);
 	}
 
-
-//	private String callApi(String apiUrl, String clientId, String level) {
-//		String content = String.format(PromptMessage.QUESTION_PROMPT, level);
-//		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
-//		log.info("Calling API: {}", requestUrl);
-//		String response = restTemplate.getForObject(requestUrl, String.class);
-//		log.info("API response received");
-//		log.info("Response: {}", response);
-//		return response;
-//	}
 
 	private String callApi(String apiUrl, String clientId, Category[] categories, Language language, Position position, Level level) {
 		String message = position + PromptMessage.QUESTION_PROMPT + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중 " + level + " 사용 언어: " + language + "출제 카테고리는 1~5번까지 각각 " + Arrays.toString(categories);
