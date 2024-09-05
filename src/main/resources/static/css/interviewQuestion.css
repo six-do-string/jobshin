@@ -52,6 +52,8 @@ hr{
     font-weight: 550;
     align-self: start;
     color: #5E8DC0;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .question{
