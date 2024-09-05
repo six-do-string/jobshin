@@ -1,6 +1,5 @@
 package com.est.jobshin.domain.interview.controller;
 
-import com.est.jobshin.domain.interview.dto.InterviewLevel;
 import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import org.springframework.stereotype.Controller;
@@ -59,12 +58,12 @@ public class InterviewThymeleafController {
     }
 
     @GetMapping("/interview/levelEval")
-    public String getInterviewLevelEval(@ModelAttribute InterviewLevel interviewLevel) {
+    public String getInterviewLevelEval() {
         return "levelFeedback";
     }
 
     @PostMapping("/updateLevel")
-    public String updateLevel(@RequestParam Long score) {
+    public String updateLevel(@RequestParam Double score) {
         interviewService.updateUserLevel(score);
         return "redirect:/views/main";
     }

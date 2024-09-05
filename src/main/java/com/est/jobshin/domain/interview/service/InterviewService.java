@@ -2,7 +2,6 @@ package com.est.jobshin.domain.interview.service;
 
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewDto;
-import com.est.jobshin.domain.interview.dto.InterviewLevel;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
@@ -172,16 +171,14 @@ public class InterviewService {
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 
-    public void updateUserLevel(Long score) {
+    public void updateUserLevel(Double score) {
         User user = getCurrentUser();
-//        interviewLevel = (InterviewLevel) session.getAttribute("level");
         Level newLevel = updateLevel(score);
-        System.out.println(newLevel);
         user.updateUserLevel(newLevel);
         userRepository.save(user);
     }
 
-    private Level updateLevel(Long score) {
+    private Level updateLevel(Double score) {
         if (score < 40) {
             return Level.LV1;
         } else if (score > 60) {

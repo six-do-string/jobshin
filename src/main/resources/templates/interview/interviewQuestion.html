@@ -43,9 +43,10 @@
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    let currentProblem = 1;
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
+
+    let currentProblem = 1;
     let size;
     const loadingModal = document.getElementById('loadingModal');
 
@@ -66,13 +67,14 @@
         console.log(questionId);
         console.log(answer);
         if (!answer.trim()) {
-            alert('답변을 입력해주세요.');
+            alert("답변을 입력해주세요.");
             return;
         }
         const params = {
             id: questionId,
             question: question,
-            answer: answer
+            answer: answer,
+            size: size
         }
 
         if(currentProblem < size) {
@@ -93,12 +95,14 @@
                     console.log(questionId);
                     question = response.question;
                     console.log(question);
+
                     $('#answer').val('');
                     $('.questionNum').html(`<h2>Q${question.substring(0, 1)}</h2>`)
                     $('.content').html(`<p>${question}</p>`);
                     console.log(currentProblem);
                 },
                 error: function (error) {
+                    alert("답변 제출 중 오류가 발생하였습니다.");
                     console.error("답변 제출 중 오류가 발생하였습니다: ", error);
                 }
             });
@@ -125,6 +129,7 @@
                     }
                 },
                 error: function (error) {
+                    alert("답변 제출 중 오류가 발생하였습니다.");
                     console.error("답변 제출 중 오류가 발생하였습니다: ", error);
                 }
             });
@@ -161,5 +166,11 @@
             }
         });
     }
+
+    $('.goToBack').click(function () {
+        if(confirm("현재 페이지를 벗어나면 응시 정보가 저장되지 않습니다. 그래도 나가시겠습니까?")){
+            window.location.href = "/views/interviewMainPage";
+        }
+    })
 </script>
 </html>

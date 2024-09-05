@@ -99,6 +99,8 @@ h2{
     gap: 10px;
     padding: 27px;
     list-style: none;
+    border: 2px solid #B5B5B5;
+    border-radius: 6px;
 }
 .conferText{
     font-size: 25px;

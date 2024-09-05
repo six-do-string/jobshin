@@ -41,7 +41,6 @@
     </form>
 </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="/js/AlFeedback.js"></script>
 <script th:inline="javascript">
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
@@ -107,7 +106,7 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
                 [header]: token
             },
-            body: JSON.stringify({"score": score})
+            body: JSON.stringify({score: score})
         })
         .then(response => {
             if (response.ok) {
