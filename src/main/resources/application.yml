@@ -32,7 +32,25 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
+  boot:
+    admin:
+      client:
+        url:
+          - http://127.0.0.1:9090
+
 alan:
   api:
     default-url: ${ALAN_API_URL}
     client-id: ${ALAN_CLIENT_ID}
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+    loggers:
+      enable: true

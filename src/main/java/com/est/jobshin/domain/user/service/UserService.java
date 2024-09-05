@@ -4,7 +4,6 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.dto.InterviewHistorySummaryResponse;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
-import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.*;
@@ -28,7 +27,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final InterviewRepository interviewRepository;
-    private final InterviewDetailRepository interviewDetailRepository;
 
     // 회원 가입 메서드
     @Transactional
@@ -77,10 +75,12 @@ public class UserService {
     // 마이 페이지
     // 모의 면접 리스트 페이징 처리
     @Transactional(readOnly = true)
-    public Page<InterviewHistorySummaryResponse> getPaginatedInterviews(Pageable pageable, Long userId, Mode mode) {
+    public Page<InterviewHistorySummaryResponse> getPaginatedInterviews(Pageable pageable,
+            Long userId, Mode mode) {
 
         // 인터뷰 목록을 페이지네이션으로 가져옴
-        Page<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(userId, mode, pageable);
+        Page<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(
+                userId, mode, pageable);
 
         // 인터뷰 목록을 DTO로 변환
         List<InterviewHistorySummaryResponse> practiceInterviewList = interviewsPage.stream()
@@ -94,7 +94,8 @@ public class UserService {
                     InterviewDetail firstDetail = interview.getInterviewDetails().stream()
                             .findFirst().orElse(null);
 
-                    return InterviewHistorySummaryResponse.toDto(interview, firstDetail, totalScore / 5);
+                    return InterviewHistorySummaryResponse.toDto(interview, firstDetail,
+                            totalScore / 5);
 
                 })
                 .collect(Collectors.toList());
@@ -109,19 +110,21 @@ public class UserService {
     public MyPageInterviewWithDetailsDto getInterviewDetail(Long id) {
 
         Interview interview = interviewRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Interview not found with id " + id));
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Interview not found with id " + id));
 
         // 점수 평균 계산 (정수형)
         int averageScore = (int) Math.round(
-            interview.getInterviewDetails().stream()
-                .filter(detail -> detail.getScore() != null)  // 점수가 null이 아닌 경우에만 고려
-                .mapToLong(InterviewDetail::getScore)
-                .average()
-                .orElse(0.0)
+                interview.getInterviewDetails().stream()
+                        .filter(detail -> detail.getScore() != null)  // 점수가 null이 아닌 경우에만 고려
+                        .mapToLong(InterviewDetail::getScore)
+                        .average()
+                        .orElse(0.0)
         );
 
         // DTO로 변환
-        MyPageInterviewWithDetailsDto myPageInterviewWithDetailsDto = MyPageInterviewWithDetailsDto.fromInterview(interview);
+        MyPageInterviewWithDetailsDto myPageInterviewWithDetailsDto = MyPageInterviewWithDetailsDto.fromInterview(
+                interview);
         myPageInterviewWithDetailsDto.setAverageScore(averageScore);
 
         return myPageInterviewWithDetailsDto;
