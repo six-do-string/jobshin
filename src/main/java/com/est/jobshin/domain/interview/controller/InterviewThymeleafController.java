@@ -56,10 +56,4 @@ public class InterviewThymeleafController {
     public String getInterviewLevelEval() {
         return "levelFeedback";
     }
-
-    @PostMapping("/updateLevel")
-    public String updateLevel(@RequestParam Double score) {
-        interviewService.updateUserLevel(score);
-        return "redirect:/views/main";
-    }
 }

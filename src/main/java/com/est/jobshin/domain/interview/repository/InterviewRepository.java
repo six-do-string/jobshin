@@ -20,5 +20,5 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
     Page<Interview> findInterviewsWithPracticeModeByUser(@Param("userId") Long userId
             , @Param("mode") Mode mode, Pageable pageable);
 
-    Interview findByUser_Level(Level level);
+
 }

@@ -7,11 +7,9 @@ import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
-import com.est.jobshin.domain.user.dto.CreateUserRequest;
-import com.est.jobshin.domain.user.dto.MyPageInterviewWithDetailsDto;
-import com.est.jobshin.domain.user.dto.UpdateUserRequest;
-import com.est.jobshin.domain.user.dto.UserResponse;
+import com.est.jobshin.domain.user.dto.*;
 import com.est.jobshin.domain.user.repository.UserRepository;
+import com.est.jobshin.domain.user.util.Level;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -129,5 +127,13 @@ public class UserService {
         return myPageInterviewWithDetailsDto;
     }
 
+    // 유저 레벨 업데이트
+    public void updateUserLevel(String username, Double score) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()->new IllegalArgumentException("No user found with username:" + username));
+        Level newLevel = score < 40 ? Level.LV1 : (score > 60 ? Level.LV3 : Level.LV2);
+        user.updateUserLevel(newLevel);
+        userRepository.save(user);
+    }
 
 }

@@ -170,22 +170,4 @@ public class InterviewService {
         return userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
-
-    public void updateUserLevel(Double score) {
-        User user = getCurrentUser();
-        Level newLevel = updateLevel(score);
-        user.updateUserLevel(newLevel);
-        userRepository.save(user);
-    }
-
-    private Level updateLevel(Double score) {
-        if (score < 40) {
-            return Level.LV1;
-        } else if (score > 60) {
-            return Level.LV3;
-        } else {
-            return Level.LV2;
-        }
-    }
-
 }
