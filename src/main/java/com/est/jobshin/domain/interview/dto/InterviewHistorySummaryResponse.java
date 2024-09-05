@@ -27,6 +27,7 @@ public class InterviewHistorySummaryResponse {
     private LocalDateTime createdAt; // Interview의 createAt
     private Long score;              // InterviewDetail의 score
     private String category;         // InterviewDetail의 category
+    private Boolean complete;
 
     public static InterviewHistorySummaryResponse toDto(Interview interview, InterviewDetail interviewDetail, Long totalScore) {
         return InterviewHistorySummaryResponse.builder()
@@ -36,6 +37,7 @@ public class InterviewHistorySummaryResponse {
                 .createdAt(interview.getCreatedAt())
                 .score(totalScore)
                 .category(interviewDetail.getCategory().toString())
+                .complete(interview.isComplete())
                 .build();
     }
 }
