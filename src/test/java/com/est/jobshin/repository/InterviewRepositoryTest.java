@@ -6,8 +6,6 @@ import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
-import com.est.jobshin.domain.levelfeedback.domain.LevelFeedback;
-import com.est.jobshin.domain.levelfeedback.repository.LevelFeedbackRepository;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.repository.UserRepository;
 import com.est.jobshin.domain.user.util.Language;
@@ -43,8 +41,6 @@ class InterviewRepositoryTest {
     @Autowired
     private InterviewDetailRepository interviewDetailRepository;
 
-    @Autowired
-    private LevelFeedbackRepository feedbackRepository;  // feedbackRepository 주입 추가
 
     @Test
     @DisplayName("사용자의 Practice 모드 인터뷰 조회 테스트")
@@ -240,16 +236,23 @@ class InterviewRepositoryTest {
     }
 
     @Test
-    @DisplayName("사용자 ID로 피드백 조회 테스트")
-    void findByUserIdTest() {
-        // Given: LevelFeedback 객체 생성 및 저장
-        LevelFeedback feedback1 = new LevelFeedback(null, 1L, "Great feedback", 5L);
-        LevelFeedback feedback2 = new LevelFeedback(null, 1L, "Needs improvement", 3L);
-        feedbackRepository.save(feedback1);
-        feedbackRepository.save(feedback2);
+    @DisplayName("사용자명을 이용해 레벨 조회 테스트")
+    void findLevelByUsername() {
+        // Given: 사용자 저장
+        User user = User.builder()
+                .username("levelTestUser")
+                .password("password")
+                .nickname("Tester")
+                .language(Language.JAVA)
+                .level(Level.LV2) // 설정된 레벨
+                .position(Position.BACKEND)
+                .build();
+        userRepository.save(user);
 
-        // When: 사용자 ID로 피드백 조회
-        List<LevelFeedback> feedbacks = feedbackRepository.findByUserId(1L);
+        // When: 사용자명으로 사용자 조회 후 레벨 확인
+        Level level = userRepository.findByUsername("levelTestUser")
+                .map(User::getLevel)
+                .orElseThrow(() -> new AssertionError("User not found"));
 
         // Then: 레벨 검증
         assertThat(level).isEqualTo(Level.LV2); // 유저 레벨 검증
