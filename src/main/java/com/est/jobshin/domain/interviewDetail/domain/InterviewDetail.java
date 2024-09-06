@@ -28,7 +28,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Builder
 @Table(name = "interview_details")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,7 +36,7 @@ public class InterviewDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(max = 1000)
+    @Column(length = 1000)
     private String question;
 
     @Column(length = 2000)
