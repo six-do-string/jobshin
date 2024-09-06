@@ -37,9 +37,10 @@
             <table class="table">
                 <thead class="table-light">
                 <tr>
-                    <th>번호</th>
+                    <th>인터뷰 번호</th>
                     <th>응시 일시</th>
                     <th>점수</th>
+                    <th>레벨</th>
                     <th>카테고리</th>
                     <th>완료 여부</th>
                 </tr>
@@ -50,6 +51,7 @@
                     <td><a th:href="@{/views/users/interviews/practice/{id}(id = ${interview.id})}" th:text="${interview.id}">번호</a></td>
                     <td><a th:href="@{/views/users/interviews/practice/{id}(id = ${interview.id})}" th:text="${interview.createdAt}">생성 일시</a></td>
                     <td th:text="${interview.score}">점수</td>
+                    <td th:text="${interview.level}">레벨</td>
                     <td th:text="${interview.category}">카테고리</td>
                     <td class="is-complete">
                         <div th:if="${!interview.complete}">

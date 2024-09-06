@@ -42,9 +42,10 @@
             <table class="table">
                 <thead class="table-light">
                 <tr>
-                    <th>번호</th>
+                    <th>인터뷰 번호</th>
                     <th>응시 일시</th>
                     <th>점수</th>
+                    <th>레벨</th>
                     <th>카테고리</th>
                     <th>완료 여부</th>
                 </tr>
@@ -56,6 +57,7 @@
                     <td><a th:href="@{/views/users/interviews/real/{id}(id=${interview.id})}"
                            th:text="${interview.createdAt}">제목</a></td>
                     <td th:text="${interview.score}">점수</td>
+                    <td th:text="${interview.level}">레벨</td>
                     <td>백엔드 전체</td>
                     <td class="is-complete">
                         <div th:if="${!interview.complete}">
