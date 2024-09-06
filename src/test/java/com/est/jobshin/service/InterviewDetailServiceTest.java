@@ -33,13 +33,13 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 public class InterviewDetailServiceTest {
 
 	@Mock
-	InterviewDetailRepository interviewDetailRepository;
+	private InterviewDetailRepository interviewDetailRepository;
 
 	@Mock
-	AlanService alanService;
+	private AlanService alanService;
 
 	@InjectMocks
-	InterviewDetailService interviewDetailService;
+	private InterviewDetailService interviewDetailService;
 
 	@DisplayName("모의면접 상세 생성")
 	@Test
