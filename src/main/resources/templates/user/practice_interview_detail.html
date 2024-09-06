@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>마이페이지 - 연습 모드 상세보기</title>
-	
-	<link rel="stylesheet" href="/css/header.css">
-	<link rel="stylesheet" href="/css/sidebar.css">
-	<link rel="stylesheet" href="/css/table.css">
-	<link rel="stylesheet" href="/css/detail.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지 - 연습 모드 상세보기</title>
+
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/table.css">
+    <link rel="stylesheet" href="/css/detail.css">
 </head>
 <body>
 <div th:replace="~{layout/header.html :: header}"></div>
 <main class="main">
-	<div class="container">
-		<!-- Sidebar Section -->
+    <div class="container">
+        <!-- Sidebar Section -->
         <aside class="sidebar">
             <div class="sidebar-section">
-                <h3>마이 페이지<hr></h3>
+                <h3>마이 페이지
+                    <hr>
+                </h3>
                 <h4>계정 정보</h4>
                 <ul class="sidebar-menu">
                     <li><a href="/views/users/edit">회원 정보 수정</a></li>
@@ -32,73 +34,68 @@
                 </ul>
             </div>
         </aside>
-		
-		<!-- Main Content Section -->
-		<section class="content">
-			<h1>연습 모드 면접 결과</h1>
-			<table class="result-table">
-				<thead>
-				<tr>
-					<th>번호</th>
-					<th>응시 일시</th>
-					<th>점수</th>
-					<th>카테고리</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr>
-					<td th:text="${interviewDetails.id}">Java란 무엇입니까?</td>
-					<td th:text="${#temporals.format(interviewDetails.createdAt, 'yyyy.MM.dd')}">yyyy.MM.dd</td>
-					<td th:text="${interviewDetails.averageScore + ' / 100'}">점수</td>
-					<td th:text="${interviewDetails.getInterviewDetails().get(0).getCategory()}">카테고리</td>
-				</tr>
-				</tbody>
-			</table>
-			
-			<div class="questions">
-				<!-- 면접 질문과 답변 반복 렌더링 -->
-				<div class="question-item" th:each="interviewDetail : ${interviewDetails.getInterviewDetails()}">
-					<div class="question-header">
-						<span th:text="'문제 ' + ${interviewDetail.id} + '. ' + ${interviewDetail.question}">문제 1. ==와 equals()의 차이점은?</span>
-						<button class="toggle-button">▲</button>
-					</div>
-					<div class="question-content">
-						<p><strong>내 답변:</strong> <span th:text="${interviewDetail.answer}">오버라이딩으로...</span></p>
-						<p><strong>시스템:</strong> <span th:text="${interviewDetail.exampleAnswer}">equals() 메서드는...</span></p>
-					</div>
-				</div>
-			</div>
-			
-			<div class="buttons">
-				<a href="/views/users/interviews/practice" class="button-link">목록으로</a>
-			</div>
-		</section>
-	</div>
+
+        <!-- Main Content Section -->
+        <section class="content">
+            <h1>연습 모드 면접 결과</h1>
+            <table class="result-table">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>응시 일시</th>
+                    <th>점수</th>
+                    <th>카테고리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${interviewDetails.id}">Java란 무엇입니까?</td>
+                    <td th:text="${#temporals.format(interviewDetails.createdAt, 'yyyy.MM.dd')}">
+                        yyyy.MM.dd
+                    </td>
+                    <td th:text="${interviewDetails.averageScore + ' / 100'}">점수</td>
+                    <td th:text="${interviewDetails.getInterviewDetails().get(0).getCategory()}">
+                        카테고리
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="questions">
+                <!-- 면접 질문과 답변 반복 렌더링 -->
+                <div class="question-item"
+                     th:each="interviewDetail : ${interviewDetails.getInterviewDetails()}">
+                    <div class="question-header">
+                        <span
+                            th:text="'문제 ' + ${interviewDetail.id} + '. ' + ${interviewDetail.question}">문제 1. ==와 equals()의 차이점은?</span>
+                        <button class="toggle-button" onclick="toggleContent(this)">▲</button>
+                    </div>
+                    <div class="question-content">
+                        <p><strong>내 답변:</strong> <span th:text="${interviewDetail.answer}">오버라이딩으로...</span>
+                        </p>
+                        <p><strong>시스템:</strong> <span th:text="${interviewDetail.exampleAnswer}">equals() 메서드는...</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <a href="/views/users/interviews/practice" class="button-link">목록으로</a>
+            </div>
+        </section>
+    </div>
 </main>
 <script>
-    function continueInterview(interviewId) {
-        fetch(`/api/mock-interviews/incomplete/` + interviewId, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include'
-        })
-        .then(response => {
-            if (response.ok) {
-                return window.location.href = `/views/interview/question?mode=PRACTICE`;
-            } else {
-                throw new Error('인터뷰를 계속하는데 실패했습니다.');
-            }
-        })
-        .then(data => {
-            console.log('Incomplete interview data:', data);
-            alert('인터뷰를 계속합니다.');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('인터뷰를 계속하는 중 오류가 발생했습니다.');
-        });
+    function toggleContent(button) {
+        const content = button.parentElement.nextElementSibling;
+
+        if (content.style.display == "none"){
+            content.style.display = "block"; // 보여줌
+            button.textContent = "▲"; // 버튼 아이콘 변경
+        } else {
+            content.style.display = "none"; // 숨김
+            button.textContent = "▼"; // 버튼 아이콘 변경
+        }
     }
 </script>
 </body>

@@ -60,7 +60,7 @@
 				<div class="question-item" th:each="interviewDetail : ${interviewDetails.getInterviewDetails()}">
 					<div class="question-header">
 						<span th:text="'문제 ' + ${interviewDetail.id} + '. ' + ${interviewDetail.question}">문제 1. ==와 equals()의 차이점은?</span>
-						<button class="toggle-button">▲</button>
+						<button class="toggle-button" onclick="toggleContent(this)">▲</button>
 					</div>
 					<div class="question-content">
 						<p><strong>내 답변:</strong> <span th:text="${interviewDetail.answer}">오버라이딩으로...</span></p>
@@ -75,5 +75,18 @@
 		</section>
 	</div>
 </main>
+<script>
+    function toggleContent(button) {
+        const content = button.parentElement.nextElementSibling;
+
+        if (content.style.display == "none"){
+            content.style.display = "block"; // 보여줌
+            button.textContent = "▲"; // 버튼 아이콘 변경
+        } else {
+            content.style.display = "none"; // 숨김
+            button.textContent = "▼"; // 버튼 아이콘 변경
+        }
+    }
+</script>
 </body>
 </html>
