@@ -19,6 +19,7 @@
         <section class="questionCont">
             <div class="questionBox">
                 <div class="questionHeader">
+                    <a class="goToBack">< 처음으로</a>
 <!--                    interviewMainPage로 돌아가는 링크-->
 <!--                    연습모드는 카테고리 삽입-->
                 </div>
@@ -57,8 +58,6 @@
     let url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
     const mode = params.get('mode');
-    // let pathSegments = url.pathname.split('/');
-    // let lastSegment = pathSegments[pathSegments.length - 1];
 
     const category = localStorage.getItem("category");
 
@@ -80,6 +79,7 @@
             alert("답변을 입력해주세요.");
             return;
         }
+
         const params = {
             id: questionId,
             question: question,
@@ -128,7 +128,7 @@
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(params),
                 url: "/api/mock-interviews/finish",
-                success: function (response) {
+                success: function () {
                     loadingModal.style.display = 'none';
                     if (mode === "REAL") {
                         return window.location.href = `/views/interview/result?mode=REAL`;
@@ -149,7 +149,7 @@
     function getQuestions() {
 
         console.log('getQuestions 함수 실행')
-        const questionCont = document.getElementsByClassName('content');
+        // const questionCont = document.getElementsByClassName('content');
 
         $.ajax({
             type: 'GET',
