@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface InterviewDetailRepository extends JpaRepository<InterviewDetail, Long> {
 
     List<InterviewDetail> findByInterviewId(Long interviewId);

@@ -52,7 +52,7 @@ public class AlanService {
 
 
 	private String callApi(String apiUrl, String clientId, Category[] categories, Language language, Position position, Level level) {
-		String message = position + PromptMessage.QUESTION_PROMPT + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중 " + level + " 사용 언어: " + language + "출제 카테고리는 1~5번까지 각각 " + Arrays.toString(categories);
+		String message = position + PromptMessage.QUESTION_PROMPT + "전체 레벨(구성 레벨: LV1, LV2, LV3) 중 " + level + " 사용 언어: " + language + "출제 카테고리는 1~5번까지 각각 " + Arrays.toString(categories) + PromptMessage.FORMAT_PROMPT;
 		String content = String.format(message);
 		String requestUrl = String.format("%s?content=%s&client_id=%s", apiUrl, content, clientId);
 		log.info("Calling API: {}", requestUrl);
