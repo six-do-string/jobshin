@@ -36,6 +36,11 @@ public class InterviewService {
     private final InterviewDetailService interviewDetailService;
     private final UserRepository userRepository;
 
+    /**
+     * 면접 id로 면접 찾기
+     * @param id 찾을 면접 id
+     * @return 면접 정보를 담은 DTO
+     */
     @Transactional
     public InterviewDto getInterviewById(Long id) {
         return interviewRepository
@@ -189,6 +194,10 @@ public class InterviewService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 면접 기록 삭제
+     * @param id 면접 id
+     */
     public void deleteInterviewsById(Long id) {
         interviewRepository.deleteById(id);
     }
