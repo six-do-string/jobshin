@@ -2,6 +2,7 @@ package com.est.jobshin.domain.interview.dto;
 
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
+import com.est.jobshin.domain.user.util.Level;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,7 @@ public class InterviewHistorySummaryResponse {
     private String nickname;
     private LocalDateTime createdAt; // Interview의 createAt
     private Long score;              // InterviewDetail의 score
+    private Level level;
     private String category;         // InterviewDetail의 category
     private Boolean complete;
 
@@ -36,6 +38,7 @@ public class InterviewHistorySummaryResponse {
                 .nickname(interview.getUser().getNickname())
                 .createdAt(interview.getCreatedAt())
                 .score(totalScore)
+                .level(interview.getUser().getLevel())
                 .category(interviewDetail.getCategory().toString())
                 .complete(interview.isComplete())
                 .build();

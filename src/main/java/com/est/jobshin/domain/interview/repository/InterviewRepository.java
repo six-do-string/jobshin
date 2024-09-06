@@ -16,7 +16,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
     Page<Interview> findInterviewsWithPracticeModeByUser(@Param("userId") Long userId,
             Pageable pageable, Mode mode);
 
-    @Query("SELECT i FROM Interview i JOIN FETCH i.interviewDetails d WHERE i.mode = :mode  AND i.user.id = :userId")
+    @Query("SELECT i FROM Interview i JOIN FETCH i.interviewDetails d WHERE i.mode = :mode  AND i.user.id = :userId ORDER BY i.complete ASC ")
     Page<Interview> findInterviewsWithPracticeModeByUser(@Param("userId") Long userId
             , @Param("mode") Mode mode, Pageable pageable);
 
