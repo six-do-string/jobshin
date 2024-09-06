@@ -44,9 +44,13 @@ public class InterviewService {
                 .orElseThrow(() -> new IllegalArgumentException("Interview not found"));
     }
 
-    //면접 연습모드로 진입시
-    //면접 생성 메서드 호출
-    //세션에 면접 진행에 필요한 변수들 초기화
+    /**
+     * 면접 연습모드로 진입시 면접 질문 생성 메서드 호출,
+     * 면접 진행에 필요한 변수들을 세션에 초기화
+     * @param category 클라이언트가 선택한 카테고리
+     * @param session 현재 세션
+     * @return 면접 질문이 저장된 Interview
+     */
     @Transactional
     public Interview createPracticeInterview(Category category, HttpSession session) {
         User user = getCurrentUser();
@@ -66,9 +70,12 @@ public class InterviewService {
         return createdInterview;
     }
 
-    //면접 실전모드로 진입시
-    //면접 생성 메서드 호출
-    //세션에 면접 진행에 필요한 변수들 초기화
+    /**
+     * 면접 실전모드로 진입시 면접 질문 생성 메서드 호출,
+     * 면접 진행에 필요한 변수들을 세션에 초기화
+     * @param session 현재 세션
+     * @return 면접 질문이 저장된 Interview
+     */
     @Transactional
     public Interview createRealInterview(HttpSession session) {
         User user = getCurrentUser();
@@ -88,6 +95,13 @@ public class InterviewService {
         return createdInterview;
     }
 
+    /**
+     * 면접 이어하기 진입시 미완료된 문항 추출,
+     * 면접 진행에 필요한 변수들을 세션에 초기화
+     * @param interviewId 이어서 진행할 면접의 id
+     * @param session 현재 세션
+     * @return 면접 질문이 저장된 Interview
+     */
     @Transactional
     public Interview loadIncompleteInterview(Long interviewId, HttpSession session) {
         Interview interview = interviewRepository.findById(interviewId)
@@ -105,7 +119,12 @@ public class InterviewService {
         return interview;
     }
 
-    //답변이 들어왔을때 다음 질문을 반환하고, 답변에 대한 처리는 비동기적으로 처리
+    /**
+     * 답변을 전달받으면 다음 질문을 전달해주고, 답변에 대한 처리는 비동기적으로 실행
+     * @param session 현재 세션
+     * @param interviewQuestion 클라이언트로부터 작성된 답변을 담은 객체
+     * @return 다음 질문이 담긴 객체
+     */
     @Transactional
     public InterviewQuestion processAnswerAndGetNextQuestion(HttpSession session, InterviewQuestion interviewQuestion) {
         InterviewQuestion nextQuestion = getNextQuestion(session);
@@ -117,7 +136,11 @@ public class InterviewService {
         return nextQuestion;
     }
 
-    //다음 질문 반환
+    /**
+     * 다음 질문 전달
+     * @param session 현재 세션
+     * @return 다음 질문이 담긴 객체
+     */
     public InterviewQuestion getNextQuestion(HttpSession session) {
         List<InterviewDetail> questions = (List<InterviewDetail>) session.getAttribute("questions");
         Integer currentIndex = (Integer) session.getAttribute("currentIndex");
@@ -132,6 +155,12 @@ public class InterviewService {
         return InterviewQuestion.from(question, questions.size());
     }
 
+    /**
+     * 마지막으로 전달받은 답변에 대해 동기적으로 처리
+     * @param interviewQuestion InterviewQuestion
+     * @param session HttpSession
+     * @return 완료처리를 나타내는 문자열
+     */
     public String lastQuestion(InterviewQuestion interviewQuestion, HttpSession session) {
         Interview interview = interviewRepository.findById((Long)session.getAttribute("interviewId"))
                 .orElseThrow(() -> new NoSuchElementException("Interview not found"));
@@ -140,6 +169,11 @@ public class InterviewService {
         return "success";
     }
 
+    /**
+     * 면접 종료시 면접 결과 전달
+     * @param session 현재 세션
+     * @return 면접 결과와 피드백이 담긴 리스트
+     */
     public List<InterviewResultDetail> summaryInterview(HttpSession session) {
         return getInterviewDetailsById((Long) session.getAttribute("interviewId"));
     }
@@ -159,7 +193,10 @@ public class InterviewService {
         interviewRepository.deleteById(id);
     }
 
-    //현재 세션의 사용자 정보 가져오기
+    /**
+     * 현재 세션의 사용자 정보를 가져오는 메서드
+     * @return 현재 세션의 사용자 정보
+     */
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == null) {

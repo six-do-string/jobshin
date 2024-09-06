@@ -31,7 +31,6 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "interviews")
 @Entity
-@Builder
 public class Interview {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,6 +63,9 @@ public class Interview {
 		return new Interview(title, createdAt, user, mode);
 	}
 
+	/**
+	 * 면접 상태 완료로 변경
+	 */
 	public void completeInterview() {
 		this.complete = true;
 	}

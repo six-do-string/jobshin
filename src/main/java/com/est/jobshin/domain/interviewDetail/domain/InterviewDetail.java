@@ -72,10 +72,19 @@ public class InterviewDetail {
         return new InterviewDetail(question, category, mode, createdAt);
     }
 
+    /**
+     * 전달 받은 답변을 저장
+     * @param answer 클라이언트가 전달한 답변
+     */
     public void registerAnswer(String answer) {
         this.answer = answer;
     }
 
+    /**
+     * 전달 받은 피드백을 저장, 해당 문제를 완료처리
+     * @param exampleAnswer 앨런으로부터 전달 받은 예시 답변
+     * @param score 앨런으로부터 전달 받은 점수
+     */
     public void registerFeedback(String exampleAnswer, Long score) {
         this.exampleAnswer = exampleAnswer;
         this.score = score;

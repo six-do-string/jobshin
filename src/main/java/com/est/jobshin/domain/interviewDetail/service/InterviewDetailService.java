@@ -27,16 +27,25 @@ public class InterviewDetailService {
     private static final Integer NUMBER_OF_SELECT = 5;
     private static final String REGEX = "\\[(.*?)\\]";
 
-    //면접 실전모드로 진입시
-    //질문 카테고리 랜덤하게 생성
+    /**
+     * 면접 실전모드로 진입시 질문 카테고리 배열을 랜덤하게 생성,
+     * 면접 질문 생성 메서드 호출
+     * @param interview 현재 진행중인 면접
+     * @param user 현재 세션의 유저
+     */
     @Transactional
     public void realModeStarter(Interview interview, User user) {
         Category[] categories = selectCategories();
         createInterviewDetail(interview, categories, user);
     }
 
-    //면접 연습모드로 진입시
-    //사용자가 선택한 카테고리로 질문 카테고리 생성
+    /**
+     * 면접 연습모드로 진입시 클라이언트가 선택한 카테고리로 배열을 생성,
+     * 면접 질문 생성 메서드 호출
+     * @param interview 현재 진행중인 면접
+     * @param category 클라이언트가 선택한 카테고리
+     * @param user 현재 세션의 유저
+     */
     @Transactional
     public void practiceModeStarter(Interview interview, Category category, User user) {
         Category[] categories = new Category[NUMBER_OF_SELECT];
@@ -44,7 +53,12 @@ public class InterviewDetailService {
         createInterviewDetail(interview, categories, user);
     }
 
-    //면접 질문 생성, db에 저장
+    /**
+     * 면접 질문을 생성하고, DB에 저장
+     * @param interview 현재 진행중인 면접
+     * @param category 생성할 문제의 카테고리 배열
+     * @param user 현재 세션의 유저
+     */
     @Transactional
     public void createInterviewDetail(Interview interview, Category[] category, User user) {
         String questionData = alenService.callAlan(category, user.getLanguage(), user.getPosition(), user.getLevel());
@@ -70,7 +84,10 @@ public class InterviewDetailService {
         }
     }
 
-    //사용자의 답변으로 부터 피드백 생성, db에 저장
+    /**
+     * 사용자의 답변으로 부터 피드백을 생성, DB에 저장
+     * @param interviewQuestion 질문과 사용자가 작성한 답변이 담긴 객체
+     */
     @Transactional
     public void getAnswerByUser(InterviewQuestion interviewQuestion) {
         InterviewDetail interviewDetail = interviewDetailRepository.findById(interviewQuestion.getId())
@@ -91,7 +108,10 @@ public class InterviewDetailService {
         interviewDetail.registerFeedback(feedbackList.get(1), Long.parseLong(feedbackList.get(0)));
     }
 
-    //랜덤한 카테고리 배열 생성
+    /**
+     * 랜덤한 카테고리 배열 생성
+     * @return 생성된 카테고리 배열
+     */
     private Category[] selectCategories() {
         Random random = new Random();
         Category[] categories = Category.values();
