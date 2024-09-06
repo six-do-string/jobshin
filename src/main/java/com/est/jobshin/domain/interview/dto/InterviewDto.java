@@ -39,11 +39,4 @@ public class InterviewDto {
                 .interviewDetailDto(interviewDetailDto)
                 .build();
     }
-
-    public Interview toInterview() {
-        return Interview.builder()
-                .title(title)
-                .createdAt(createdAt)
-                .build();
-    }
 }
