@@ -14,10 +14,10 @@ import com.est.jobshin.domain.user.repository.UserRepository;
 import com.est.jobshin.global.security.model.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -35,6 +35,9 @@ public class InterviewService {
     private final InterviewRepository interviewRepository;
     private final InterviewDetailService interviewDetailService;
     private final UserRepository userRepository;
+
+    private final Map<String, ConcurrentLinkedQueue<InterviewQuestion>> answerQueueMap = new HashMap<>();
+    private final Map<String, Boolean> taskStateMap = new HashMap<>();
 
     /**
      * 면접 id로 면접 찾기
@@ -72,6 +75,8 @@ public class InterviewService {
 
         session.setAttribute("interviewId", createdInterview.getId());
 
+        answerQueueMap.put(session.getId(), new ConcurrentLinkedQueue<>());
+        taskStateMap.put(session.getId(), false);
         return createdInterview;
     }
 
@@ -97,6 +102,8 @@ public class InterviewService {
 
         session.setAttribute("interviewId", createdInterview.getId());
 
+        answerQueueMap.put(session.getId(), new ConcurrentLinkedQueue<>());
+        taskStateMap.put(session.getId(), false);
         return createdInterview;
     }
 
@@ -121,6 +128,8 @@ public class InterviewService {
 
         session.setAttribute("interviewId", interviewId);
 
+        answerQueueMap.put(session.getId(), new ConcurrentLinkedQueue<>());
+        taskStateMap.put(session.getId(), false);
         return interview;
     }
 
@@ -135,10 +144,24 @@ public class InterviewService {
         InterviewQuestion nextQuestion = getNextQuestion(session);
 
         CompletableFuture.runAsync(() -> {
-            interviewDetailService.getAnswerByUser(interviewQuestion);
+//            interviewDetailService.getAnswerByUser(interviewQuestion);
+            System.out.println(session.getId() + " 큐에 저장");
+            answerQueueMap.get(session.getId()).add(interviewQuestion);
+            if(!taskStateMap.get(session.getId())) {
+                taskStateMap.put(session.getId(), true);
+                queueTask(answerQueueMap.get(session.getId()), session);
+            }
         });
 
         return nextQuestion;
+    }
+
+    private void queueTask(ConcurrentLinkedQueue<InterviewQuestion> questions, HttpSession session) {
+        while(!questions.isEmpty()) {
+            System.out.println(session.getId() + " 큐에서 뺌");
+            interviewDetailService.getAnswerByUser(questions.poll());
+        }
+        taskStateMap.put(session.getId(), false);
     }
 
     /**
@@ -170,7 +193,26 @@ public class InterviewService {
         Interview interview = interviewRepository.findById((Long)session.getAttribute("interviewId"))
                 .orElseThrow(() -> new NoSuchElementException("Interview not found"));
         interview.completeInterview();
+//        interviewDetailService.getAnswerByUser(interviewQuestion);
+
+        while(taskStateMap.get(session.getId())) {
+            System.out.println(taskStateMap.get(session.getId()));
+            System.out.println(session.getId() + " 대기중");
+            try {
+                Thread.sleep(10000);
+            } catch (Exception e) {
+
+            }
+        }
+
+        if(!answerQueueMap.get(session.getId()).isEmpty()) {
+            queueTask(answerQueueMap.get(session.getId()), session);
+        }
+
         interviewDetailService.getAnswerByUser(interviewQuestion);
+
+        answerQueueMap.remove(session.getId());
+        taskStateMap.remove(session.getId());
         return "success";
     }
 
