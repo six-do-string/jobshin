@@ -22,8 +22,6 @@
         <tr>
             <th>일자</th>
             <th>점수</th>
-<!--            <th>1번 질문</th>-->
-<!--            <th>카테고리</th>-->
         </tr>
         </thead>
         <tbody>
@@ -39,9 +37,8 @@
         <a class="btn-submit" th:if="${mode.name()} == 'PRACTICE'" th:href="@{/views/main}">면접완료</a>
     </div>
 </div>
-<script src="/js/AlFeedback.js" defer></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script th:inline="javascript">
+<script>
     window.onload = () => {
         getInterviewSummary();
     }
@@ -74,8 +71,6 @@
         row.innerHTML = `
             <td>${new Date().toLocaleDateString()}</td>
             <td>${calculateTotalScore(data)} / 500</td>
-<!--            <td>${data[0].question}</td>-->
-<!--            <td>카테고리</td>-->
         `;
         tbody.appendChild(row);
 
