@@ -24,11 +24,14 @@ public class InterviewDetailService {
     private final InterviewDetailRepository interviewDetailRepository;
     private final AlanService alenService;
 
+    private static final Integer NUMBER_OF_SELECT = 5;
+    private static final String REGEX = "\\[(.*?)\\]";
+
     //면접 실전모드로 진입시
     //질문 카테고리 랜덤하게 생성
     @Transactional
     public void realModeStarter(Interview interview, User user) {
-        Category[] categories = selectCategories(5);
+        Category[] categories = selectCategories();
         createInterviewDetail(interview, categories, user);
     }
 
@@ -36,7 +39,7 @@ public class InterviewDetailService {
     //사용자가 선택한 카테고리로 질문 카테고리 생성
     @Transactional
     public void practiceModeStarter(Interview interview, Category category, User user) {
-        Category[] categories = new Category[5];
+        Category[] categories = new Category[NUMBER_OF_SELECT];
         Arrays.fill(categories, category);
         createInterviewDetail(interview, categories, user);
     }
@@ -48,15 +51,14 @@ public class InterviewDetailService {
 
         ArrayList<String> questionList = new ArrayList<>();
 
-        String regex = "\\[(.*?)\\]";
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern = Pattern.compile(REGEX);
         Matcher matcher = pattern.matcher(questionData);
 
         while (matcher.find()) {
             questionList.add(matcher.group(1).substring(matcher.group(1).indexOf(':')+1).trim());
         }
 
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < NUMBER_OF_SELECT; i++){
             InterviewDetail interviewDetail = InterviewDetail.createInterviewDetail(
                     questionList.get(i),
                     category[i],
@@ -79,8 +81,7 @@ public class InterviewDetailService {
 
         ArrayList<String> feedbackList = new ArrayList<>();
 
-        String regex = "\\[(.*?)\\]";
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern = Pattern.compile(REGEX);
         Matcher matcher = pattern.matcher(feedback);
 
         while (matcher.find()) {
@@ -91,11 +92,11 @@ public class InterviewDetailService {
     }
 
     //랜덤한 카테고리 배열 생성
-    private Category[] selectCategories(int numberOfSelect) {
+    private Category[] selectCategories() {
         Random random = new Random();
         Category[] categories = Category.values();
-        Category[] selectedCategories = new Category[numberOfSelect];
-        for(int i = 0; i < numberOfSelect; i ++){
+        Category[] selectedCategories = new Category[NUMBER_OF_SELECT];
+        for(int i = 0; i < NUMBER_OF_SELECT; i ++){
             int randomIndex = random.nextInt(categories.length);
             selectedCategories[i] = categories[randomIndex];
         }

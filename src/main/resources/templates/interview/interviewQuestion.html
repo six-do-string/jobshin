@@ -19,7 +19,8 @@
         <section class="questionCont">
             <div class="questionBox">
                 <div class="questionHeader">
-                    <a class="goToBack">처음으로 돌아가기</a>
+<!--                    interviewMainPage로 돌아가는 링크-->
+<!--                    연습모드는 카테고리 삽입-->
                 </div>
                 <div class="question">
 <!--                    <h2 class="questionNum">Q1</h2>-->
@@ -67,7 +68,7 @@
     };
 
     if (mode === "PRACTICE") {
-        $('.questionHeader').html(`<a class="goToBack">처음으로 돌아가기</a> <span>Category / ${category}</span>`)
+        $('.questionHeader').html(`<a class="goToBack">< 처음으로</a> <span>Category / ${category}</span>`)
     }
 
     // 답변 제출
@@ -129,9 +130,6 @@
                 url: "/api/mock-interviews/finish",
                 success: function (response) {
                     loadingModal.style.display = 'none';
-                    // if (confirm("질문에 모두 답변하였습니다. 결과창으로 이동하시겠습니까?")) {
-                    // window.location.href = "/views/interview/result"
-                    // }
                     if (mode === "REAL") {
                         return window.location.href = `/views/interview/result?mode=REAL`;
                     }

@@ -13,15 +13,16 @@
 <div th:replace="~{layout/header.html :: header}"></div>
 <main class="mainBody">
     <div class="mainCont">
-        <h1>모의 면접 - 연습 모드</h1>
+        <h1>모의 면접</h1>
         <hr>
         <div class="sectionCont">
             <section>
                 <h2>연습모드</h2>
-                <div class="realMode">
+                <div class="practiceMode">
                     <p class="text1">지원자 님은<br>연습모드를 선택하셨습니다.</p>
                     <p class="text2">계속 진행하려면 아래의 '시작하기'<br>버튼을 클릭해주세요.</p>
                     <div class="categoryBox">
+                        <div class="category">
                             <div class="radio">
                                 <label for="cs">CS</label>
                                 <input id="cs" name="category" value='CS' class="option" type="radio" />
@@ -34,8 +35,9 @@
                                 <label for="algorithm">Algorithm</label>
                                 <input id="algorithm" name="category" value='ALGORITHM' class="option" type="radio" />
                             </div>
+                        </div>
                         <div class="buttonCont">
-                            <a class="click" th:href="@{/interview/interviewMainPage}">돌아가기</a>
+                            <a class="click" th:href="@{/views/main}">돌아가기</a>
                             <button class="click" onclick="createQuestions2()" type="button">시작하기</button>
                         </div>
                     </div>
