@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.est.jobshin.domain.interviewDetail.util.Mode.PRACTICE;
 import static com.est.jobshin.domain.user.util.Language.JAVA;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -213,22 +214,28 @@ public class UserServiceTest {
                 .username("testUser")
                 .build();
 
-        InterviewDetail detail = InterviewDetail.builder()
-                .question("What is Java?")
-                .answer("Java is a programming language.")
-                .category(Category.LANGUAGE)
-                .mode(Mode.PRACTICE)
-                .score(50L)
-                .createdAt(LocalDateTime.now())
-                .build();
+//        InterviewDetail detail = InterviewDetail.builder()
+//                .question("What is Java?")
+//                .answer("Java is a programming language.")
+//                .category(Category.LANGUAGE)
+//                .mode(Mode.PRACTICE)
+//                .score(50L)
+//                .createdAt(LocalDateTime.now())
+//                .build();
+        InterviewDetail detail = InterviewDetail.createInterviewDetail("What is Java?", Category.LANGUAGE, PRACTICE, LocalDateTime.now());
+        detail.registerAnswer("Java is a programming language.");
+        detail.registerFeedback("Java language", 50L);
 
-        Interview interview = Interview.builder()
-                .title("Test Interview")
-                .createdAt(LocalDateTime.now())
-                .mode(Mode.PRACTICE)
-                .user(user)
-                .interviewDetails(List.of(detail))
-                .build();
+//        Interview interview = Interview.builder()
+//                .title("Test Interview")
+//                .createdAt(LocalDateTime.now())
+//                .mode(Mode.PRACTICE)
+//                .user(user)
+//                .interviewDetails(List.of(detail))
+//                .build();
+
+        Interview interview = Interview.createInterview("Test Interview", LocalDateTime.now(), user, PRACTICE);
+        interview.addInterviewDetails(detail);
 
         Page<Interview> interviewPage = new PageImpl<>(List.of(interview), PageRequest.of(0, 10), 1);
 
@@ -286,31 +293,41 @@ public class UserServiceTest {
                 .username("testUser")
                 .build();
 
-        InterviewDetail detail1 = InterviewDetail.builder()
-                .question("What is Java?")
-                .answer("Java is a programming language.")
-                .category(Category.LANGUAGE)
-                .mode(Mode.REAL)
-                .score(80L)
-                .createdAt(LocalDateTime.now())
-                .build();
+//        InterviewDetail detail1 = InterviewDetail.builder()
+//                .question("What is Java?")
+//                .answer("Java is a programming language.")
+//                .category(Category.LANGUAGE)
+//                .mode(Mode.REAL)
+//                .score(80L)
+//                .createdAt(LocalDateTime.now())
+//                .build();
+        InterviewDetail detail1 = InterviewDetail.createInterviewDetail("What is Java?", Category.LANGUAGE, Mode.REAL, LocalDateTime.now());
+        detail1.registerAnswer("Java is a programming language.");
+        detail1.registerFeedback("Java language", 80L);
 
-        InterviewDetail detail2 = InterviewDetail.builder()
-                .question("Explain OOP principles.")
-                .answer("Encapsulation, Inheritance, Polymorphism, Abstraction.")
-                .category(Category.LANGUAGE)
-                .mode(Mode.REAL)
-                .score(90L)
-                .createdAt(LocalDateTime.now())
-                .build();
+//        InterviewDetail detail2 = InterviewDetail.builder()
+//                .question("Explain OOP principles.")
+//                .answer("Encapsulation, Inheritance, Polymorphism, Abstraction.")
+//                .category(Category.LANGUAGE)
+//                .mode(Mode.REAL)
+//                .score(90L)
+//                .createdAt(LocalDateTime.now())
+//                .build();
 
-        Interview interview = Interview.builder()
-                .title("Real Mode Interview")
-                .createdAt(LocalDateTime.now())
-                .mode(Mode.REAL)
-                .user(user)
-                .interviewDetails(List.of(detail1, detail2))
-                .build();
+        InterviewDetail detail2 = InterviewDetail.createInterviewDetail("Explain OOP principles.", Category.LANGUAGE, Mode.REAL, LocalDateTime.now());
+        detail2.registerAnswer("Encapsulation, Inheritance, Polymorphism, Abstraction.");
+        detail2.registerFeedback("Java language", 90L);
+
+//        Interview interview = Interview.builder()
+//                .title("Real Mode Interview")
+//                .createdAt(LocalDateTime.now())
+//                .mode(Mode.REAL)
+//                .user(user)
+//                .interviewDetails(List.of(detail1, detail2))
+//                .build();
+        Interview interview = Interview.createInterview("Real Mode Interview", LocalDateTime.now(), user, Mode.REAL);
+        interview.addInterviewDetails(detail1);
+        interview.addInterviewDetails(detail2);
 
         // Mock 설정: 인터뷰 리포지토리가 특정 ID로 인터뷰를 반환하도록 설정
         given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
@@ -347,40 +364,40 @@ public class UserServiceTest {
                 .build();
 
         // 여러 면접상세 생성 (모든 점수가 null이 아닌 경우)
-        InterviewDetail detail1 = InterviewDetail.builder()
-                .question("Question 1")
-                .answer("Answer 1")
-                .category(Category.LANGUAGE)
-                .mode(Mode.REAL)
-                .score(80L)
-                .createdAt(LocalDateTime.now())
-                .build();
+//        InterviewDetail detail1 = InterviewDetail.builder()
+//                .question("Question 1")
+//                .answer("Answer 1")
+//                .category(Category.LANGUAGE)
+//                .mode(Mode.REAL)
+//                .score(80L)
+//                .createdAt(LocalDateTime.now())
+//                .build();
+        InterviewDetail detail1 = InterviewDetail.createInterviewDetail("Question 1", Category.LANGUAGE, Mode.REAL, LocalDateTime.now());
+        detail1.registerAnswer("Answer 1");
+        detail1.registerFeedback("Java language", 80L);
 
-        InterviewDetail detail2 = InterviewDetail.builder()
-                .question("Question 2")
-                .answer("Answer 2")
-                .category(Category.LANGUAGE)
-                .mode(Mode.REAL)
-                .score(90L)
-                .createdAt(LocalDateTime.now())
-                .build();
+//        InterviewDetail detail2 = InterviewDetail.builder()
+//                .question("Question 2")
+//                .answer("Answer 2")
+//                .category(Category.LANGUAGE)
+//                .mode(Mode.REAL)
+//                .score(90L)
+//                .createdAt(LocalDateTime.now())
+//                .build();
 
-        InterviewDetail detail3 = InterviewDetail.builder()
-                .question("Question 3")
-                .answer("Answer 3")
-                .category(Category.LANGUAGE)
-                .mode(Mode.REAL)
-                .score(70L) // null이 아닌 점수
-                .createdAt(LocalDateTime.now())
-                .build();
+        InterviewDetail detail2 = InterviewDetail.createInterviewDetail("Question 2", Category.LANGUAGE, Mode.REAL, LocalDateTime.now());
+        detail2.registerAnswer("Answer 2");
+        detail2.registerFeedback("Java language", 90L);
 
-        Interview interview = Interview.builder()
-                .title("Interview with Scores")
-                .createdAt(LocalDateTime.now())
-                .mode(Mode.REAL)
-                .user(user)
-                .interviewDetails(List.of(detail1, detail2, detail3))
-                .build();
+        InterviewDetail detail3 = InterviewDetail.createInterviewDetail("Question 3", Category.LANGUAGE, Mode.REAL, LocalDateTime.now());
+        detail3.registerAnswer("Answer 3");
+        detail3.registerFeedback("Java language", 70L);
+
+        Interview interview = Interview.createInterview("Interview with Scores", LocalDateTime.now(), user, Mode.REAL);
+        interview.addInterviewDetails(detail1);
+        interview.addInterviewDetails(detail2);
+        interview.addInterviewDetails(detail3);
+
 
         // Mock 설정: 특정 ID로 면접이력을 반환
         given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
@@ -417,40 +434,57 @@ public class UserServiceTest {
                 .build();
 
         // 여러 면접상세를 생성 (일부는 점수가 null)
-        InterviewDetail detail1 = InterviewDetail.builder()
-                .question("Question 1")
-                .answer("Answer 1")
-                .category(Category.LANGUAGE)
-                .mode(Mode.REAL)
-                .score(80L)
-                .createdAt(LocalDateTime.now())
-                .build();
+        InterviewDetail detail1 = InterviewDetail.createInterviewDetail("Question 1", Category.LANGUAGE, Mode.REAL, LocalDateTime.now());
+        detail1.registerAnswer("Answer 1");
+        detail1.registerFeedback("Java language", 80L);
 
-        InterviewDetail detail2 = InterviewDetail.builder()
-                .question("Question 2")
-                .answer("Answer 2")
-                .category(Category.LANGUAGE)
-                .mode(Mode.REAL)
-                .score(90L)
-                .createdAt(LocalDateTime.now())
-                .build();
+        InterviewDetail detail2 = InterviewDetail.createInterviewDetail("Question 2", Category.LANGUAGE, Mode.REAL, LocalDateTime.now());
+        detail2.registerAnswer("Answer 2");
+        detail2.registerFeedback("Java language", 90L);
 
-        InterviewDetail detail3 = InterviewDetail.builder()
-                .question("Question 3")
-                .answer("Answer 3")
-                .category(Category.LANGUAGE)
-                .mode(Mode.REAL)
-                .score(null) // 점수가 null인 경우
-                .createdAt(LocalDateTime.now())
-                .build();
+        InterviewDetail detail3 = InterviewDetail.createInterviewDetail("Question 3", Category.LANGUAGE, Mode.REAL, LocalDateTime.now());
+        detail3.registerAnswer("Answer 3");
+        detail3.registerFeedback("Java language", null);
 
-        Interview interview = Interview.builder()
-                .title("Interview with Scores")
-                .createdAt(LocalDateTime.now())
-                .mode(Mode.REAL)
-                .user(user)
-                .interviewDetails(List.of(detail1, detail2, detail3))
-                .build();
+        Interview interview = Interview.createInterview("Interview with Scores", LocalDateTime.now(), user, Mode.REAL);
+        interview.addInterviewDetails(detail1);
+        interview.addInterviewDetails(detail2);
+        interview.addInterviewDetails(detail3);
+
+//        InterviewDetail detail1 = InterviewDetail.builder()
+//                .question("Question 1")
+//                .answer("Answer 1")
+//                .category(Category.LANGUAGE)
+//                .mode(Mode.REAL)
+//                .score(80L)
+//                .createdAt(LocalDateTime.now())
+//                .build();
+//
+//        InterviewDetail detail2 = InterviewDetail.builder()
+//                .question("Question 2")
+//                .answer("Answer 2")
+//                .category(Category.LANGUAGE)
+//                .mode(Mode.REAL)
+//                .score(90L)
+//                .createdAt(LocalDateTime.now())
+//                .build();
+//
+//        InterviewDetail detail3 = InterviewDetail.builder()
+//                .question("Question 3")
+//                .answer("Answer 3")
+//                .category(Category.LANGUAGE)
+//                .mode(Mode.REAL)
+//                .score(null) // 점수가 null인 경우
+//                .createdAt(LocalDateTime.now())
+//                .build();
+
+//        Interview interview = Interview.builder()
+//                .title("Interview with Scores")
+//                .createdAt(LocalDateTime.now())
+//                .mode(Mode.REAL)
+//                .user(user)
+//                .interviewDetails(List.of(detail1, detail2, detail3))
+//                .build();
 
         // Mock 설정: 특정 ID로 면접이력을 반환
         given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
@@ -491,31 +525,43 @@ public class UserServiceTest {
                 .username("testUser")
                 .build();
 
-        InterviewDetail detail1 = InterviewDetail.builder()
-                .question("Question 1")
-                .answer("Answer 1")
-                .category(Category.LANGUAGE)
-                .mode(Mode.REAL)
-                .score(null) // 점수가 null로 설정
-                .createdAt(LocalDateTime.now())
-                .build();
+//        InterviewDetail detail1 = InterviewDetail.builder()
+//                .question("Question 1")
+//                .answer("Answer 1")
+//                .category(Category.LANGUAGE)
+//                .mode(Mode.REAL)
+//                .score(null) // 점수가 null로 설정
+//                .createdAt(LocalDateTime.now())
+//                .build();
+//
+//        InterviewDetail detail2 = InterviewDetail.builder()
+//                .question("Question 2")
+//                .answer("Answer 2")
+//                .category(Category.LANGUAGE)
+//                .mode(Mode.REAL)
+//                .score(null) // 점수가 null로 설정
+//                .createdAt(LocalDateTime.now())
+//                .build();
+//
+//        Interview interview = Interview.builder()
+//                .title("Interview with Null Scores")
+//                .createdAt(LocalDateTime.now())
+//                .mode(Mode.REAL)
+//                .user(user)
+//                .interviewDetails(List.of(detail1, detail2))
+//                .build();
 
-        InterviewDetail detail2 = InterviewDetail.builder()
-                .question("Question 2")
-                .answer("Answer 2")
-                .category(Category.LANGUAGE)
-                .mode(Mode.REAL)
-                .score(null) // 점수가 null로 설정
-                .createdAt(LocalDateTime.now())
-                .build();
+        InterviewDetail detail1 = InterviewDetail.createInterviewDetail("Question 1", Category.LANGUAGE, Mode.REAL, LocalDateTime.now());
+        detail1.registerAnswer("Answer 1");
+        detail1.registerFeedback("Java language", null);
 
-        Interview interview = Interview.builder()
-                .title("Interview with Null Scores")
-                .createdAt(LocalDateTime.now())
-                .mode(Mode.REAL)
-                .user(user)
-                .interviewDetails(List.of(detail1, detail2))
-                .build();
+        InterviewDetail detail2 = InterviewDetail.createInterviewDetail("Question 2", Category.LANGUAGE, Mode.REAL, LocalDateTime.now());
+        detail2.registerAnswer("Answer 2");
+        detail2.registerFeedback("Java language", null);
+
+        Interview interview = Interview.createInterview("Interview with Scores", LocalDateTime.now(), user, Mode.REAL);
+        interview.addInterviewDetails(detail1);
+        interview.addInterviewDetails(detail2);
 
         // Mock 설정: 특정 ID로 면접이력을 반환
         given(interviewRepository.findById(1L)).willReturn(Optional.of(interview));
