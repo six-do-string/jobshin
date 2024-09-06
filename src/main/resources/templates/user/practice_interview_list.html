@@ -64,53 +64,52 @@
                 </tr>
                 </tbody>
             </table>
-	        
-	        <!-- 페이지네이션 버튼 -->
-	        <nav aria-label="Page navigation">
-		        <!--표에 사용될 변수값 초기화 -->
-		        <ul class="pagination justify-content-center"
-		            th:with="start=${T(java.lang.Math).floor(interviewSummaryList.number / 10) * 10 + 1}, last=(${start + 9 < interviewSummaryList.totalPages ? start + 9 : interviewSummaryList.totalPages})">
-			        <th:block th:with="
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center"
+                    th:if="${interviewSummaryList.totalPages > 0}"
+                    th:with="start=${T(java.lang.Math).floor((interviewSummaryList.number + 1) / 10) * 10 + 1}, last=(${start + 9 < interviewSummaryList.totalPages ? start + 9 : interviewSummaryList.totalPages})">
+                    <th:block th:with="
             firstAddr=@{/views/users/interviews/practice(page=1)},
-            prevAddr=@{/views/users/interviews/practice(page=${interviewSummaryList.number})},
+            prevAddr=@{/views/users/interviews/practice(page=${interviewSummaryList.number + 1})},
             nextAddr=@{/views/users/interviews/practice(page=${interviewSummaryList.number + 2})},
             lastAddr=@{/views/users/interviews/practice(page=${interviewSummaryList.totalPages})}">
-				        <li class="page-item">
-					        <a class="page-link" th:href="${firstAddr}" aria-label="First">
-						        <span aria-hidden="true"> << </span>
-					        </a>
-				        </li>
-				        <!-- 이전 페이지로 가기 버튼 -->
-				        <li class="page-item" th:class="${interviewSummaryList.first} ? 'disabled'">
-					        <a class="page-link"
-					           th:href="${interviewSummaryList.first} ? '#' :${prevAddr}"
-					           aria-label="Previous">
-						        <span aria-hidden="true">&lt;</span>
-					        </a>
-				        </li>
-				        <!--1,2,3,4,.. 등 페이지-->
-				        <li class="page-item" th:each="page: ${#numbers.sequence(start, last)}"
-				            th:class="${page == interviewSummaryList.number + 1} ? 'active'">
-					        <a class="page-link" th:text="${page}"
-					           th:href="@{/views/users/interviews/practice(page=${page})}"></a>
-				        </li>
-				        <!--다음 페이지로 -->
-				        <li class="page-item" th:class="${interviewSummaryList.last} ? 'disabled'">
-					        <a class="page-link"
-					           th:href="${interviewSummaryList.last} ? '#' : ${nextAddr}"
-					           aria-label="Next">
-						        <span aria-hidden="true">&gt;</span>
-					        </a>
-				        </li>
-				        <!--맨 마지막 페이지로 이동 -->
-				        <li class="page-item">
-					        <a class="page-link" th:href="${lastAddr}" aria-label="Last">
-						        <span aria-hidden="true"> >> </span>
-					        </a>
-				        </li>
-			        </th:block>
-		        </ul>
-	        </nav>
+                        <li class="page-item">
+                            <a class="page-link" th:href="${firstAddr}" aria-label="First">
+                                <span aria-hidden="true"> << </span>
+                            </a>
+                        </li>
+                        <!-- 이전 페이지로 가기 버튼 -->
+                        <li class="page-item" th:class="${interviewSummaryList.first} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="${interviewSummaryList.first} ? '#' :${prevAddr}"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&lt;</span>
+                            </a>
+                        </li>
+                        <!--1,2,3,4,.. 등 페이지-->
+                        <li class="page-item" th:each="page: ${#numbers.sequence(start, last)}"
+                            th:class="${page == interviewSummaryList.number + 1} ? 'active'">
+                            <a class="page-link" th:text="${page}"
+                               th:href="@{/views/users/interviews/practice(page=${page})}"></a>
+                        </li>
+                        <!--다음 페이지로 -->
+                        <li class="page-item" th:class="${interviewSummaryList.last} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="${interviewSummaryList.last} ? '#' : ${nextAddr}"
+                               aria-label="Next">
+                                <span aria-hidden="true">&gt;</span>
+                            </a>
+                        </li>
+                        <!--맨 마지막 페이지로 이동 -->
+                        <li class="page-item">
+                            <a class="page-link" th:href="${lastAddr}" aria-label="Last">
+                                <span aria-hidden="true"> >> </span>
+                            </a>
+                        </li>
+                    </th:block>
+                </ul>
+            </nav>
         </section>
         
     </div>

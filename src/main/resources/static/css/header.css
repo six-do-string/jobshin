@@ -36,4 +36,12 @@ header nav .navbar-navs .nav-items .nav-links {
   color: #FFFFFF;
 }
 
+header nav .navbar-navs .nav-items form .nav-button {
+  cursor: pointer;
+  background-color: #5E8DC0;
+  border: none;
+  color: #FFFFFF;
+  font-size: 16px;
+}
+
 /*# sourceMappingURL=header.css.map */
