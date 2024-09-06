@@ -12,11 +12,6 @@ import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 @Controller
 @RequestMapping("/views")
 public class InterviewThymeleafController {
-    private final InterviewService interviewService;
-
-    public InterviewThymeleafController(InterviewService interviewService) {
-        this.interviewService = interviewService;
-    }
 
     @GetMapping("/interviewMainPage")
     public String getInterview() {
