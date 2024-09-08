@@ -4,6 +4,7 @@ import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.util.Category;
+import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.repository.UserRepository;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
@@ -220,12 +221,7 @@ public class UserRepositoryTest {
 //        logger.info("Found User ID: " + foundUser.getId());
 
         // 면접 생성 및 저장
-        Interview interview = Interview.builder()
-                .title("java test")
-                .createdAt(LocalDateTime.now())
-                .mode(PRACTICE)
-                .user(savedUser)
-                .build();
+        Interview interview = Interview.createInterview("java test", LocalDateTime.now(), savedUser, PRACTICE);
 
         // 면접 저장 및 검증
         Interview savedInterview = interviewRepository.save(interview);
@@ -236,16 +232,11 @@ public class UserRepositoryTest {
 //        logger.info("Saved Interview User ID: " + savedInterview.getUser().getId());
 
         // 면접 상세 내용 생성 및 저장
-        InterviewDetail interviewDetail = InterviewDetail.builder()
-                .question("What is Java?")
-                .answer("Java is a programming language.")
-                .category(Category.LANGUAGE)
-                .exampleAnswer("Java language")
-                .mode(PRACTICE)
-                .score(50L)
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
+        InterviewDetail interviewDetail = InterviewDetail.createInterviewDetail("What is Java?", Category.LANGUAGE, PRACTICE, LocalDateTime.now());
+        interviewDetail.setAnswer("Java is a programming language");
+        interviewDetail.setExampleAnswer("Java language");
+        interviewDetail.setScore(50L);
+        interviewDetail.setInterview(savedInterview);
 
         // 상세 내용 저장 및 데이터베이스에 반영
         InterviewDetail savedDetail1 = interviewDetailRepository.save(interviewDetail);
@@ -277,11 +268,7 @@ public class UserRepositoryTest {
         User savedUser = userRepository.save(user);
 
         // 면접 데이터 생성 및 저장
-        Interview interview = Interview.builder()
-                .title("java test")
-                .createdAt(LocalDateTime.now())
-                .user(savedUser) // 저장된 User 객체를 설정
-                .build();
+        Interview interview = Interview.createInterview("java test", LocalDateTime.now(), savedUser, null);
 
         // 면접이력 저장
         Interview savedInterview = interviewRepository.save(interview);
