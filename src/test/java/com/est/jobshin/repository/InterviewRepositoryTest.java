@@ -52,12 +52,7 @@ class InterviewRepositoryTest {
         user = userRepository.save(user);
 
         // Given: Interview 객체 생성 및 저장
-        Interview interview = Interview.builder()
-                .title("Test Interview")
-                .createdAt(LocalDateTime.now())
-                .mode(Mode.PRACTICE)
-                .user(user)
-                .build();
+        Interview interview = Interview.createInterview("Test Interview", LocalDateTime.now(), user, Mode.PRACTICE);
 
         interviewRepository.save(interview);
 
@@ -80,12 +75,7 @@ class InterviewRepositoryTest {
         user = userRepository.save(user);
 
         // Given: Interview 객체 생성 및 저장
-        Interview interview = Interview.builder()
-                .title("Test Interview1")
-                .createdAt(LocalDateTime.now())
-                .mode(Mode.REAL)
-                .user(user)
-                .build();
+        Interview interview = Interview.createInterview("Test Interview", LocalDateTime.now(), user, Mode.REAL);
         interviewRepository.save(interview);
 
         // When: 면접이력 조회
@@ -120,28 +110,18 @@ class InterviewRepositoryTest {
         assertThat(foundUser).isNotNull(); // 저장된 사용자가 조회되는지 확인
 
         // 면접 생성 및 저장
-        Interview interview = Interview.builder()
-                .title("Test Interview")
-                .createdAt(LocalDateTime.now())
-                .mode(Mode.PRACTICE)
-                .user(savedUser)
-                .build();
+        Interview interview = Interview.createInterview("Test Interview", LocalDateTime.now(), savedUser, Mode.PRACTICE);
 
         // 면접 저장 및 검증
         Interview savedInterview = interviewRepository.save(interview);
         assertThat(savedInterview.getId()).isNotNull(); // 저장된 면접의 ID가 존재하는지 확인
 
         // 면접 상세 내용 생성 및 저장
-        InterviewDetail interviewDetail = InterviewDetail.builder()
-                .question("What is Java?")
-                .answer("Java is a programming language.")
-                .category(Category.LANGUAGE)
-                .exampleAnswer("Java language")
-                .mode(Mode.PRACTICE)
-                .score(50L)
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
+        InterviewDetail interviewDetail = InterviewDetail.createInterviewDetail("What is Java?", Category.LANGUAGE, Mode.PRACTICE, LocalDateTime.now());
+        interviewDetail.setAnswer("Java is a programming language.");
+        interviewDetail.setExampleAnswer("Java language");
+        interviewDetail.setScore(50L);
+        interviewDetail.setInterview(savedInterview);
 
         // 상세 내용 저장 및 데이터베이스에 반영
         InterviewDetail savedDetail = interviewDetailRepository.save(interviewDetail);
@@ -174,58 +154,48 @@ class InterviewRepositoryTest {
         User savedUser = userRepository.save(user);
 
         // 면접이력 생성 및 저장
-        Interview interview = Interview.builder()
-                .title("Java Developer Interview")
-                .createdAt(LocalDateTime.now())
-                .user(savedUser)
-                .build();
+        Interview interview = Interview.createInterview("Java Develop Interview", LocalDateTime.now(), savedUser, null);
 
         // 면접이력 저장
         Interview savedInterview = interviewRepository.save(interview);
 
         // 면접이력 상세 내용 생성 및 저장 - 각 객체가 고유하게 저장되어야 함
-        InterviewDetail detail1 = InterviewDetail.builder()
-                .question("What is Java?")
-                .answer("Java is a programming language.")
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
+        InterviewDetail detail1 = InterviewDetail.createInterviewDetail("What is Java?", null, null, LocalDateTime.now());
+        detail1.setAnswer("Java is a programming language.");
+        detail1.setInterview(savedInterview);
+
         InterviewDetail savedDetail1 = interviewDetailRepository.saveAndFlush(detail1); // 첫 번째 면접이력 상세 내용 저장
         assertThat(savedDetail1.getId()).isNotNull(); // 저장된 ID가 존재하는지 확인
 
-        InterviewDetail detail2 = InterviewDetail.builder()
-                .question("Explain OOP concepts.")
-                .answer("OOP stands for Object-Oriented Programming.")
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
+
+        InterviewDetail detail2 = InterviewDetail.createInterviewDetail("Explain OOP concepts.", null, null, LocalDateTime.now());
+        detail2.setAnswer("OOP stands for Object-Oriented Programming.");
+        detail2.setInterview(savedInterview);
+
         InterviewDetail savedDetail2 = interviewDetailRepository.saveAndFlush(detail2); // 두 번째 면접이력 상세 내용 저장
         assertThat(savedDetail2.getId()).isNotNull();
 
-        InterviewDetail detail3 = InterviewDetail.builder()
-                .question("What is Polymorphism?")
-                .answer("Polymorphism allows objects to be treated as instances of their parent class.")
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
+
+        InterviewDetail detail3 = InterviewDetail.createInterviewDetail("What is Polymorphism?", null, null, LocalDateTime.now());
+        detail3.setAnswer("Polymorphism allows objects to be treated as instances of their parent class.");
+        detail3.setInterview(savedInterview);
+
         InterviewDetail savedDetail3 = interviewDetailRepository.saveAndFlush(detail3); // 세 번째 면접이력 상세 내용 저장
         assertThat(savedDetail3.getId()).isNotNull();
 
-        InterviewDetail detail4 = InterviewDetail.builder()
-                .question("Explain Encapsulation.")
-                .answer("Encapsulation is the concept of wrapping data and methods together.")
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
+
+        InterviewDetail detail4 = InterviewDetail.createInterviewDetail("Explain Encapsulation.", null, null, LocalDateTime.now());
+        detail4.setAnswer("Encapsulation is the concept of wrapping data and methods together.");
+        detail4.setInterview(savedInterview);
+
         InterviewDetail savedDetail4 = interviewDetailRepository.saveAndFlush(detail4); // 네 번째 면접이력 상세 내용 저장
         assertThat(savedDetail4.getId()).isNotNull();
 
-        InterviewDetail detail5 = InterviewDetail.builder()
-                .question("Describe Inheritance.")
-                .answer("Inheritance allows a class to inherit fields and methods from another class.")
-                .createdAt(LocalDateTime.now())
-                .interview(savedInterview)
-                .build();
+
+        InterviewDetail detail5 = InterviewDetail.createInterviewDetail("Describe Inheritance.", null, null, LocalDateTime.now());
+        detail5.setAnswer("Inheritance allows a class to inherit fields and methods from another class.");
+        detail5.setInterview(savedInterview);
+
         InterviewDetail savedDetail5 = interviewDetailRepository.saveAndFlush(detail5); // 다섯 번째 면접이력 상세 내용 저장
         assertThat(savedDetail5.getId()).isNotNull();
 

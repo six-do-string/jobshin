@@ -96,13 +96,12 @@ public class InterviewControllerTest {
 	@Test
 	void testContinueIncompleteInterview() throws Exception {
 
-		interview = Interview.builder()
-			.id(1L)
-			.title("테스트")
-			.build();
+		interview = Interview.createInterview("테스트", null, null, null);
+		Long interviewId = 1L;
+
 		interviewDto = InterviewDto.fromInterview(interview);
 
-		when(interviewService.loadIncompleteInterview(eq(interview.getId()), any(HttpSession.class))).thenReturn(interview);
+		when(interviewService.loadIncompleteInterview(eq(interviewId), any(HttpSession.class))).thenReturn(interview);
 
 		mockMvc.perform(get("/api/mock-interviews/incomplete/1")
 				.with(csrf())
@@ -194,12 +193,10 @@ public class InterviewControllerTest {
 	@Test
 	void testDeleteInterview() throws Exception {
 
-		interview = Interview.builder()
-			.id(1L)
-			.title("테스트")
-			.build();
+		interview = Interview.createInterview("테스트", null, null, null);
+		Long interviewId = 1L;
 
-		interviewService.deleteInterviewsById(interview.getId());
+		interviewService.deleteInterviewsById(interviewId);
 
 		mockMvc.perform(delete("/api/mock-interviews/1")
 			.with(csrf())
