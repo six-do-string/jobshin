@@ -58,6 +58,7 @@ class InterviewRepositoryTest {
                 .mode(Mode.PRACTICE)
                 .user(user)
                 .build();
+
         interviewRepository.save(interview);
 
         // When: 인터뷰 조회
