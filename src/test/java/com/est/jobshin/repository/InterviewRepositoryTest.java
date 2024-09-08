@@ -52,12 +52,9 @@ class InterviewRepositoryTest {
         user = userRepository.save(user);
 
         // Given: Interview 객체 생성 및 저장
-        Interview interview = Interview.builder()
-                .title("Test Interview")
-                .createdAt(LocalDateTime.now())
-                .mode(Mode.PRACTICE)
-                .user(user)
-                .build();
+        Interview interview = Interview.createInterview("Test Interview", LocalDateTime.now(),
+            user, Mode.PRACTICE);
+
         interviewRepository.save(interview);
 
         // When: 인터뷰 조회
