@@ -6,11 +6,13 @@ import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Category;
+import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.util.Language;
 import com.est.jobshin.domain.user.util.Level;
 import com.est.jobshin.domain.user.util.Position;
 import com.est.jobshin.infra.alan.AlanService;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,12 +56,7 @@ public class InterviewDetailServiceTest {
 			.position(Position.BACKEND)
 			.build();
 
-		Interview interview = Interview.builder()
-			.title("모의면접 테스트")
-			.mode(REAL)
-			.interviewDetails(new ArrayList<>())
-			.createdAt(LocalDateTime.now())
-			.build();
+		Interview interview = Interview.createInterview("모의면접 테스트", LocalDateTime.now(), user, REAL);
 
 		Category[] categories = {Category.CS, Category.LANGUAGE, Category.LANGUAGE, Category.ALGORITHM, Category.ALGORITHM};
 
@@ -83,15 +80,8 @@ public class InterviewDetailServiceTest {
 	void getAnswerAndCheckAnswerTest(){
 
 		//Given
-		InterviewDetail interviewDetail = InterviewDetail.builder()
-			.id(1L)
-			.question("질문")
-			.answer(null)
-			.category(Category.LANGUAGE)
-			.mode(REAL)
-			.score(null)
-			.createdAt(LocalDateTime.now())
-			.build();
+		InterviewDetail interviewDetail = InterviewDetail.createInterviewDetail("질문", Category.LANGUAGE, REAL, LocalDateTime.now());
+		interviewDetail.setId(1L);
 
 		InterviewQuestion interviewQuestion = InterviewQuestion.builder()
 			.id(interviewDetail.getId())
