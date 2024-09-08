@@ -49,6 +49,20 @@ a {
   background-color: rgba(0, 0, 0, 0.075);
 }
 
+tbody tr td {
+  font-size: 18px;
+}
+
+tbody tr .is-complete button {
+  cursor: pointer;
+  background-color: #0F4584;
+  border: none;
+  color: #FFFFFF;
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 4px;
+}
+
 /* Responsive Table */
 .table-responsive {
   display: block;
