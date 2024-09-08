@@ -10,6 +10,7 @@ import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Category;
+import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
@@ -77,11 +78,7 @@ public class InterviewServiceTest {
 	@Test
 	void checkGetInterview() {
 		//Given
-		interview = Interview.builder()
-			.title("모의면접 테스트")
-			.mode(REAL)
-			.createdAt(LocalDateTime.now())
-			.build();
+		interview = Interview.createInterview("모의면접 테스트", LocalDateTime.now(), null, REAL);
 
 		InterviewDto interviewDto = InterviewDto.fromInterview(interview);
 		when(interviewRepository.findById(interview.getId())).thenReturn(Optional.of(interview));
@@ -99,11 +96,7 @@ public class InterviewServiceTest {
 	void checkDeleteInterview() {
 
 		//Given
-		interview = Interview.builder()
-			.title("모의면접 테스트")
-			.mode(REAL)
-			.createdAt(LocalDateTime.now())
-			.build();
+		interview = Interview.createInterview("모의면접 테스트", LocalDateTime.now(), null, REAL);
 
 		//When
 		interviewService.deleteInterviewsById(interview.getId());
@@ -130,20 +123,8 @@ public class InterviewServiceTest {
 		Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(auth);
 
-		interview = Interview.builder()
-			.id(1L)
-			.title("모의면접 테스트")
-			.mode(PRACTICE)
-			.createdAt(LocalDateTime.now())
-			.interviewDetails(interviewDetailList)
-			.build();
-
-		interviewDetail = InterviewDetail.builder()
-			.question("질문?")
-			.category(Category.LANGUAGE)
-			.mode(PRACTICE)
-			.createdAt(LocalDateTime.now())
-			.build();
+		interview = Interview.createInterview("모의면접 테스트", LocalDateTime.now(), user, PRACTICE);
+		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, PRACTICE, LocalDateTime.now());
 
 		interviewDetailList.add(interviewDetail);
 
@@ -176,22 +157,12 @@ public class InterviewServiceTest {
 		Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(auth);
 
-		interview = Interview.builder()
-			.id(1L)
-			.title("모의면접 테스트")
-			.mode(REAL)
-			.createdAt(LocalDateTime.now())
-			.interviewDetails(interviewDetailList)
-			.build();
 
-		interviewDetail = InterviewDetail.builder()
-			.question("질문?")
-			.category(Category.LANGUAGE)
-			.mode(REAL)
-			.createdAt(LocalDateTime.now())
-			.build();
-
+		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, REAL, LocalDateTime.now());
 		interviewDetailList.add(interviewDetail);
+
+		interview = Interview.createInterview("모의면접 테스트", LocalDateTime.now(), user, REAL);
+		interview.addInterviewDetails(interviewDetail);
 
 		session = new MockHttpSession();
 
@@ -208,20 +179,11 @@ public class InterviewServiceTest {
 	@Test
 	void testLoadIncompleteInterview(){
 
-		interview = Interview.builder()
-			.id(1L)
-			.title("모의면접 테스트")
-			.mode(REAL)
-			.createdAt(LocalDateTime.now())
-			.interviewDetails(interviewDetailList)
-			.build();
+		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, REAL, LocalDateTime.now());
+		interviewDetailList.add(interviewDetail);
 
-		interviewDetail = InterviewDetail.builder()
-			.question("질문?")
-			.category(Category.LANGUAGE)
-			.mode(REAL)
-			.createdAt(LocalDateTime.now())
-			.build();
+		interview = Interview.createInterview("모의면접 테스트", LocalDateTime.now(), user, REAL);
+		interview.addInterviewDetails(interviewDetail);
 
 		interviewDetailList.add(interviewDetail);
 
@@ -239,12 +201,7 @@ public class InterviewServiceTest {
 	@Test
 	void testProcessAnswerAndGetNextQuestion(){
 
-		interviewDetail = InterviewDetail.builder()
-			.question("질문?")
-			.category(Category.LANGUAGE)
-			.mode(REAL)
-			.createdAt(LocalDateTime.now())
-			.build();
+		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, REAL, LocalDateTime.now());
 
 		interviewQuestion = InterviewQuestion.builder()
 			.id(1L)
@@ -263,12 +220,7 @@ public class InterviewServiceTest {
 	@Test
 	void testGetNextQuestion(){
 
-		interviewDetail = InterviewDetail.builder()
-			.question("질문?")
-			.category(Category.LANGUAGE)
-			.mode(REAL)
-			.createdAt(LocalDateTime.now())
-			.build();
+		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, REAL, LocalDateTime.now());
 
 		interviewQuestion = InterviewQuestion.builder()
 			.id(1L)
@@ -301,22 +253,11 @@ public class InterviewServiceTest {
 	@Test
 	void testGetInterviewDetailsById(){
 
-		interview = Interview.builder()
-			.id(1L)
-			.title("모의면접 테스트")
-			.mode(REAL)
-			.createdAt(LocalDateTime.now())
-			.interviewDetails(interviewDetailList)
-			.build();
-
-		interviewDetail = InterviewDetail.builder()
-			.question("질문?")
-			.category(Category.LANGUAGE)
-			.mode(REAL)
-			.createdAt(LocalDateTime.now())
-			.build();
-
+		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, REAL, LocalDateTime.now());
 		interviewDetailList.add(interviewDetail);
+
+		interview = Interview.createInterview("모의면접 테스트", LocalDateTime.now(), user, REAL);
+		interview.addInterviewDetails(interviewDetail);
 
 		session = new MockHttpSession();
 
