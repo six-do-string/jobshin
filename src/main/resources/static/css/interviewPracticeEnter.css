@@ -78,13 +78,16 @@ h2{
     align-items: center;
     justify-content: center;
     border: none;
-    gap: 49px;
+    gap: 30px;
 }
 .category{
     display: flex;
+    width: 70%;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 21px;
-    font-size: 20px;
+    justify-content: center;
+    gap: 10px;
+    font-size: 15px;
 }
 
 .radio{

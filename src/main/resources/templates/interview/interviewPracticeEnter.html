@@ -115,6 +115,8 @@
                 returnQuestionPage();
             },
             error: function (request, status, error){
+                alert("질문 구성 중 오류가 발생했습니다.");
+                loadingModal.style.display = 'none';
                 console.log(error);
             }
         });
