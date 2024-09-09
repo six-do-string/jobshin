@@ -200,8 +200,8 @@ public class InterviewService {
             System.out.println(session.getId() + " 대기중");
             try {
                 Thread.sleep(10000);
-            } catch (Exception e) {
-
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
 
