@@ -45,8 +45,7 @@
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
 
-    let checked = null;
-    let feedback = 0;
+    let feedback = null;
     let score = 0;
 
     // AlFeedback 페이지에서 받아온 데이터
@@ -92,7 +91,7 @@
 
     // 총 점수를 서버로 전송
     function submitForm() {
-        if (checked == null) {
+        if (feedback == null) {
             alert("난이도를 선택해주세요.");
             return;
         }
