@@ -74,8 +74,8 @@ class InterviewRepositoryTest {
                 .build();
         user = userRepository.save(user);
 
-        // Given: Interview 객체 생성 및 저장
-        Interview interview = Interview.createInterview("Test Interview", LocalDateTime.now(), user, Mode.REAL);
+        // Given: Interview 객체 생성 및 저장 (제목을 "Test Interview1"로 변경)
+        Interview interview = Interview.createInterview("Test Interview1", LocalDateTime.now(), user, Mode.REAL);
         interviewRepository.save(interview);
 
         // When: 면접이력 조회
