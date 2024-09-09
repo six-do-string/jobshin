@@ -201,9 +201,18 @@ public class InterviewService {
                 .orElseThrow(() -> new NoSuchElementException("Interview not found"));
         interview.completeInterview();
 
+        long startTime = System.currentTimeMillis();
+        long timeout = 2 * 60 * 1000;
+
         while(taskStateMap.get(session.getId())) {
+            if(System.currentTimeMillis() - startTime > timeout) {
+                log.info("세션 {}: 타임아웃", session.getId());
+                break;
+            }
+
             log.info("작업 상태: {}", taskStateMap.get(session.getId()));
             log.info("{}: 대기중", session.getId());
+            log.info("남은 작업 개수: {}", answerQueueMap.get(session.getId()).size());
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
