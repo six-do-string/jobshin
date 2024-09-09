@@ -30,16 +30,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.est.jobshin.domain.interviewDetail.util.Mode.PRACTICE;
 import static com.est.jobshin.domain.interviewDetail.util.Mode.REAL;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 
@@ -65,11 +63,12 @@ public class InterviewServiceTest {
 	private InterviewDetail interviewDetail;
 	private List<InterviewDetail> interviewDetailList = new ArrayList<>();
 	private InterviewQuestion interviewQuestion;
+	private InterviewQuestion nextQuestion;
 	private InterviewResultDetail interviewResultDetail;
 	private List<InterviewResultDetail> interviewResultDetailList = new ArrayList<>();
 
 	@AfterEach
-	void tearDown(){
+	void tearDown() {
 		SecurityContextHolder.clearContext();
 		session = null;
 	}
@@ -133,7 +132,7 @@ public class InterviewServiceTest {
 		when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 		when(interviewRepository.save(any(Interview.class))).thenReturn(interview);
 
-		interviewService.createPracticeInterview(interviewDetail.getCategory(),session);
+		interviewService.createPracticeInterview(interviewDetail.getCategory(), session);
 
 		verify(interviewDetailService, times(1)).practiceModeStarter(any(), any(), any());
 
@@ -141,7 +140,7 @@ public class InterviewServiceTest {
 
 	@DisplayName("모의면접 실전모드 생성")
 	@Test
-	void testCreateRealInterview(){
+	void testCreateRealInterview() {
 
 		user = User.builder()
 			.username("test@test.com")
@@ -177,7 +176,7 @@ public class InterviewServiceTest {
 
 	@DisplayName("모의면접 이어하기")
 	@Test
-	void testLoadIncompleteInterview(){
+	void testLoadIncompleteInterview() {
 
 		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, REAL, LocalDateTime.now());
 		interviewDetailList.add(interviewDetail);
@@ -185,13 +184,11 @@ public class InterviewServiceTest {
 		interview = Interview.createInterview("모의면접 테스트", LocalDateTime.now(), user, REAL);
 		interview.addInterviewDetails(interviewDetail);
 
-		interviewDetailList.add(interviewDetail);
-
 		session = new MockHttpSession();
 
 		when(interviewRepository.findById(interview.getId())).thenReturn(Optional.of(interview));
 
-		interviewService.loadIncompleteInterview(interview.getId(),session);
+		interviewService.loadIncompleteInterview(interview.getId(), session);
 
 		assertThat(interviewDetailList).hasSize(1);
 		assertThat(interviewDetailList.get(0)).isEqualTo(interviewDetail);
@@ -199,61 +196,90 @@ public class InterviewServiceTest {
 
 	@DisplayName("모의면접 진행하기")
 	@Test
-	void testProcessAnswerAndGetNextQuestion(){
+	void testProcessAnswerAndGetNextQuestion() {
+
+		List<InterviewDetail> questions = new ArrayList<>();
 
 		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, REAL, LocalDateTime.now());
-
-		interviewQuestion = InterviewQuestion.builder()
-			.id(1L)
-			.question(interviewDetail.getQuestion())
-			.size(1)
-			.build();
+		InterviewDetail interviewDetail1 = InterviewDetail.createInterviewDetail("질문1?", Category.LANGUAGE, REAL, LocalDateTime.now());
+		questions.add(interviewDetail);
+		questions.add(interviewDetail1);
 
 		session = new MockHttpSession();
+		session.setAttribute("questions", questions);
+		session.setAttribute("currentIndex", 0);
 
-		interviewService.processAnswerAndGetNextQuestion(session,interviewQuestion);
+		nextQuestion = interviewService.processAnswerAndGetNextQuestion(session, interviewQuestion);
 
-		//미완성
+		assertThat(nextQuestion).isNotNull();
+		assertThat(nextQuestion.getQuestion()).isEqualTo("질문?");
+
+		nextQuestion = interviewService.processAnswerAndGetNextQuestion(session, interviewQuestion);
+
+		assertThat(nextQuestion).isNotNull();
+		assertThat(nextQuestion.getQuestion()).isEqualTo("질문1?");
 	}
 
 	@DisplayName("다음 질문 반환")
 	@Test
-	void testGetNextQuestion(){
+	void testGetNextQuestion() {
+		List<InterviewDetail> questions = new ArrayList<>();
 
 		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, REAL, LocalDateTime.now());
-
-		interviewQuestion = InterviewQuestion.builder()
-			.id(1L)
-			.question(interviewDetail.getQuestion())
-			.size(1)
-			.build();
+		InterviewDetail interviewDetail1 = InterviewDetail.createInterviewDetail("질문1?", Category.LANGUAGE, REAL, LocalDateTime.now());
+		questions.add(interviewDetail);
+		questions.add(interviewDetail1);
 
 		session = new MockHttpSession();
+		session.setAttribute("questions", questions);
+		session.setAttribute("currentIndex", 0);
 
-		interviewService.getNextQuestion(session);
+		nextQuestion = interviewService.getNextQuestion(session);
 
-		//미완성
+		assertThat(nextQuestion).isNotNull();
+		assertThat(nextQuestion.getQuestion()).isEqualTo("질문?");
 
+		nextQuestion = interviewService.getNextQuestion(session);
+
+		assertThat(nextQuestion).isNotNull();
+		assertThat(nextQuestion.getQuestion()).isEqualTo("질문1?");
+
+		nextQuestion = interviewService.getNextQuestion(session);
+		assertThat(nextQuestion).isNull();
 
 	}
 
-	@DisplayName("마지막 질문")
-	@Test
-	void testLastQuestion(){
-
-	}
+//	@DisplayName("마지막 질문")
+//	@Test
+//	void testLastQuestion() {
+//
+//		interview = Interview.createInterview("모의면접 테스트", LocalDateTime.now(), user, PRACTICE);
+//		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, PRACTICE, LocalDateTime.now());
+//
+//		interviewDetailList.add(interviewDetail);
+//
+//		interviewQuestion = InterviewQuestion.builder()
+//			.id(1L)
+//			.question(interviewDetail.getQuestion())
+//			.size(1)
+//			.build();
+//
+//		session = new MockHttpSession();
+//
+//		when(interviewRepository.findById(interview.getId())).thenReturn(Optional.of(interview));
+//		when(interviewDetailRepository.findById(interviewQuestion.getId())).thenReturn(Optional.of(interviewDetail));
+//
+//		String result = interviewService.lastQuestion(interviewQuestion, session);
+//
+//		assertEquals("success", result);
+//	}
 
 	@DisplayName("모의면접 결과 요약")
 	@Test
-	void testSummaryInterview(){
-
-	}
-
-	@DisplayName("모의면접 상세 조회")
-	@Test
-	void testGetInterviewDetailsById(){
+	void testSummaryInterview() {
 
 		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, REAL, LocalDateTime.now());
+		interviewDetail.setAnswer("답변");
 		interviewDetailList.add(interviewDetail);
 
 		interview = Interview.createInterview("모의면접 테스트", LocalDateTime.now(), user, REAL);
@@ -263,41 +289,34 @@ public class InterviewServiceTest {
 
 		when(interviewRepository.findById(interview.getId())).thenReturn(Optional.of(interview));
 
-		interviewService.getInterviewDetailsById(interview.getId());
+		List<InterviewResultDetail> result = interviewService.summaryInterview(session);
 
-		//미완성
-
+		assertThat(result).isNotEmpty();
+		assertThat(result.get(0).getQuestion()).isEqualTo("질문?");
+		assertThat(result.get(0).getAnswer()).isEqualTo("답변");
 	}
 
-//	@DisplayName("유저 레벨 업데이트")
-//	@Test
-//	void testUpdateUserLevel() {
-//
-//		user = User.builder()
-//			.username("test@test.com")
-//			.password("password")
-//			.nickname("테스트")
-//			.language(Language.JAVA)
-//			.level(Level.LV2)
-//			.position(Position.BACKEND)
-//			.build();
-//
-//		// SecurityContext에 CustomUserDetails 설정
-//		CustomUserDetails userDetails = new CustomUserDetails(UserResponse.toDto(user), List.of(new SimpleGrantedAuthority("ROLE_USER")));
-//		Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//		SecurityContextHolder.getContext().setAuthentication(auth);
-//
-//		Double score = 70D;
-//
-//		when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
-//
-//
-//
-//		interviewService.updateUserLevel(score);
-//
-//		verify(userRepository, times(1)).save(any(User.class));
-//		assertThat(user.getLevel()).isEqualTo(Level.LV3);
-//
-//	}
+	@DisplayName("모의면접 상세 조회")
+	@Test
+	void testGetInterviewDetailsById() {
+
+		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, REAL, LocalDateTime.now());
+		interviewDetail.setAnswer("답변");
+		interviewDetailList.add(interviewDetail);
+
+		interview = Interview.createInterview("모의면접 테스트", LocalDateTime.now(), user, REAL);
+		interview.addInterviewDetails(interviewDetail);
+
+		session = new MockHttpSession();
+
+		when(interviewRepository.findById(interview.getId())).thenReturn(Optional.of(interview));
+
+		List<InterviewResultDetail> result = interviewService.getInterviewDetailsById(interview.getId());
+
+		assertThat(result).isNotEmpty();
+		assertThat(result.get(0).getQuestion()).isEqualTo("질문?");
+		assertThat(result.get(0).getAnswer()).isEqualTo("답변");
+	}
+
 
 }
