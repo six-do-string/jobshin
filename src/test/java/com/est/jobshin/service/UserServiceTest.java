@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.est.jobshin.domain.interviewDetail.util.Mode.PRACTICE;
 import static com.est.jobshin.domain.user.util.Language.JAVA;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -214,20 +213,23 @@ public class UserServiceTest {
                 .username("testUser")
                 .build();
 
-        InterviewDetail detail = InterviewDetail.createInterviewDetail("What is Java?", Category.LANGUAGE, PRACTICE, LocalDateTime.now());
+        InterviewDetail detail = InterviewDetail.createInterviewDetail("What is Java?", Category.LANGUAGE, Mode.PRACTICE, LocalDateTime.now());
         detail.registerAnswer("Java is a programming language.");
         detail.registerFeedback("Java language", 50L);
 
-        Interview interview = Interview.createInterview("Test Interview", LocalDateTime.now(), user, PRACTICE);
+        Interview interview = Interview.createInterview("Test Interview", LocalDateTime.now(), user, Mode.PRACTICE);
         interview.addInterviewDetails(detail);
 
         Page<Interview> interviewPage = new PageImpl<>(List.of(interview), PageRequest.of(0, 10), 1);
 
         // Mock 설정: 면접 리포지토리가 페이징된 인터뷰를 반환하도록 설정 (lenient() 사용)
-        lenient().when(interviewRepository.findInterviewsWithPracticeModeByUser(eq(user.getId()), eq(Mode.PRACTICE), any(Pageable.class)))
-                .thenReturn(interviewPage);
+        lenient().when(interviewRepository.findInterviewsWithPracticeModeByUser(
+                eq(user.getId()),
+                any(Pageable.class),
+                eq(Mode.PRACTICE)
+        )).thenReturn(interviewPage);
 
-        // When: 페이징된 면접를 DTO로 변환하는 로직 직접 구현
+        // When: 페이징된 면접을 DTO로 변환하는 로직 직접 구현
         List<InterviewHistorySummaryResponse> practiceInterviewList = interviewPage.stream()
                 .map(interviewObj -> {
                     // 면접의 모든 디테일에서 점수를 합산
@@ -252,6 +254,7 @@ public class UserServiceTest {
         assertThat(result.getContent().get(0).getScore()).isEqualTo(10L); // 점수 합산 결과가 올바른지 검증 (50L / 5)
         assertThat(result.getContent().get(0).getCategory()).isEqualTo("LANGUAGE"); // 첫 번째 인터뷰 디테일의 카테고리가 올바른지 검증
     }
+
 
     @Test
     @DisplayName("면접 상세이력 미존재시 테스트")
