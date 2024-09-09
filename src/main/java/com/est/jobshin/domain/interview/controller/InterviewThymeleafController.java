@@ -37,10 +37,10 @@ public class InterviewThymeleafController {
     public String getInterviewResult(@RequestParam("mode") Mode mode, Model model) {
         if (mode == REAL) {
             model.addAttribute("mode", REAL);
-            return "AlFeedback";
+            return "interview/AlFeedback";
         } else if (mode == PRACTICE) {
             model.addAttribute("mode", PRACTICE);
-            return "AlFeedback";
+            return "interview/AlFeedback";
         } else {
             return "error";
         }
@@ -48,6 +48,6 @@ public class InterviewThymeleafController {
 
     @GetMapping("/interview/levelEval")
     public String getInterviewLevelEval() {
-        return "levelFeedback";
+        return "interview/levelFeedback";
     }
 }
