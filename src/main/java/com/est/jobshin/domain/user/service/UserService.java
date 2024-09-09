@@ -79,8 +79,8 @@ public class UserService {
             Long userId, Mode mode) {
 
         // 인터뷰 목록을 페이지네이션으로 가져옴
-        Page<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(
-                userId, mode, pageable);
+        List<Interview> interviewsPage = interviewRepository.findInterviewsWithPracticeModeByUser(
+                userId, mode);
 
         // 인터뷰 목록을 DTO로 변환
         List<InterviewHistorySummaryResponse> practiceInterviewList = interviewsPage.stream()
@@ -100,8 +100,16 @@ public class UserService {
                 })
                 .collect(Collectors.toList());
 
+        // 페이지네이션 처리 (practiceInterviewList 기준)
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), practiceInterviewList.size());
+
+        // 페이지 내 범위에 해당하는 리스트 추출
+        List<InterviewHistorySummaryResponse> paginatedList = practiceInterviewList.subList(start, end);
+
         // DTO 리스트를 페이지네이션된 결과로 반환
-        return new PageImpl<>(practiceInterviewList, pageable, interviewsPage.getTotalElements());
+        return new PageImpl<>(paginatedList, pageable, practiceInterviewList.size());
+
     }
 
 

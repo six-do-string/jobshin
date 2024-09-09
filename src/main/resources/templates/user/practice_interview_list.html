@@ -73,7 +73,7 @@
                     th:with="start=${T(java.lang.Math).floor((interviewSummaryList.number + 1) / 10) * 10 + 1}, last=(${start + 9 < interviewSummaryList.totalPages ? start + 9 : interviewSummaryList.totalPages})">
                     <th:block th:with="
             firstAddr=@{/views/users/interviews/practice(page=1)},
-            prevAddr=@{/views/users/interviews/practice(page=${interviewSummaryList.number + 1})},
+            prevAddr=@{/views/users/interviews/practice(page=${interviewSummaryList.number})},
             nextAddr=@{/views/users/interviews/practice(page=${interviewSummaryList.number + 2})},
             lastAddr=@{/views/users/interviews/practice(page=${interviewSummaryList.totalPages})}">
                         <li class="page-item">
