@@ -52,13 +52,13 @@
             url: "/api/mock-interviews/summary",
             dataType: 'json',
             success: function (response) {
-                console.log(response);
                 renderInterviewSummary(response);
 
                 // levelFeedback 페이지에 전달할 데이터
                 localStorage.setItem('score', String(calculateTotalScore(response)));
             },
             error: function (xhr, status, error) {
+                alert("결과를 불러오는 중 오류가 발생하였습니다.");
                 console.error("Error fetching interview summary:", error);
             }
         });

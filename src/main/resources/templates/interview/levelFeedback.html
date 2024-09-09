@@ -50,12 +50,9 @@
 
     // AlFeedback 페이지에서 받아온 데이터
     const scoreAverage = parseInt(localStorage.getItem('score'), 10) / 5;
-    console.log("scoreAverage: " + scoreAverage);
 
     // 난이도 점수 반환
     function setDifficulty() {
-        console.log("setDifficulty() 실행");
-        // 모든 옵션 버튼의 배경색을 기본값으로 설정
         let buttons = document.getElementsByClassName("option-button");
         for (let i = 0; i < buttons.length; i++) {
             buttons[i].style.backgroundColor = "#f0f0f0";
@@ -66,7 +63,6 @@
         event.target.style.color = "#fff";
 
         let checked = event.target.value;
-        console.log(checked);
 
         if (checked === '상') {
             feedback = 0;
@@ -85,7 +81,6 @@
     function setScore() {
         feedback = setDifficulty() + scoreAverage;
         score = feedback / 2;
-        console.log(score);
         return score;
     }
 
@@ -111,8 +106,8 @@
         .then(response => {
             if (response.redirected) {
                 window.location.href = response.url;
-                console.log("면접 완료");
             } else {
+                alert("요청처리 중 오류가 발생하였습니다. 다시 시도해주세요.");
                 console.error('Error:', response.statusText);
             }
         });

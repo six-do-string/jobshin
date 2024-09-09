@@ -62,7 +62,7 @@
                         </div>
                         <div class="buttonCont">
                             <a class="click" th:href="@{/views/main}">돌아가기</a>
-                            <button class="click" onclick="createQuestions2()" type="button">시작하기</button>
+                            <button class="click" onclick="createPracticeQuestions()" type="button">시작하기</button>
                         </div>
                     </div>
                 </div>
@@ -92,7 +92,7 @@
     let HEADER = $("meta[name='_csrf_header']").attr("content");
 
     // 질문 생성
-    function createQuestions2(){
+    function createPracticeQuestions(){
         const category = $("input[name='category']:checked").val();
         localStorage.setItem('category', category);
 
@@ -100,7 +100,7 @@
             alert("카테고리를 선택해주세요.");
             return;
         }
-        console.log('createQuestions() 함수 실행')
+
         loadingModal.style.display = 'block';
         $.ajax({
             type: 'POST',
@@ -115,7 +115,7 @@
                 returnQuestionPage();
             },
             error: function (request, status, error){
-                alert("질문 구성 중 오류가 발생했습니다.");
+                alert("질문 구성 중 오류가 발생했습니다. 다시 시도해주세요.");
                 loadingModal.style.display = 'none';
                 console.log(error);
             }
