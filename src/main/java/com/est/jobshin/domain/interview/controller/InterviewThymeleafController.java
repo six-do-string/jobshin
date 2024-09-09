@@ -1,6 +1,5 @@
 package com.est.jobshin.domain.interview.controller;
 
-import com.est.jobshin.domain.interview.service.InterviewService;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
