@@ -139,6 +139,7 @@
                 },
                 error: function (error) {
                     alert("답변 제출 중 오류가 발생하였습니다.");
+                    loadingModal.style.display = 'none';
                     console.error("답변 제출 중 오류가 발생하였습니다: ", error);
                 }
             });
