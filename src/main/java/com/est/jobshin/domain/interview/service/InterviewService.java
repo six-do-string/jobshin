@@ -54,6 +54,20 @@ public class InterviewService {
     }
 
     /**
+     * 세션데이터 초기화
+     * @param questions 질문과 답변이 들어있는 객체
+     * @param interviewId 진행중인 면접 id
+     * @param session 현재 세션
+     */
+    private void initSessionData(List<InterviewDetail> questions, Long interviewId, HttpSession session) {
+        session.setAttribute("questions", new ArrayList<>(questions));
+        session.setAttribute("currentIndex", 0);
+        session.setAttribute("interviewId", interviewId);
+        answerQueueMap.put(session.getId(), new ConcurrentLinkedQueue<>());
+        taskStateMap.put(session.getId(), false);
+    }
+
+    /**
      * 면접 연습모드로 진입시 면접 질문 생성 메서드 호출,
      * 면접 진행에 필요한 변수들을 세션에 초기화
      * @param category 클라이언트가 선택한 카테고리
@@ -71,13 +85,8 @@ public class InterviewService {
 
         interviewDetailService.practiceModeStarter(interview, category, user);
 
-        session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
-        session.setAttribute("currentIndex", 0);
+        initSessionData(interview.getInterviewDetails(), createdInterview.getId(), session);
 
-        session.setAttribute("interviewId", createdInterview.getId());
-
-        answerQueueMap.put(session.getId(), new ConcurrentLinkedQueue<>());
-        taskStateMap.put(session.getId(), false);
         return createdInterview;
     }
 
@@ -98,13 +107,8 @@ public class InterviewService {
 
         interviewDetailService.realModeStarter(interview, user);
 
-        session.setAttribute("questions", new ArrayList<>(interview.getInterviewDetails()));
-        session.setAttribute("currentIndex", 0);
+        initSessionData(interview.getInterviewDetails(), createdInterview.getId(), session);
 
-        session.setAttribute("interviewId", createdInterview.getId());
-
-        answerQueueMap.put(session.getId(), new ConcurrentLinkedQueue<>());
-        taskStateMap.put(session.getId(), false);
         return createdInterview;
     }
 
@@ -124,13 +128,8 @@ public class InterviewService {
                 .filter(interviewDetail -> !interviewDetail.isComplete())
                 .collect(Collectors.toList());
 
-        session.setAttribute("questions", questions);
-        session.setAttribute("currentIndex", 0);
+        initSessionData(questions, interviewId, session);
 
-        session.setAttribute("interviewId", interviewId);
-
-        answerQueueMap.put(session.getId(), new ConcurrentLinkedQueue<>());
-        taskStateMap.put(session.getId(), false);
         return interview;
     }
 
@@ -201,9 +200,18 @@ public class InterviewService {
                 .orElseThrow(() -> new NoSuchElementException("Interview not found"));
         interview.completeInterview();
 
+        long startTime = System.currentTimeMillis();
+        long timeout = 2 * 60 * 1000;
+
         while(taskStateMap.get(session.getId())) {
+            if(System.currentTimeMillis() - startTime > timeout) {
+                log.info("세션 {}: 타임아웃", session.getId());
+                break;
+            }
+
             log.info("작업 상태: {}", taskStateMap.get(session.getId()));
             log.info("{}: 대기중", session.getId());
+            log.info("남은 작업 개수: {}", answerQueueMap.get(session.getId()).size());
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
