@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -45,7 +45,7 @@
     let token = $("meta[name='_csrf']").attr("content");
     let header = $("meta[name='_csrf_header']").attr("content");
 
-    let feedback = 0;
+    let feedback = null;
     let score = 0;
 
     // AlFeedback 페이지에서 받아온 데이터
@@ -91,7 +91,7 @@
 
     // 총 점수를 서버로 전송
     function submitForm() {
-        if (event.target.value == null) {
+        if (feedback == null) {
             alert("난이도를 선택해주세요.");
             return;
         }
@@ -103,14 +103,15 @@
         fetch(form.action, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
                 [header]: token
             },
             body: JSON.stringify({level: score})
         })
         .then(response => {
-            if (response.ok) {
-                window.location.href = '/views/main';
+            if (response.redirected) {
+                window.location.href = response.url;
+                console.log("면접 완료");
             } else {
                 console.error('Error:', response.statusText);
             }
