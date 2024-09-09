@@ -20,11 +20,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class InterviewService {
@@ -134,7 +136,8 @@ public class InterviewService {
     }
 
     /**
-     * 답변을 전달받으면 다음 질문을 전달해주고, 답변에 대한 처리는 비동기적으로 실행
+     * 답변을 전달받으면 다음 질문을 전달,
+     * 답변은 큐에 저장하고 답변 처리 메서드가 중단 상태면 실행
      * @param session 현재 세션
      * @param interviewQuestion 클라이언트로부터 작성된 답변을 담은 객체
      * @return 다음 질문이 담긴 객체
@@ -144,8 +147,7 @@ public class InterviewService {
         InterviewQuestion nextQuestion = getNextQuestion(session);
 
         CompletableFuture.runAsync(() -> {
-//            interviewDetailService.getAnswerByUser(interviewQuestion);
-            System.out.println(session.getId() + " 큐에 저장");
+            log.info("큐에 저장");
             answerQueueMap.get(session.getId()).add(interviewQuestion);
             if(!taskStateMap.get(session.getId())) {
                 taskStateMap.put(session.getId(), true);
@@ -156,9 +158,14 @@ public class InterviewService {
         return nextQuestion;
     }
 
+    /**
+     * 답변 처리 메서드 호출, 처리해야 할 작업이 없으면 상태를 중단으로 변경하고 작업 중단
+     * @param questions 처리해야 할 답변 처리 작업이 담긴 큐
+     * @param session 현재 세션
+     */
     private void queueTask(ConcurrentLinkedQueue<InterviewQuestion> questions, HttpSession session) {
         while(!questions.isEmpty()) {
-            System.out.println(session.getId() + " 큐에서 뺌");
+            log.info("큐에서 뺌");
             interviewDetailService.getAnswerByUser(questions.poll());
         }
         taskStateMap.put(session.getId(), false);
@@ -184,7 +191,8 @@ public class InterviewService {
     }
 
     /**
-     * 마지막으로 전달받은 답변에 대해 동기적으로 처리
+     * 마지막으로 전달받은 답변에 대해 동기적으로 처리,
+     * 앞선 비동기 작업이 완전히 처리 되었는지 재확인
      * @param interviewQuestion InterviewQuestion
      * @param session HttpSession
      * @return 완료처리를 나타내는 문자열
@@ -193,11 +201,10 @@ public class InterviewService {
         Interview interview = interviewRepository.findById((Long)session.getAttribute("interviewId"))
                 .orElseThrow(() -> new NoSuchElementException("Interview not found"));
         interview.completeInterview();
-//        interviewDetailService.getAnswerByUser(interviewQuestion);
 
         while(taskStateMap.get(session.getId())) {
-            System.out.println(taskStateMap.get(session.getId()));
-            System.out.println(session.getId() + " 대기중");
+            log.info("작업 상태: {}", taskStateMap.get(session.getId()));
+            log.info("{}: 대기중", session.getId());
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
