@@ -54,8 +54,8 @@
 
     // 질문 생성
     function createQuestions(){
-        console.log('createQuestions() 함수 실행')
         loadingModal.style.display = 'block';
+
         $.ajax({
             type: 'POST',
             beforeSend : function(xhr) {
