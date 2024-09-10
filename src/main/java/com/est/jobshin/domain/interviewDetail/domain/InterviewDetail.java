@@ -81,6 +81,13 @@ public class InterviewDetail {
     }
 
     /**
+     * 답변 등록 상태로 변경
+     */
+    public void registerAnswerComplete() {
+        this.complete = true;
+    }
+
+    /**
      * 전달 받은 피드백을 저장, 해당 문제를 완료처리
      * @param exampleAnswer 앨런으로부터 전달 받은 예시 답변
      * @param score 앨런으로부터 전달 받은 점수
