@@ -125,50 +125,31 @@ public class UserIntegrationTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
 
+        // 면접 생성 및 저장
+        Interview interview = Interview.createInterview("Test Interview", LocalDateTime.now(), userRepository.findByUsername(uniqueEmail).orElseThrow(), Mode.PRACTICE);
 
-    // 에러남 여기부터
+        // 면접 저장 및 검증
+        Interview savedInterview = interviewRepository.save(interview);
+        assertThat(savedInterview.getId()).isNotNull();
 
+        // 면접 상세 내용 생성 및 저장
+        InterviewDetail interviewDetail = InterviewDetail.createInterviewDetail("What is Java?", Category.LANGUAGE, Mode.PRACTICE, LocalDateTime.now());
+        interviewDetail.setAnswer("Java is a programming language.");
+        interviewDetail.setExampleAnswer("Java language");
+        interviewDetail.setScore(50L);
+        interviewDetail.setInterview(savedInterview);
 
-//    // 면접 생성 및 저장
-//    Interview interview = Interview.createInterview("Test Interview", LocalDateTime.now(), userRepository.findByUsername(uniqueEmail).orElseThrow(), Mode.PRACTICE);
-//
-//    // 면접 저장 및 검증
-//    Interview savedInterview = interviewRepository.save(interview);
-//    assertThat(savedInterview.getId()).isNotNull();
-//
-//    // 면접 상세 내용 생성 및 저장
-//    InterviewDetail interviewDetail = InterviewDetail.createInterviewDetail("What is Java?", Category.LANGUAGE, Mode.PRACTICE, LocalDateTime.now());
-//        interviewDetail.setAnswer("Java is a programming language.");
-//        interviewDetail.setExampleAnswer("Java language");
-//        interviewDetail.setScore(50L);
-//        interviewDetail.setInterview(savedInterview);
-//
-//    // 상세 내용 저장 및 데이터베이스에 반영
-//    InterviewDetail savedDetail = interviewDetailRepository.save(interviewDetail);
-//        interviewRepository.saveAndFlush(savedInterview);
-//
-//    // 면접 이력 리스트 요청 및 검증
-//        mockMvc.perform(get("/views/users/interviews/practice")
-//                        .param("page", "0")
-//                        .param("size", "10")
-//                        .param("mode", "PRACTICE")
-//                        .with(csrf())
-//            .with(user(customUserDetails)))
-//            .andExpect(status().isOk())
-//            .andExpect(view().name("user/practice_interview_list"))
-//            .andExpect(model().attributeExists("interviewSummaryList"))
-//            .andExpect(model().attributeExists("pageNumbers"));
-//
-//    // 면접 상세 정보 조회 요청 및 검증
-//        mockMvc.perform(get("/views/users/interviews/real/{id}", savedInterview.getId())
-//            .with(csrf())
-//            .with(user(customUserDetails)))
-//            .andExpect(status().isOk())
-//            .andExpect(view().name("user/real_interview_detail"))
-//            .andExpect(model().attributeExists("interviewDetails"));
+        // 상세 내용 저장 및 데이터베이스에 반영
+        InterviewDetail savedDetail = interviewDetailRepository.save(interviewDetail);
+        interviewRepository.saveAndFlush(savedInterview);
 
-
-// 에러남 ^
+        // 면접 상세 정보 조회 요청 및 검증
+        mockMvc.perform(get("/views/users/interviews/real/{id}", savedInterview.getId())
+                        .with(csrf())
+                        .with(user(customUserDetails)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/real_interview_detail"))
+                .andExpect(model().attributeExists("interviewDetails"));
 
 
         // 로그아웃 요청 및 검증
