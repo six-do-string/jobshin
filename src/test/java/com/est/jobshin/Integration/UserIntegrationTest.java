@@ -1,4 +1,4 @@
-package com.est.jobshin.userIntegration;
+package com.est.jobshin.Integration;
 
 import com.est.jobshin.domain.interview.domain.Interview;
 import com.est.jobshin.domain.interview.repository.InterviewRepository;
