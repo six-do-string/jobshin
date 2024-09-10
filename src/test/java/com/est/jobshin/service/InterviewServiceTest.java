@@ -10,7 +10,6 @@ import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
 import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Category;
-import com.est.jobshin.domain.interviewDetail.util.Mode;
 import com.est.jobshin.domain.user.domain.User;
 import com.est.jobshin.domain.user.dto.UserResponse;
 import com.est.jobshin.domain.user.repository.UserRepository;
@@ -197,27 +196,34 @@ public class InterviewServiceTest {
 	@DisplayName("모의면접 진행하기")
 	@Test
 	void testProcessAnswerAndGetNextQuestion() {
-
 		List<InterviewDetail> questions = new ArrayList<>();
 
-		interviewDetail = InterviewDetail.createInterviewDetail("질문?", Category.LANGUAGE, REAL, LocalDateTime.now());
-		InterviewDetail interviewDetail1 = InterviewDetail.createInterviewDetail("질문1?", Category.LANGUAGE, REAL, LocalDateTime.now());
-		questions.add(interviewDetail);
-		questions.add(interviewDetail1);
+		InterviewDetail interviewDetailFirst = InterviewDetail.createInterviewDetail("질문1", Category.LANGUAGE, REAL, LocalDateTime.now());
+		InterviewDetail interviewDetailSecond = InterviewDetail.createInterviewDetail("질문2", Category.LANGUAGE, REAL, LocalDateTime.now());
 
-		session = new MockHttpSession();
+		questions.add(interviewDetailFirst);
+		questions.add(interviewDetailSecond);
+
+		MockHttpSession session = new MockHttpSession();
 		session.setAttribute("questions", questions);
-		session.setAttribute("currentIndex", 0);
 
-		nextQuestion = interviewService.processAnswerAndGetNextQuestion(session, interviewQuestion);
+		//서비스 코드에서 실제로는 getNextQuestion메서드가 1회 생성된 후에
+		//processAnswerAndGetNextQuestion메서드가 실행되기 때문에 초기 index를 1로 설정
+		session.setAttribute("currentIndex", 1);
+
+		InterviewQuestion interviewQuestion = new InterviewQuestion(interviewDetailFirst.getId(), interviewDetailFirst.getQuestion(), "답변1", 5);
+
+		when(interviewDetailRepository.findById(interviewQuestion.getId()))
+				.thenReturn(Optional.of(interviewDetailFirst));
+
+		InterviewQuestion nextQuestion = interviewService.processAnswerAndGetNextQuestion(session, interviewQuestion);
 
 		assertThat(nextQuestion).isNotNull();
-		assertThat(nextQuestion.getQuestion()).isEqualTo("질문?");
+		assertThat(nextQuestion.getQuestion()).isEqualTo("질문2");
 
-		nextQuestion = interviewService.processAnswerAndGetNextQuestion(session, interviewQuestion);
-
-		assertThat(nextQuestion).isNotNull();
-		assertThat(nextQuestion.getQuestion()).isEqualTo("질문1?");
+		//processAnswerAndGetNextQuestion메서드가 실행될때
+		//내부의 getNextQuestion이 실행되어 index가 1증가
+		assertThat(session.getAttribute("currentIndex")).isEqualTo(2);
 	}
 
 	@DisplayName("다음 질문 반환")
