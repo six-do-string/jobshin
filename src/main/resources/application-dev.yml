@@ -35,4 +35,4 @@ spring:
 alan:
   api:
     default-url: https://kdt-api-function.azurewebsites.net/api/v1/question
-    client-id: 8048cef0-a9a1-435d-b617-079d90de6ee8
+    client-id: 7348d628-9c3b-455e-bc1b-94ed9cc05b63
