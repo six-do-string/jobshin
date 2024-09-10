@@ -105,7 +105,7 @@ public class InterviewDetailService {
             feedbackList.add(matcher.group(1));
         }
 
-        String exampleAnswer = feedbackList.get(1).replaceAll("\\n", System.lineSeparator());
+        String exampleAnswer = feedbackList.get(1).replaceAll("\\\\n", System.lineSeparator());
 
         interviewDetail.registerFeedback(exampleAnswer, Long.parseLong(feedbackList.get(0)));
     }
