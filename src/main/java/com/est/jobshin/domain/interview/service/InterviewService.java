@@ -6,6 +6,7 @@ import com.est.jobshin.domain.interview.repository.InterviewRepository;
 import com.est.jobshin.domain.interviewDetail.domain.InterviewDetail;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewQuestion;
 import com.est.jobshin.domain.interviewDetail.dto.InterviewResultDetail;
+import com.est.jobshin.domain.interviewDetail.repository.InterviewDetailRepository;
 import com.est.jobshin.domain.interviewDetail.service.InterviewDetailService;
 import com.est.jobshin.domain.interviewDetail.util.Category;
 import com.est.jobshin.domain.interviewDetail.util.Mode;
@@ -39,6 +40,7 @@ public class InterviewService {
 
     private final Map<String, ConcurrentLinkedQueue<InterviewQuestion>> answerQueueMap = new HashMap<>();
     private final Map<String, Boolean> taskStateMap = new HashMap<>();
+    private final InterviewDetailRepository interviewDetailRepository;
 
     /**
      * 면접 id로 면접 찾기
@@ -63,8 +65,26 @@ public class InterviewService {
         session.setAttribute("questions", new ArrayList<>(questions));
         session.setAttribute("currentIndex", 0);
         session.setAttribute("interviewId", interviewId);
+
         answerQueueMap.put(session.getId(), new ConcurrentLinkedQueue<>());
         taskStateMap.put(session.getId(), false);
+    }
+
+    /**
+     * 면접 이어하기시 세션데이터 초기화
+     * @param questions 질문과 답변이 들어있는 객체
+     * @param interviewId 진행중인 면접 id
+     * @param session 현재 세션
+     */
+    private void initSessionDataAtLoadIncompleteInterview(List<InterviewDetail> questions, Long interviewId, HttpSession session) {
+        session.setAttribute("questions", new ArrayList<>(questions));
+        session.setAttribute("currentIndex", 0);
+        session.setAttribute("interviewId", interviewId);
+
+        if(!taskStateMap.getOrDefault(session.getId(), false)) {
+            answerQueueMap.put(session.getId(), new ConcurrentLinkedQueue<>());
+            taskStateMap.put(session.getId(), false);
+        }
     }
 
     /**
@@ -128,7 +148,7 @@ public class InterviewService {
                 .filter(interviewDetail -> !interviewDetail.isComplete())
                 .collect(Collectors.toList());
 
-        initSessionData(questions, interviewId, session);
+        initSessionDataAtLoadIncompleteInterview(questions, interviewId, session);
 
         return interview;
     }
@@ -143,6 +163,11 @@ public class InterviewService {
     @Transactional
     public InterviewQuestion processAnswerAndGetNextQuestion(HttpSession session, InterviewQuestion interviewQuestion) {
         InterviewQuestion nextQuestion = getNextQuestion(session);
+
+        InterviewDetail interviewDetail = interviewDetailRepository.findById(interviewQuestion.getId())
+                        .orElseThrow(() -> new NoSuchElementException("InterviewDetail not found"));
+
+        interviewDetail.registerAnswerComplete();
 
         CompletableFuture.runAsync(() -> {
             log.info("큐에 저장");
@@ -199,6 +224,11 @@ public class InterviewService {
         Interview interview = interviewRepository.findById((Long)session.getAttribute("interviewId"))
                 .orElseThrow(() -> new NoSuchElementException("Interview not found"));
         interview.completeInterview();
+
+        InterviewDetail interviewDetail = interviewDetailRepository.findById(interviewQuestion.getId())
+                .orElseThrow(() -> new NoSuchElementException("Interview not found"));
+
+        interviewDetail.registerAnswerComplete();
 
         long startTime = System.currentTimeMillis();
         long timeout = 2 * 60 * 1000;
