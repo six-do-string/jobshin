@@ -1,4 +1,4 @@
-![Untitled](https://github.com/user-attachments/assets/012aa731-e397-4456-80cf-056c27c91cbc)# jobshin - 모의 면접 서비스
+# jobshin - 모의 면접 서비스
 
 ## 목차
 
