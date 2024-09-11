@@ -2,20 +2,20 @@
 
 ## 목차
 
-1. [📘 프로젝트 소개](#1.-프로젝트-소개)
-2. [📝 프로잭트 개요](#2.-프로젝트-개요)
-3. [👥 팀 소개](#3.-팀-소개)
-4. [✨ 주요 기능](#4.-주요-기능)
-5. [🛠️ 기술 스택](#5.-기술-스택)
-6. [Flow Chart](#6.-Flow Chart)
-7. [📋 요구사항 명세](#7.-요구사항-명세)
-8. [📂 폴더 구조](#8.-폴더-구조)
-9. [🗂️ ERD](#9.-ERD)
+1. [📘 프로젝트 소개](#1-프로젝트-소개)
+2. [📝 프로잭트 개요](#2-프로젝트-개요)
+3. [👥 팀 소개](#3-팀-소개)
+4. [✨ 주요 기능](#4-주요-기능)
+5. [🛠️ 기술 스택](#5-기술-스택)
+6. [💹 Flow Chart](#6-Flow-Chart)
+7. [📋 요구사항 명세](#7-요구사항-명세)
+8. [📂 폴더 구조](#8-폴더-구조)
+9. [🗂️ ERD](#9-ERD)
 10. [📡 API 명세](#10-API-명세)
-11. [🏛️ 아키텍처](#11.-아키텍처)
-12. [🖥️ 화면 설계](#12.-화면-설계)
-13. [⚠️ 주요 이슈](#13.-주요-이슈)
-14. [🔄 회고](#14.-회고)
+11. [🏛️ 아키텍처](#11-아키텍처)
+12. [🖥️ 화면 설계](#12-화면-설계)
+13. [⚠️ 주요 이슈](#13-주요-이슈)
+14. [🔄 회고](#14-회고)
 
 ## 📘 1. 프로젝트 소개
 
@@ -34,7 +34,7 @@ jobsin 프로젝트는 기술 면접을 준비하는 취준생을 타겟팅한 �
 
 ### 2-3. 프로젝트 배포 주소
 
-- **[✨Jobsin](http://3.39.74.113:8080/views/main)**
+- **[✨Jobsin](https://3.39.74.113.nip.io/views/main)**
 
 ## 👥 3. 팀 소개
 
@@ -44,14 +44,14 @@ jobsin 프로젝트는 기술 면접을 준비하는 취준생을 타겟팅한 �
 | Infra, BE         | BE, FE         | BE, FE    | BE, FE    | Test          | Test      |
 | Docker, AWS, User | User, Security | Interview | Interview | InterviewTest | User Test |
 
-## 4. 주요 기능
+## ✨ 4. 주요 기능
 
 1. 기술 면접을 준비하는 취준생들을 위하여 AlanAI를 활용하여 언어 및 포지션 별로 모의 면접 서비스 제공 합니다.
 2. 모의 면접 시 특정한 분야(Language, Network, Algorithm, OS 등등)에 대한 연습을 할 수 있는 연습모드와 모든 분야를 통합하여 다양한 질문을 받을 수
    있는 실전 모드로 나누어서 제공 합니다.
 3. 사용자 마다 Level을 부여하여 해당 Level에 맞는 질문을 받고 실전 모드의 총 점수와 AI 피드백 점수를 합하여 Level을 향상 시킬 수 있습니다.
 
-## 5. 기술 스택
+## 🛠️ 5. 기술 스택
 
 ### 5-1. BackEnd
 
@@ -92,7 +92,12 @@ jobsin 프로젝트는 기술 면접을 준비하는 취준생을 타겟팅한 �
     <img alt="Static Badge" src="https://img.shields.io/badge/intellijidea-%23000000?style=flat-square&logo=intellijidea&logoColor=%23FFFFFF">
 </div>
 
-## 7. 요구사항 명세
+## 💹 6. Flow Chart
+
+![image](https://github.com/user-attachments/assets/0efd469b-d7ce-4601-9d8a-8447ca0156a4)
+
+
+## 📋 7. 요구사항 명세
 
 ### 7-1 유저 요구사항
 
@@ -174,7 +179,7 @@ jobsin 프로젝트는 기술 면접을 준비하는 취준생을 타겟팅한 �
     - 점수를 기준으로 레벨 반영
     - 실전 모드만 반영
 
-## 8. 폴더 구조
+## 📂 8. 폴더 구조
 
 ### 8-1 BackEnd
 
@@ -341,11 +346,11 @@ interviewDetail
 │   └── user.css
 ```
 
-## 8. ERD
+## 🗂️ 8. ERD
 
 ![img.png](img.png)
 
-## 9. API 명세
+## 📡 9. API 명세
 
 ### 📝 회원 가입
 
@@ -397,20 +402,33 @@ interviewDetail
 | continueIncompleteInterview | GET       | /api/mock-interviews/incomplete/{interviewId | 공지사항 생성 요청     |
 | deleteInterview             | DELETE    | /api/mock-interviews/{interviewId}           | 모의 면접 삭제       |
 
-## 10. 아키텍처
+## 🏛️ 10. 아키텍처
 
-![img_1.png](아키택처.png)
+![image](https://github.com/user-attachments/assets/c3ff827b-764d-4ad2-8402-808ad8497f1d)
 
-## 11. 화면 설계
+## 🖥️ 11. 화면 설계
 
 | 메인 페이지 (상단) | 메인 페이지 (중단) |
 |-------------|-------------|
-|![img_2.png](img_2.png)||
-
-## 12. 주요 이슈
+|<img width="1470" alt="메인 페이지 상단" src="https://github.com/user-attachments/assets/4e69cebe-341f-4202-9059-96894e03eecc">|<img width="1470" alt="메인페이지 중앙" src="https://github.com/user-attachments/assets/cb1d2d0a-bef4-49d2-8bab-f5af457b14d3">|
+| 메인 페이지 (하단) | 로그인 페이지 |
+|<img width="1470" alt="메인 페이지 하단" src="https://github.com/user-attachments/assets/04bb842b-90c5-41d8-a756-f17f86d0a91e">|<img width="1470" alt="로그인 페이지 최종" src="https://github.com/user-attachments/assets/794a7b2b-8fbf-499b-a506-3b8355d49ef7">|
+| 회원가입 페이지 | 마이페이지 |
+|<img width="1470" alt="image" src="https://github.com/user-attachments/assets/0474649c-01b9-4f36-9bbf-e5e995d616a6" alt="회원가입 페이지">|<img width="1470" src="https://github.com/user-attachments/assets/5711f624-0e5a-4c7d-93fb-f5f3773b488a" alt="마이 페이지">|
+| 회원 정보 수정 페이지 | 인터뷰 메인 페이지 |
+|<img width="1470"  src="https://github.com/user-attachments/assets/154e641e-1dd1-4e89-8dd7-8db649ef15a7" alt="회원정보 수정 페이지">|<img width="1470" alt="스크린샷 2024-09-11 오후 3 46 58" src="https://github.com/user-attachments/assets/4c21fa56-0863-4e01-b823-206517c16029">|
+| 연습모드 이력 리스트 | 실전모드 이력 리스트 |
+|<img width="1470" src="https://github.com/user-attachments/assets/068ee736-2699-4d2a-be0e-28211dc2cced" alt="연습모드 이력 리스트 조회">|<img width="1470" src="https://github.com/user-attachments/assets/241b5426-acb3-41ae-9d44-ac805ea6eaf2" alt="실전모드 이력 리스트 조회">|
+| 연습모드 이력 상세 | 실전 모드 이력 상세 |
+|<img width="1470" alt="연습모드 이력 상세" src="https://github.com/user-attachments/assets/adedd59e-e568-4348-ad5d-c73edee0bb4f">|<img width="1470" src="https://github.com/user-attachments/assets/1cecb3f9-bcb0-471b-844a-df1d5c232c05" alt="실전모드 이력 상세">|
+| 모의면접 (연습모드) 시작하기 | 모의면접 (실전모드) 시작하기|
+|<img width="1470" alt="연습모드 시작" src="https://github.com/user-attachments/assets/e14906d1-4bea-4b1b-9367-a37210cc4f85">|<img width="1470" alt="실전모드 시작" src="https://github.com/user-attachments/assets/48263641-9e40-4766-aff2-7c5c90a248c9">|
+| 모의면접 진행 | 모의면접 (실전모드) 완료 후 피드백 |
+|<img width="1470" alt="모의 면접 진행" src="https://github.com/user-attachments/assets/414b7dd2-416a-460a-8484-53d74b87ba78">|<img width="1470" alt="AI 피드백" src="https://github.com/user-attachments/assets/40553944-cc9f-4224-9011-cafa15dde552">|
+## ⚠️ 12. 주요 이슈
 
 프로젝트에서 발생한 주요 이슈들...
 
-## 13. 회고
+## 🔄 13. 회고
 
 프로젝트 진행 과정에서 배운 점과 회고...
