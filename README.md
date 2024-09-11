@@ -2,27 +2,27 @@
 
 ## 목차
 
-1. [📘 프로젝트 소개](#1-프로젝트-소개)
-2. [📝 프로잭트 개요](#2-프로젝트-개요)
-3. [👥 팀 소개](#3-팀-소개)
-4. [✨ 주요 기능](#4-주요-기능)
-5. [🛠️ 기술 스택](#5-기술-스택)
-6. [💹 Flow Chart](#6-Flow-Chart)
-7. [📋 요구사항 명세](#7-요구사항-명세)
-8. [📂 폴더 구조](#8-폴더-구조)
-9. [🗂️ ERD](#9-ERD)
-10. [📡 API 명세](#10-API-명세)
-11. [🏛️ 아키텍처](#11-아키텍처)
-12. [🖥️ 화면 설계](#12-화면-설계)
-13. [⚠️ 주요 이슈](#13-주요-이슈)
-14. [🔄 회고](#14-회고)
+[1. 📘 프로젝트 소개](#1-프로젝트-소개)  
+[2. 📝 프로잭트 개요](#2-프로젝트-개요)  
+[3. 👥 팀 소개](#3-팀-소개)  
+[4. ✨ 주요 기능](#4-주요-기능)  
+[5. 🛠️ 기술 스택](#5-기술-스택)  
+[6. 💹 Flow Chart](#6-Flow-Chart)  
+[7. 📋 요구사항 명세](#7-요구사항-명세)  
+[8. 📂 폴더 구조](#8-폴더-구조)  
+[9. 🗂️ ERD](#9-ERD)  
+[10. 📡 API 명세](#10-API-명세)  
+[11. 🏛️ 아키텍처](#11-아키텍처)  
+[12. 🖥️ 화면 설계](#12-화면-설계)  
+[13. ⚠️ 주요 이슈](#13-주요-이슈)  
+[14. 🔄 회고](#14-회고)
 
-## 📘 1. 프로젝트 소개
+## 1. 프로젝트 소개
 
 jobsin 프로젝트는 기술 면접을 준비하는 취준생을 타겟팅한 프로젝트로 AlanAI를 활용하여 개인화 된 학습을 지원 하며 사용자의 CS 지식을 향상 시키는데 도움을 주는 온라인
 모의 면접 플렛폼 입니다.
 
-## 📝 2. 프로잭트 개요
+## 2. 프로잭트 개요
 
 ### 2-1 프로젝트 명
 
@@ -36,7 +36,7 @@ jobsin 프로젝트는 기술 면접을 준비하는 취준생을 타겟팅한 �
 
 - **[✨Jobsin](https://3.39.74.113.nip.io/views/main)**
 
-## 👥 3. 팀 소개
+## 3. 팀 소개
 
 | 이정석               | 조준호            | 윤준호       | 노유진       | 박성환           | 박혜원       |
 |-------------------|----------------|-----------|-----------|---------------|-----------|
@@ -44,14 +44,14 @@ jobsin 프로젝트는 기술 면접을 준비하는 취준생을 타겟팅한 �
 | Infra, BE         | BE, FE         | BE, FE    | BE, FE    | Test          | Test      |
 | Docker, AWS, User | User, Security | Interview | Interview | InterviewTest | User Test |
 
-## ✨ 4. 주요 기능
+## 4. 주요 기능
 
 1. 기술 면접을 준비하는 취준생들을 위하여 AlanAI를 활용하여 언어 및 포지션 별로 모의 면접 서비스 제공 합니다.
 2. 모의 면접 시 특정한 분야(Language, Network, Algorithm, OS 등등)에 대한 연습을 할 수 있는 연습모드와 모든 분야를 통합하여 다양한 질문을 받을 수
    있는 실전 모드로 나누어서 제공 합니다.
 3. 사용자 마다 Level을 부여하여 해당 Level에 맞는 질문을 받고 실전 모드의 총 점수와 AI 피드백 점수를 합하여 Level을 향상 시킬 수 있습니다.
 
-## 🛠️ 5. 기술 스택
+## 5. 기술 스택
 
 ### 5-1. BackEnd
 
@@ -92,12 +92,12 @@ jobsin 프로젝트는 기술 면접을 준비하는 취준생을 타겟팅한 �
     <img alt="Static Badge" src="https://img.shields.io/badge/intellijidea-%23000000?style=flat-square&logo=intellijidea&logoColor=%23FFFFFF">
 </div>
 
-## 💹 6. Flow Chart
+## 6. Flow Chart
 
 ![image](https://github.com/user-attachments/assets/0efd469b-d7ce-4601-9d8a-8447ca0156a4)
 
 
-## 📋 7. 요구사항 명세
+## 7. 요구사항 명세
 
 ### 7-1 유저 요구사항
 
@@ -179,7 +179,7 @@ jobsin 프로젝트는 기술 면접을 준비하는 취준생을 타겟팅한 �
     - 점수를 기준으로 레벨 반영
     - 실전 모드만 반영
 
-## 📂 8. 폴더 구조
+## 8. 폴더 구조
 
 ### 8-1 BackEnd
 
@@ -346,11 +346,11 @@ interviewDetail
 │   └── user.css
 ```
 
-## 🗂️ 8. ERD
+## 9. ERD
 
-![img.png](img.png)
+![Untitled](https://github.com/user-attachments/assets/6276be66-cf7a-4539-b71e-7985a1372dc4)
 
-## 📡 9. API 명세
+## 10. API 명세
 
 ### 📝 회원 가입
 
@@ -402,11 +402,11 @@ interviewDetail
 | continueIncompleteInterview | GET       | /api/mock-interviews/incomplete/{interviewId | 공지사항 생성 요청     |
 | deleteInterview             | DELETE    | /api/mock-interviews/{interviewId}           | 모의 면접 삭제       |
 
-## 🏛️ 10. 아키텍처
+## 11. 아키텍처
 
 ![image](https://github.com/user-attachments/assets/c3ff827b-764d-4ad2-8402-808ad8497f1d)
 
-## 🖥️ 11. 화면 설계
+## 12. 화면 설계
 
 | 메인 페이지 (상단) | 메인 페이지 (중단) |
 |-------------|-------------|
@@ -425,10 +425,17 @@ interviewDetail
 |<img width="1470" alt="연습모드 시작" src="https://github.com/user-attachments/assets/e14906d1-4bea-4b1b-9367-a37210cc4f85">|<img width="1470" alt="실전모드 시작" src="https://github.com/user-attachments/assets/48263641-9e40-4766-aff2-7c5c90a248c9">|
 | 모의면접 진행 | 모의면접 (실전모드) 완료 후 피드백 |
 |<img width="1470" alt="모의 면접 진행" src="https://github.com/user-attachments/assets/414b7dd2-416a-460a-8484-53d74b87ba78">|<img width="1470" alt="AI 피드백" src="https://github.com/user-attachments/assets/40553944-cc9f-4224-9011-cafa15dde552">|
-## ⚠️ 12. 주요 이슈
 
-프로젝트에서 발생한 주요 이슈들...
+## 13. 주요 이슈
+### User
+### Interview
+### Infra
+### Test
 
-## 🔄 13. 회고
-
-프로젝트 진행 과정에서 배운 점과 회고...
+## 14. 회고
+### 이정석
+### 조준호
+### 박혜원
+### 윤준호
+### 노유진
+### 박성환
