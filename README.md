@@ -1,4 +1,4 @@
-# jobshin - 모의 면접 서비스
+![Untitled](https://github.com/user-attachments/assets/012aa731-e397-4456-80cf-056c27c91cbc)# jobshin - 모의 면접 서비스
 
 ## 목차
 
@@ -38,11 +38,19 @@ jobsin 프로젝트는 기술 면접을 준비하는 취준생을 타겟팅한 �
 
 ## 3. 팀 소개
 
-| 이정석               | 조준호            | 윤준호       | 노유진       | 박성환           | 박혜원       |
-|-------------------|----------------|-----------|-----------|---------------|-----------|
-| 팀장                | 팀원             | 팀원        | 팀원        | 팀원            | 팀원        |
-| Infra, BE         | BE, FE         | BE, FE    | BE, FE    | Test          | Test      |
-| Docker, AWS, User | User, Security | Interview | Interview | InterviewTest | User Test |
+| 이정석               | 조준호            | 윤준호       |
+|-------------------|----------------|-----------|
+|<a href="https://github.com/LeeJeongSeok" target="_blank"><img src="https://github.com/LeeJeongSeok.png" width="100" height="100" alt="이정석"></a> | <a href="https://github.com/whwnsgh0258" target="_blank"><img src="https://github.com/whwnsgh0258.png" width="100" height="100" alt="조준호"></a> | <a href="https://github.com/yunjunho97" target="_blank"><img src="https://github.com/yunjunho97.png" width="100" height="100" alt="윤준호"></a> |
+| 팀장                | 팀원             | 팀원        |
+| Infra, BE         | BE, FE         | BE, FE    |
+| Docker, AWS, User | User, Security | Interview |
+
+| 노유진       | 박성환           | 박혜원       |
+|-----------|---------------|-----------|
+|<a href="https://github.com/shdbwls66" target="_blank"><img src="https://github.com/shdbwls66.png" width="100" height="100" alt="노유진"></a> | <a href="https://github.com/yub-bi" target="_blank"><img src="https://github.com/yub-bi.png" width="100" height="100" alt="박성환"></a> | <a href="https://github.com/wions37" target="_blank"><img src="https://github.com/wions37.png" width="100" height="100" alt="박혜원"></a> |
+| 팀원        | 팀원            | 팀원        |
+| BE, FE    | Test          | Test      |
+|Interview | InterviewTest | User Test |
 
 ## 4. 주요 기능
 
@@ -348,7 +356,8 @@ interviewDetail
 
 ## 9. ERD
 
-![Untitled](https://github.com/user-attachments/assets/6276be66-cf7a-4539-b71e-7985a1372dc4)
+![Untitled](https://github.com/user-attachments/assets/7a93e4b2-07d3-4edc-a7d7-ab9f24de79a1)
+
 
 ## 10. API 명세
 
